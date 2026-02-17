@@ -196,9 +196,11 @@ def initialize(args=None,
     if autotp_size and autotp_size > 0:
         set_autotp_mode(training=True)
     if not isinstance(model, PipelineModule):
+        print("[CUSTOM DEBUG] Initializing DeepSpeedEngine without PipelineModule")
         config_class = DeepSpeedConfig(config, mpu, mesh_device=mesh_device)
         set_optimizer_flags(config_class, model)
         if config_class.hybrid_engine.enabled:
+            print("[CUSTOM DEBUG] Initializing HybridEngine with config: {}".format(config_class))
             engine = DeepSpeedHybridEngine(args=args,
                                            model=model,
                                            optimizer=optimizer,
@@ -211,6 +213,7 @@ def initialize(args=None,
                                            config=config,
                                            config_class=config_class)
         else:
+            print("[CUSTOM DEBUG] Initializing DeepSpeedEngine with config: {}".format(config_class))
             engine = DeepSpeedEngine(args=args,
                                      model=model,
                                      optimizer=optimizer,
@@ -224,6 +227,7 @@ def initialize(args=None,
                                      mesh_device=mesh_device,
                                      config_class=config_class)
     else:
+        print("[CUSTOM DEBUG] Initializing PipelineEngine with config: {}".format(config))
         assert mpu is None, "mpu must be None with pipeline parallelism"
         mpu = model.mpu()
         config_class = DeepSpeedConfig(config, mpu)

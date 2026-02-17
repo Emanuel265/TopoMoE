@@ -9,8 +9,9 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from deepspeed.utils import groups, log_dist
+from deepspeed.utils import groups, log_dist, logger
 from .experts import Experts
+from .registry import ExpertRegistry
 from .sharded_moe import MOELayer, TopKGate
 
 
@@ -62,6 +63,8 @@ class MoE(nn.Module):
         self.num_experts = num_experts
         self.num_local_experts = num_experts // self.ep_size
 
+        logger.info("[CUSTOM DEBUG] MoELayer init")
+
         log_dist(
             f'Creating MoE layer with num_experts: {num_experts} | num_local_experts: {self.num_local_experts} | expert_parallel_size: {self.ep_size}',
             [0])
@@ -70,6 +73,7 @@ class MoE(nn.Module):
             'Unsupported noisy_gate_policy: ' + noisy_gate_policy
 
         experts = Experts(expert, self.num_local_experts, self.expert_group_name)
+        self.registry = ExpertRegistry(self.num_local_experts)
         self.deepspeed_moe = MOELayer(TopKGate(hidden_size, num_experts, k, capacity_factor, eval_capacity_factor,
                                                min_capacity, noisy_gate_policy, drop_tokens, use_rts, None,
                                                top2_2nd_expert_sampling),
@@ -120,6 +124,7 @@ class MoE(nn.Module):
 
             * exp_counts (Tensor): expert count
         """
+        logger.info("[CUSTOM DEBUG] MoELayer forward")
         output = self.deepspeed_moe(hidden_states, used_token)
         if self.use_residual:
             # Residual MoE

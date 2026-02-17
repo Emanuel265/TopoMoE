@@ -573,6 +573,9 @@ class MOELayer(Base):
 
         self.use_tutel = use_tutel and TUTEL_INSTALLED and gate.k == 1
 
+                
+        logger.info("[CUSTOM DEBUG] ShardedMoE init")
+
         if self.use_tutel:
             logger.info('Using Tutel optimizations.')
         elif use_tutel and not TUTEL_INSTALLED:
@@ -593,6 +596,8 @@ class MOELayer(Base):
 
         # Implement Algorithm 2 from GShard paper.
         d_model = input[0].shape[-1]
+
+        logger.info("[CUSTOM DEBUG] ShardedMoE forward")
 
         # Initial implementation -> Reshape into S tokens by dropping sequence dimension.
         # Reshape into G groups so that each group can distribute tokens equally

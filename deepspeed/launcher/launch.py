@@ -179,6 +179,8 @@ def main():
     logger.info(f"global_rank_mapping={global_rank_mapping}")
     logger.info(f"dist_world_size={dist_world_size}")
 
+    logger.info(f"--- [CUSTOM DEBUG] args: {args} ---")
+
     get_accelerator().set_visible_devices_envs(current_env, local_accelerator_ids)
     for env in get_accelerator().visible_devices_envs():
         logger.info(f"Setting {env}={current_env[env]}")

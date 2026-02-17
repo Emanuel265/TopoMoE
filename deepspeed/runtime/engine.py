@@ -263,6 +263,9 @@ class DeepSpeedEngine(Module):
         self.losses = None
         self.mesh_device = mesh_device
 
+        print("[CUSTOM DEBUG] Initializing DeepSpeedEngine with has_moe_layers: {}, num_experts: {}, gate_modules: {}, moe_layers: {}".format(
+            self.has_moe_layers, self.num_experts, self.gate_modules, self.moe_layers))
+
         # Flag to indicate that scale() was called before manual backward pass
         self._manual_backward_expected = False
 

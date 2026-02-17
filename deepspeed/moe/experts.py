@@ -8,6 +8,7 @@ from typing import List, Optional
 
 import torch
 from torch import nn
+from ..utils import logger
 
 
 class Experts(nn.Module):
@@ -29,6 +30,8 @@ class Experts(nn.Module):
         chunks = inputs.chunk(self.num_local_experts, dim=1)
         expert_outputs: List[torch.Tensor] = []
 
+        logger.info(f"DEBUG: Experts forward, input shape: {inputs.shape}, num_local_experts: {self.num_local_experts}")
+
         for chunk, expert in zip(chunks, self.deepspeed_experts):
             out = expert(chunk)
             if isinstance(out, tuple):
@@ -36,3 +39,32 @@ class Experts(nn.Module):
             expert_outputs += [out]
 
         return torch.cat(expert_outputs, dim=1)
+
+    # ------------------------------------------------------------
+    # Read helpers
+    # ------------------------------------------------------------
+
+    def get_expert_state_dict(self, local_expert_idx: int) -> dict:
+        """
+        Return a detached, cloned state_dict of a local expert.
+
+        Safe to call during training (read-only).
+        """
+        expert = self.get_expert(local_expert_idx)
+        return {k: v.detach().clone() for k, v in expert.state_dict().items()}
+
+    # ------------------------------------------------------------
+    # Write helpers
+    # ------------------------------------------------------------
+
+    def load_expert_state_dict(self, local_expert_idx: int, state_dict: dict, strict: bool = True) -> None:
+        """
+        Overwrite the weights of a local expert.
+
+        IMPORTANT:
+        - Must be called under torch.no_grad()
+        - Should be called only at synchronization-safe points
+        """
+        expert = self.get_expert(local_expert_idx)
+        with torch.no_grad():
+            expert.load_state_dict(state_dict, strict=strict)

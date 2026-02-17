@@ -810,6 +810,8 @@ def init_distributed(dist_backend=None,
     '''
     global cdb
 
+    print("[CUSTOM DEBUG] comm init_distributed called")
+
     configure(deepspeed_config=config)
 
     if dist_init_required is None:

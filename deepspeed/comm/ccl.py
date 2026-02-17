@@ -62,12 +62,16 @@ class CCLBackend(TorchBackend):
 
     def run_collective(self, name, **kwargs):
         if name in self.available_coll:
+            print(f"RUN_COLLACTIVE: name={name}, kwargs={kwargs}")
             if 'group' in kwargs:
                 kwargs['group'] = self.get_all_ranks_from_group(kwargs['group'])
+                print("RUN_COLLACTIVE: group={}".format(name, kwargs['group']))
             if 'dst' in kwargs:
                 kwargs['dst'] = kwargs['group'].index(kwargs['dst'])
+                print("RUN_COLLACTIVE: dst={}".format(name, kwargs['dst']))
             if 'src' in kwargs:
                 kwargs['src'] = kwargs['group'].index(kwargs['src'])
+                print("RUN_COLLACTIVE: src={}".format(name, kwargs['src']))
             func = "self.ccl_comm_op." + name
             eval(func)(*(kwargs.values()))
             return CCLHandler(self.ccl_comm_op)
@@ -79,6 +83,7 @@ class CCLBackend(TorchBackend):
     def all_reduce(self, tensor, op=ReduceOp.SUM, group=None, async_op=False):
         name = "all_reduce"
         if name in self.available_coll:
+            print(f"ALL_REDUCE: name={name}, tensor={tensor}, op={op}, group={group}, async_op={async_op}")
             group = self.get_all_ranks_from_group(group)
             return self.ccl_comm_op.all_reduce(tensor, op, group, async_op)
         else:
@@ -87,6 +92,7 @@ class CCLBackend(TorchBackend):
     def inference_all_reduce(self, tensor, op=ReduceOp.SUM, group=None):
         name = "inference_all_reduce"
         if name in self.available_coll:
+            print(f"INFERENCE_ALL_REDUCE: name={name}, tensor={tensor}, op={op}, group={group}")
             return self.ccl_comm_op.inference_all_reduce(tensor, op)
         else:
             return self.run_collective(name=name, tensor=tensor, op=op, group=None, async_op=False)
@@ -176,4 +182,5 @@ class CCLBackend(TorchBackend):
             pass
         if tuple(results) not in self.groups:
             self._new_group(results, group)
+        print(f"GET_ALL_RANKS_FROM_GROUP: group={group}, ranks={results}")
         return results
