@@ -1,0 +1,15 @@
+{
+    "train_batch_size": 64,
+    "gradient_accumulation_steps": 8,
+    "bf16": {
+        "enabled": true
+    },
+    "gradient_clipping": 1.0,
+    "wall_clock_breakdown": true,
+    "moe": {
+        "enabled": true,
+        "num_experts": 16,
+        "ep_size": 2,
+        "k": 1
+    }
+}
