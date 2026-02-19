@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MoE Expert Placement Analyzer</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080b10;
+            --surface: #0d1219;
+            --border: #1c2333;
+            --border2: #243048;
+            --accent: #00d4ff;
+            --accent2: #ff6b35;
+            --accent3: #7fff6b;
+            --text: #c8d8ef;
+            --muted: #4a5a72;
+            --gpu0: #00d4ff;
+            --gpu1: #ff6b35;
+            --gpu2: #7fff6b;
+            --gpu3: #c07bff;
+            --gpu4: #ffdd57;
+            --gpu5: #ff6baa;
+            --gpu6: #57ddff;
+            --gpu7: #ffa557;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── HEADER ── */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 32px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.04) 0%, transparent 60%);
+        }
+
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.15em;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .header-meta {
+            font-size: 0.7em;
+            color: var(--muted);
+        }
+
+        /* ── TABS ── */
+        .tabs {
+            display: flex;
+            gap: 2px;
+            padding: 12px 32px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 8px 20px;
+            font-size: 0.72em;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            position: relative;
+            bottom: -1px;
+        }
+
+        .tab:hover {
+            color: var(--text);
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* ── MAIN LAYOUT ── */
+        .main {
+            padding: 24px 32px;
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.72em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        /* ── OVERVIEW PANEL ── */
+        .kpi-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .kpi {
+            flex: 1;
+            min-width: 140px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .kpi.blue::before {
+            background: var(--accent);
+        }
+
+        .kpi.orange::before {
+            background: var(--accent2);
+        }
+
+        .kpi.green::before {
+            background: var(--accent3);
+        }
+
+        .kpi.purple::before {
+            background: #c07bff;
+        }
+
+        .kpi-val {
+            font-family: 'Syne', sans-serif;
+            font-size: 2em;
+            font-weight: 800;
+        }
+
+        .kpi.blue .kpi-val {
+            color: var(--accent);
+        }
+
+        .kpi.orange .kpi-val {
+            color: var(--accent2);
+        }
+
+        .kpi.green .kpi-val {
+            color: var(--accent3);
+        }
+
+        .kpi.purple .kpi-val {
+            color: #c07bff;
+        }
+
+        .kpi-label {
+            font-size: 0.65em;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .three-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ── FLOW CHART ── */
+        #flowCanvas {
+            display: block;
+            width: 100%;
+            border-radius: 6px;
+        }
+
+        /* ── PLACEMENT PANEL ── */
+        .gpu-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .gpu-lane {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+
+        .gpu-lane:hover {
+            border-color: var(--border2);
+        }
+
+        .gpu-label-box {
+            min-width: 52px;
+            text-align: center;
+            font-size: 0.65em;
+            font-weight: 700;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
+        .experts-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            flex: 1;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 22px;
+            border-radius: 4px;
+            font-size: 0.65em;
+            font-weight: 700;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .chip:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        .chip.migrated::after {
+            content: '↗';
+            position: absolute;
+            top: -6px;
+            right: -4px;
+            font-size: 0.6em;
+            color: #fff;
+        }
+
+        .traffic-bar {
+            min-width: 80px;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .traffic-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+
+        /* ── AFFINITY PANEL ── */
+        .affinity-wrap {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        #affinityCanvas {
+            border-radius: 6px;
+            cursor: crosshair;
+        }
+
+        .aff-legend {
+            font-size: 0.68em;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .cluster-list {
+            margin-top: 12px;
+        }
+
+        .cluster-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.7em;
+        }
+
+        .cluster-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ── TIMELINE ── */
+        #timelineCanvas {
+            display: block;
+            width: 100%;
+        }
+
+        .event-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .event-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 7px 10px;
+            border-radius: 5px;
+            margin-bottom: 4px;
+            font-size: 0.68em;
+            background: var(--bg);
+            border: 1px solid var(--border);
+        }
+
+        .event-step {
+            color: var(--accent);
+            font-weight: 700;
+            min-width: 60px;
+        }
+
+        .event-improve {
+            font-weight: 700;
+        }
+
+        .event-swaps {
+            color: var(--muted);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 1px 7px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: 700;
+        }
+
+        .tag.good {
+            background: rgba(127, 255, 107, 0.15);
+            color: var(--accent3);
+        }
+
+        .tag.ok {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent);
+        }
+
+        /* ── LOAD DATA ── */
+        .load-zone {
+            border: 2px dashed var(--border2);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .load-zone:hover {
+            border-color: var(--accent);
+            background: rgba(0, 212, 255, 0.03);
+        }
+
+        .load-zone h3 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+
+        .load-zone p {
+            font-size: 0.72em;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            background: #33ddff;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border2);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* ── TOOLTIP ── */
+        .tooltip {
+            position: fixed;
+            background: #1a2333;
+            border: 1px solid var(--border2);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.68em;
+            pointer-events: none;
+            z-index: 999;
+            display: none;
+            max-width: 200px;
+            line-height: 1.6;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border2);
+            border-radius: 3px;
+        }
+
+        /* ── MIGRATE ARROW SVG ── */
+        .migration-svg {
+            width: 100%;
+            height: 120px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">Moe<span>Lens</span></div>
+        <div class="header-meta" id="headerMeta">Kein Datensatz geladen · Demo-Modus aktiv</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('overview')">Übersicht</button>
+        <button class="tab" onclick="switchTab('flow')">Token-Flow</button>
+        <button class="tab" onclick="switchTab('placement')">Platzierung</button>
+        <button class="tab" onclick="switchTab('affinity')">Affinität</button>
+        <button class="tab" onclick="switchTab('timeline')">Rebalancing-Historie</button>
+        <button class="tab" onclick="switchTab('load')">Daten laden</button>
+    </div>
+
+    <div class="main">
+
+        <!-- ══ OVERVIEW ══ -->
+        <div class="panel active" id="panel-overview">
+            <div class="kpi-row" id="kpiRow"></div>
+            <div class="two-col">
+                <div class="card">
+                    <div class="card-title">Cross-GPU Token-Traffic · Vorher vs. Nachher</div>
+                    <canvas id="barChart" height="180"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-title">Traffic-Reduktion über Trainings-Steps</div>
+                    <canvas id="lineChart" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ FLOW ══ -->
+        <div class="panel" id="panel-flow">
+            <div class="card">
+                <div class="card-title">
+                    Token-Flow zwischen GPUs
+                    <span style="float:right;font-weight:400;color:var(--muted)">Step:
+                        <select id="flowStepSel" onchange="renderFlow()"
+                            style="background:var(--bg);border:1px solid var(--border2);color:var(--text);padding:2px 6px;border-radius:4px;font-size:0.9em"></select>
+                    </span>
+                </div>
+                <canvas id="flowCanvas" height="380"></canvas>
+                <div style="margin-top:12px;font-size:0.68em;color:var(--muted)">
+                    Linienbreite ∝ Token-Volumen · Rote Linien = Cross-GPU Traffic (Netzwerkkosten) · Grüne = lokale
+                    Verarbeitung
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ PLACEMENT ══ -->
+        <div class="panel" id="panel-placement">
+            <div class="two-col" style="margin-bottom:16px">
+                <div class="card">
+                    <div class="card-title">Vor dem Rebalancing</div>
+                    <div class="gpu-grid" id="placementBefore"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Nach dem Rebalancing</div>
+                    <div class="gpu-grid" id="placementAfter"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Migrations-Übersicht</div>
+                <svg class="migration-svg" id="migrationSvg"></svg>
+            </div>
+        </div>
+
+        <!-- ══ AFFINITY ══ -->
+        <div class="panel" id="panel-affinity">
+            <div class="card">
+                <div class="card-title">Expert-zu-Expert Affinitätsmatrix
+                    <span style="float:right;font-size:0.85em;font-weight:400;color:var(--muted)">
+                        Blau = gleiche GPU · Rot = cross-GPU Traffic
+                    </span>
+                </div>
+                <div class="affinity-wrap">
+                    <canvas id="affinityCanvas"></canvas>
+                    <div style="flex:1;min-width:180px">
+                        <div class="aff-legend">
+                            <b style="color:var(--text)">Legende</b><br>
+                            <span style="color:#0080ff">■</span> Hohe Affinität, gleiche GPU<br>
+                            <span style="color:#ff4400">■</span> Hohe Affinität, andere GPU ← Problem<br>
+                            <span style="color:#333">■</span> Niedrige Affinität<br><br>
+                            <b style="color:var(--text)">Erkannte Cluster</b>
+                        </div>
+                        <div class="cluster-list" id="clusterList"></div>
+                        <div style="margin-top:16px;font-size:0.68em;color:var(--muted)" id="affinityHint">
+                            Hover über Matrix für Details
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ TIMELINE ══ -->
+        <div class="panel" id="panel-timeline">
+            <div class="card" style="margin-bottom:16px">
+                <div class="card-title">Cross-GPU Kostenverlauf über alle Rebalancing-Events</div>
+                <canvas id="timelineCanvas" height="180"></canvas>
+            </div>
+            <div class="card">
+                <div class="card-title">Rebalancing-Events</div>
+                <div class="event-list" id="eventList"></div>
+            </div>
+        </div>
+
+        <!-- ══ LOAD ══ -->
+        <div class="panel" id="panel-load">
+            <div class="load-zone" onclick="document.getElementById('fileInput').click()">
+                <h3>JSON-Datei laden</h3>
+                <p>Exportiere deine Trainingsdaten aus dem <code>ExpertPlacementManager</code><br>
+                    und lade sie hier zur Analyse.<br><br>
+                    Erwartetes Format: siehe Dokumentation unten</p>
+            </div>
+            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadFile(event)">
+            <div class="btn-row" style="margin-bottom:20px">
+                <button class="btn btn-primary" onclick="loadDemo()">Demo-Daten laden</button>
+                <button class="btn btn-ghost" onclick="showSchema()">JSON-Schema anzeigen</button>
+            </div>
+            <div class="card" id="schemaBox" style="display:none">
+                <div class="card-title">Erwartetes JSON-Format</div>
+                <pre style="font-size:0.7em;color:var(--accent3);overflow-x:auto;line-height:1.7">{
+  "meta": {
+    "num_experts": 16,
+    "num_gpus": 4,
+    "layer_id": 0,
+    "total_steps": 1000
+  },
+  "rebalance_history": [
+    {
+      "step": 200,
+      "init_cost": 145.2,
+      "final_cost": 89.1,
+      "improve_pct": 38.6,
+      "swaps": 5,
+      "placement_before": [0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3],
+      "placement_after":  [0,0,2,0,1,1,0,1,2,2,1,2,3,3,3,3],
+      "migrations": [[2,0,2],[6,1,0],[10,2,1]]
+    }
+  ],
+  "comm_matrices": [
+    {
+      "step": 100,
+      "matrix": [[120,30,5,8],[25,110,12,3],[7,15,98,20],[4,8,22,105]]
+    }
+  ],
+  "affinity_matrix": [[...]]
+}</pre>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // ════════════════════════════════════════════════════
+        // STATE
+        // ════════════════════════════════════════════════════
+        let DATA = null;
+        const GPU_COLORS = ['#00d4ff', '#ff6b35', '#7fff6b', '#c07bff', '#ffdd57', '#ff6baa', '#57ddff', '#ffa557'];
+
+        // ════════════════════════════════════════════════════
+        // TAB SWITCHING
+        // ════════════════════════════════════════════════════
+        function switchTab(name) {
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                const names = ['overview', 'flow', 'placement', 'affinity', 'timeline', 'load'];
+                t.classList.toggle('active', names[i] === name);
+            });
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + name).classList.add('active');
+            if (name === 'flow') renderFlow();
+            if (name === 'affinity') renderAffinity();
+            if (name === 'timeline') renderTimeline();
+            if (name === 'placement') renderPlacement();
+        }
+
+        // ════════════════════════════════════════════════════
+        // DEMO DATA GENERATOR
+        // ════════════════════════════════════════════════════
+        function generateDemoData() {
+            const nE = 16, nG = 4, epg = 4;
+
+            // Generate clustered affinity: 4 natural clusters of 4 experts
+            const aff = Array.from({ length: nE }, () => new Array(nE).fill(0));
+            const naturalCluster = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]; // true cluster
+            for (let i = 0; i < nE; i++) for (let j = i + 1; j < nE; j++) {
+                const v = naturalCluster[i] === naturalCluster[j] ? 0.4 + Math.random() * 0.5 : Math.random() * 0.12;
+                aff[i][j] = aff[j][i] = v;
+            }
+
+            // Initial placement: naive sequential (experts 0-3 on GPU0, etc.)
+            const placeBefore = [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3];
+            // After optimization: clusters aligned to GPUs (some cross-cluster experts swapped)
+            const placeAfter = [0, 0, 0, 2, 1, 1, 0, 1, 2, 3, 2, 2, 3, 3, 1, 3];
+            // Migrations
+            const migrations = [];
+            for (let e = 0; e < nE; e++) if (placeBefore[e] !== placeAfter[e]) migrations.push([e, placeBefore[e], placeAfter[e]]);
+
+            // Rebalancing history – simulate 3 events
+            const history = [];
+            let cost = 180;
+            [200, 400, 600].forEach((step, i) => {
+                const initC = cost + Math.random() * 20;
+                const finalC = initC * (0.55 + Math.random() * 0.2);
+                cost = finalC;
+                history.push({
+                    step,
+                    init_cost: parseFloat(initC.toFixed(1)),
+                    final_cost: parseFloat(finalC.toFixed(1)),
+                    improve_pct: parseFloat(((initC - finalC) / initC * 100).toFixed(1)),
+                    swaps: 3 + i * 2,
+                    iters: 8 + i * 3,
+                    placement_before: i === 0 ? placeBefore : placeAfter,
+                    placement_after: placeAfter,
+                    migrations: i === 0 ? migrations : [],
+                });
+            });
+
+            // Comm matrices at different steps
+            const commMatrices = [100, 200, 300, 400, 500, 600, 700, 800].map(step => {
+                const isOptimized = step > 200;
+                const m = Array.from({ length: nG }, (_, r) =>
+                    Array.from({ length: nE }, (_, e) => {
+                        const expertGpu = (isOptimized ? placeAfter : placeBefore)[e];
+                        return expertGpu === r
+                            ? Math.round(80 + Math.random() * 40)
+                            : Math.round(Math.random() * (isOptimized ? 12 : 35));
+                    })
+                );
+                return { step, matrix: m };
+            });
+
+            return {
+                meta: { num_experts: nE, num_gpus: nG, layer_id: 0, total_steps: 1000 },
+                rebalance_history: history,
+                comm_matrices: commMatrices,
+                affinity_matrix: aff,
+            };
+        }
+
+        // ════════════════════════════════════════════════════
+        // LOAD / INIT
+        // ════════════════════════════════════════════════════
+        function loadDemo() {
+            DATA = generateDemoData();
+            initDashboard();
+            switchTab('overview');
+        }
+        function loadFile(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                try { DATA = JSON.parse(e.target.result); initDashboard(); switchTab('overview'); }
+                catch (err) { alert('JSON parse error: ' + err.message); }
+            };
+            reader.readAsText(file);
+        }
+        function showSchema() {
+            const b = document.getElementById('schemaBox');
+            b.style.display = b.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function initDashboard() {
+            const m = DATA.meta;
+            document.getElementById('headerMeta').textContent =
+                `Layer ${m.layer_id} · ${m.num_experts} Experten · ${m.num_gpus} GPUs · ${m.total_steps} Steps`;
+
+            renderKPIs();
+            renderBarChart();
+            renderLineChart();
+            populateFlowSteps();
+        }
+
+        // ════════════════════════════════════════════════════
+        // KPIs
+        // ════════════════════════════════════════════════════
+        function renderKPIs() {
+            if (!DATA) return;
+            const hist = DATA.rebalance_history;
+            const firstCost = hist[0].init_cost;
+            const lastCost = hist[hist.length - 1].final_cost;
+            const totalReduce = ((firstCost - lastCost) / firstCost * 100).toFixed(1);
+            const totalSwaps = hist.reduce((s, h) => s + h.swaps, 0);
+            const avgImprove = (hist.reduce((s, h) => s + h.improve_pct, 0) / hist.length).toFixed(1);
+
+            document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi blue"><div class="kpi-val">${DATA.meta.num_experts}</div><div class="kpi-label">Experten</div></div>
+    <div class="kpi orange"><div class="kpi-val">${DATA.meta.num_gpus}</div><div class="kpi-label">GPUs</div></div>
+    <div class="kpi green"><div class="kpi-val">${totalReduce}%</div><div class="kpi-label">Traffic-Reduktion gesamt</div></div>
+    <div class="kpi purple"><div class="kpi-val">${totalSwaps}</div><div class="kpi-label">Expert-Swaps total</div></div>
+    <div class="kpi blue"><div class="kpi-val">${hist.length}</div><div class="kpi-label">Rebalancing-Events</div></div>
+    <div class="kpi green"><div class="kpi-val">${avgImprove}%</div><div class="kpi-label">Ø Verbesserung / Event</div></div>
+  `;
+        }
+
+        // ════════════════════════════════════════════════════
+        // BAR CHART – before vs after
+        // ════════════════════════════════════════════════════
+        function renderBarChart() {
+            if (!DATA) return;
+            const canvas = document.getElementById('barChart');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.offsetWidth - 40;
+            canvas.height = 180;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const hist = DATA.rebalance_history;
+            const labels = hist.map(h => `Step ${h.step}`);
+            const before = hist.map(h => h.init_cost);
+            const after = hist.map(h => h.final_cost);
+            const maxV = Math.max(...before) * 1.1;
+            const n = hist.length;
+            const pad = 40, groupW = (canvas.width - pad * 2) / n;
+            const barW = Math.min(groupW * 0.35, 30);
+            const chartH = canvas.height - 50;
+
+            // Grid lines
+            ctx.strokeStyle = '#1c2333'; ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = pad + (1 - i / 4) * chartH;
+                ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(canvas.width - pad, y); ctx.stroke();
+                ctx.fillStyle = '#4a5a72'; ctx.font = '9px JetBrains Mono';
+                ctx.fillText((maxV * i / 4).toFixed(0), 2, y + 3);
+            }
+
+            hist.forEach((h, i) => {
+                const x = pad + i * groupW + groupW / 2;
+                const bH = (before[i] / maxV) * chartH;
+                const aH = (after[i] / maxV) * chartH;
+
+                // Before bar
+                ctx.fillStyle = 'rgba(255,107,53,0.7)';
+                ctx.fillRect(x - barW - 2, pad + chartH - bH, barW, bH);
+                // After bar
+                ctx.fillStyle = 'rgba(127,255,107,0.7)';
+                ctx.fillRect(x + 2, pad + chartH - aH, barW, aH);
+
+                // Label
+                ctx.fillStyle = '#4a5a72'; ctx.font = '9px JetBrains Mono'; ctx.textAlign = 'center';
+                ctx.fillText(labels[i], x, canvas.height - 6);
+
+                // Improve arrow
+                const midX = x + barW / 2;
+                const y1 = pad + chartH - bH - 4, y2 = pad + chartH - aH - 4;
+                ctx.strokeStyle = '#7fff6b'; ctx.lineWidth = 1.5;
+                ctx.setLineDash([2, 2]);
+                ctx.beginPath(); ctx.moveTo(x - barW / 2 - 2, y1); ctx.lineTo(x + barW / 2 + 2, y2); ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = '#7fff6b'; ctx.font = '8px JetBrains Mono'; ctx.textAlign = 'center';
+                ctx.fillText(`-${h.improve_pct}%`, x, Math.min(y1, y2) - 4);
+            });
+            ctx.textAlign = 'left';
+
+            // Legend
+            ctx.fillStyle = 'rgba(255,107,53,0.7)'; ctx.fillRect(pad, 8, 12, 8);
+            ctx.fillStyle = '#4a5a72'; ctx.font = '9px JetBrains Mono'; ctx.fillText('Vorher', pad + 16, 16);
+            ctx.fillStyle = 'rgba(127,255,107,0.7)'; ctx.fillRect(pad + 60, 8, 12, 8);
+            ctx.fillStyle = '#4a5a72'; ctx.fillText('Nachher', pad + 76, 16);
+        }
+
+        // ════════════════════════════════════════════════════
+        // LINE CHART – cost over steps
+        // ════════════════════════════════════════════════════
+        function renderLineChart() {
+            if (!DATA) return;
+            const canvas = document.getElementById('lineChart');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.offsetWidth - 40;
+            canvas.height = 180;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const hist = DATA.rebalance_history;
+            const points = [];
+            hist.forEach(h => {
+                points.push({ x: h.step, y: h.init_cost });
+                points.push({ x: h.step + 1, y: h.final_cost });
+            });
+            const maxStep = DATA.meta.total_steps;
+            const maxY = Math.max(...points.map(p => p.y)) * 1.1;
+            const pad = 40;
+            const W = canvas.width - pad * 2, H = canvas.height - 50;
+
+            // Grid
+            ctx.strokeStyle = '#1c2333'; ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = pad + (1 - i / 4) * H;
+                ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(canvas.width - pad, y); ctx.stroke();
+                ctx.fillStyle = '#4a5a72'; ctx.font = '9px JetBrains Mono';
+                ctx.fillText((maxY * i / 4).toFixed(0), 2, y + 3);
+            }
+
+            // Rebalance event markers
+            hist.forEach(h => {
+                const x = pad + (h.step / maxStep) * W;
+                ctx.strokeStyle = 'rgba(0,212,255,0.3)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+                ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, pad + H); ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(0,212,255,0.6)'; ctx.font = '8px JetBrains Mono'; ctx.textAlign = 'center';
+                ctx.fillText('↓', x, pad - 4);
+            });
+
+            // Cost line
+            ctx.strokeStyle = '#ff6b35'; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+            ctx.beginPath();
+            points.forEach((p, i) => {
+                const x = pad + (p.x / maxStep) * W;
+                const y = pad + (1 - p.y / maxY) * H;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Dots
+            points.forEach(p => {
+                const x = pad + (p.x / maxStep) * W;
+                const y = pad + (1 - p.y / maxY) * H;
+                ctx.fillStyle = '#ff6b35'; ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fill();
+            });
+            ctx.textAlign = 'left';
+        }
+
+        // ════════════════════════════════════════════════════
+        // FLOW VISUALIZATION
+        // ════════════════════════════════════════════════════
+        function populateFlowSteps() {
+            if (!DATA) return;
+            const sel = document.getElementById('flowStepSel');
+            sel.innerHTML = '';
+            DATA.comm_matrices.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.step; opt.textContent = `Step ${m.step}`;
+                sel.appendChild(opt);
+            });
+        }
+
+        function renderFlow() {
+            if (!DATA) return;
+            const sel = document.getElementById('flowStepSel');
+            const step = parseInt(sel.value);
+            const entry = DATA.comm_matrices.find(m => m.step === step);
+            if (!entry) return;
+
+            const canvas = document.getElementById('flowCanvas');
+            const W = canvas.parentElement.offsetWidth - 40;
+            canvas.width = W; canvas.height = 380;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, W, 380);
+
+            const nG = DATA.meta.num_gpus;
+            const nE = DATA.meta.num_experts;
+            const matrix = entry.matrix; // [nG][nE]
+
+            // Determine current placement for this step
+            const isOptimized = DATA.rebalance_history.some(h => h.step <= step);
+            const hist = DATA.rebalance_history.filter(h => h.step <= step);
+            const placement = hist.length > 0
+                ? hist[hist.length - 1].placement_after
+                : DATA.rebalance_history[0].placement_before;
+
+            // GPU node positions – circle layout
+            const cx = W / 2, cy = 190, radius = Math.min(W / 2 - 80, 140);
+            const gpuPos = Array.from({ length: nG }, (_, i) => {
+                const angle = (i / nG) * Math.PI * 2 - Math.PI / 2;
+                return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+            });
+
+            // Aggregate traffic: GPU-to-GPU
+            const gpuFlow = Array.from({ length: nG }, () => new Array(nG).fill(0));
+            matrix.forEach((row, srcGpu) => {
+                row.forEach((tokens, expertId) => {
+                    const dstGpu = placement[expertId];
+                    if (srcGpu !== dstGpu) gpuFlow[srcGpu][dstGpu] += tokens;
+                });
+            });
+            const maxFlow = Math.max(...gpuFlow.flat().filter(v => v > 0), 1);
+
+            // Draw flow arcs
+            for (let g1 = 0; g1 < nG; g1++) for (let g2 = 0; g2 < nG; g2++) {
+                if (g1 === g2 || gpuFlow[g1][g2] === 0) continue;
+                const v = gpuFlow[g1][g2] / maxFlow;
+                const p1 = gpuPos[g1], p2 = gpuPos[g2];
+                ctx.save();
+                ctx.strokeStyle = `rgba(255,70,30,${0.3 + v * 0.6})`;
+                ctx.lineWidth = 1 + v * 8;
+                ctx.globalAlpha = 0.7;
+                // Curved arc
+                const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+                const offset = 30 + v * 20;
+                const dx = p2.y - p1.y, dy = p1.x - p2.x;
+                const len = Math.sqrt(dx * dx + dy * dy) || 1;
+                const cpx = mx + (dx / len) * offset, cpy = my + (dy / len) * offset;
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y); ctx.quadraticCurveTo(cpx, cpy, p2.x, p2.y);
+                ctx.stroke();
+                ctx.restore();
+
+                // Label
+                ctx.fillStyle = 'rgba(255,100,50,0.9)'; ctx.font = '9px JetBrains Mono'; ctx.textAlign = 'center';
+                ctx.fillText(gpuFlow[g1][g2].toFixed(0), cpx, cpy - 4);
+            }
+
+            // Local (self) traffic – draw as glow ring
+            const localTotal = matrix.map((row, g) =>
+                row.reduce((s, t, e) => s + (placement[e] === g ? t : 0), 0)
+            );
+            const maxLocal = Math.max(...localTotal, 1);
+            localTotal.forEach((v, g) => {
+                const pos = gpuPos[g];
+                const r = 30 + (v / maxLocal) * 14;
+                const grad = ctx.createRadialGradient(pos.x, pos.y, 10, pos.x, pos.y, r + 10);
+                const col = GPU_COLORS[g % GPU_COLORS.length];
+                grad.addColorStop(0, col + '33'); grad.addColorStop(1, 'transparent');
+                ctx.fillStyle = grad;
+                ctx.beginPath(); ctx.arc(pos.x, pos.y, r + 10, 0, Math.PI * 2); ctx.fill();
+            });
+
+            // GPU nodes
+            gpuPos.forEach((pos, g) => {
+                const col = GPU_COLORS[g % GPU_COLORS.length];
+                ctx.fillStyle = '#0d1219';
+                ctx.strokeStyle = col; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.arc(pos.x, pos.y, 30, 0, Math.PI * 2);
+                ctx.fill(); ctx.stroke();
+
+                ctx.fillStyle = col; ctx.font = 'bold 11px Syne,sans-serif'; ctx.textAlign = 'center';
+                ctx.fillText(`GPU${g}`, pos.x, pos.y - 3);
+                const exp = Array.from({ length: nE }, (_, e) => e).filter(e => placement[e] === g).length;
+                ctx.fillStyle = '#4a5a72'; ctx.font = '8px JetBrains Mono';
+                ctx.fillText(`${exp} exp.`, pos.x, pos.y + 10);
+            });
+            ctx.textAlign = 'left';
+
+            // Legend
+            ctx.fillStyle = 'rgba(255,70,30,0.8)'; ctx.fillRect(20, 20, 20, 3);
+            ctx.fillStyle = '#4a5a72'; ctx.font = '9px JetBrains Mono';
+            ctx.fillText('Cross-GPU Traffic (Netzwerk)', 46, 24);
+        }
+
+        // ════════════════════════════════════════════════════
+        // PLACEMENT
+        // ════════════════════════════════════════════════════
+        function renderPlacement() {
+            if (!DATA) return;
+            const hist = DATA.rebalance_history[0];
+            const nG = DATA.meta.num_gpus;
+            const nE = DATA.meta.num_experts;
+
+            function buildGrid(placement, container, movedSet) {
+                container.innerHTML = '';
+                const grid = document.createElement('div');
+                grid.className = 'gpu-grid';
+                grid.style.gridTemplateColumns = `1fr`;
+                for (let g = 0; g < nG; g++) {
+                    const col = GPU_COLORS[g % GPU_COLORS.length];
+                    const experts = Array.from({ length: nE }, (_, e) => e).filter(e => placement[e] === g);
+                    const tokens = experts.reduce((s, e) => {
+                        const cm = DATA.comm_matrices[0];
+                        return s + cm.matrix.reduce((ss, row) => ss + row[e], 0);
+                    }, 0);
+                    const maxTok = DATA.meta.num_experts * 100;
+
+                    const lane = document.createElement('div');
+                    lane.className = 'gpu-lane';
+                    lane.style.borderColor = col + '44';
+                    lane.innerHTML = `
+        <div class="gpu-label-box" style="background:${col}22;color:${col};border:1px solid ${col}44">GPU ${g}</div>
+        <div class="experts-strip" id="strip_${container.id}_${g}"></div>
+        <div>
+          <div style="font-size:0.6em;color:var(--muted);margin-bottom:3px">${tokens} tok.</div>
+          <div class="traffic-bar" style="width:70px">
+            <div class="traffic-fill" style="width:${Math.min(100, (tokens / maxTok) * 100)}%;background:${col}"></div>
+          </div>
+        </div>`;
+                    grid.appendChild(lane);
+                    container.appendChild(grid);
+
+                    const strip = lane.querySelector(`#strip_${container.id}_${g}`);
+                    experts.forEach(e => {
+                        const chip = document.createElement('div');
+                        chip.className = 'chip' + (movedSet.has(e) ? ' migrated' : '');
+                        chip.style.background = col + '33'; chip.style.color = col;
+                        chip.style.border = `1px solid ${col}66`;
+                        chip.title = `Expert ${e}`;
+                        chip.textContent = e;
+                        strip.appendChild(chip);
+                    });
+                }
+            }
+
+            const migrations = hist.migrations || [];
+            const movedExperts = new Set(migrations.map(m => m[0]));
+            buildGrid(hist.placement_before, document.getElementById('placementBefore'), new Set());
+            buildGrid(hist.placement_after, document.getElementById('placementAfter'), movedExperts);
+
+            // Migration SVG
+            renderMigrationSvg(migrations, nG);
+        }
+
+        function renderMigrationSvg(migrations, nG) {
+            const svg = document.getElementById('migrationSvg');
+            const W = svg.parentElement.offsetWidth - 40;
+            svg.setAttribute('viewBox', `0 0 ${W} 100`);
+            svg.innerHTML = '';
+
+            if (!migrations.length) {
+                svg.innerHTML = `<text x="${W / 2}" y="55" text-anchor="middle" fill="#4a5a72" font-size="12" font-family="JetBrains Mono">Keine Migrationen</text>`;
+                return;
+            }
+
+            const gpuX = g => 60 + (g / (nG - 1 || 1)) * (W - 120);
+
+            // GPU labels
+            for (let g = 0; g < nG; g++) {
+                const col = GPU_COLORS[g % GPU_COLORS.length];
+                const x = gpuX(g);
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                Object.assign(rect, {});
+                rect.setAttribute('x', x - 22); rect.setAttribute('y', 4); rect.setAttribute('width', 44); rect.setAttribute('height', 18);
+                rect.setAttribute('rx', 4); rect.setAttribute('fill', col + '22'); rect.setAttribute('stroke', col + '66');
+                svg.appendChild(rect);
+                const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                txt.setAttribute('x', x); txt.setAttribute('y', 17); txt.setAttribute('text-anchor', 'middle');
+                txt.setAttribute('fill', col); txt.setAttribute('font-size', 9); txt.setAttribute('font-family', 'JetBrains Mono');
+                txt.textContent = `GPU${g}`; svg.appendChild(txt);
+            }
+
+            // Arrows
+            migrations.forEach((m, i) => {
+                const [eid, fromG, toG] = m;
+                const x1 = gpuX(fromG), x2 = gpuX(toG);
+                const col = GPU_COLORS[toG % GPU_COLORS.length];
+                const y = 36 + (i % 4) * 14;
+                // Line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1); line.setAttribute('y1', y);
+                line.setAttribute('x2', x2); line.setAttribute('y2', y);
+                line.setAttribute('stroke', col); line.setAttribute('stroke-width', 1.5);
+                line.setAttribute('marker-end', 'url(#arr' + toG + ')');
+                svg.appendChild(line);
+                // Label
+                const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                txt.setAttribute('x', (x1 + x2) / 2); txt.setAttribute('y', y - 3);
+                txt.setAttribute('text-anchor', 'middle'); txt.setAttribute('fill', col);
+                txt.setAttribute('font-size', 8); txt.setAttribute('font-family', 'JetBrains Mono');
+                txt.textContent = `E${eid}`; svg.appendChild(txt);
+            });
+
+            // Arrowhead markers
+            const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            GPU_COLORS.forEach((col, i) => {
+                defs.innerHTML += `<marker id="arr${i}" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="${col}"/></marker>`;
+            });
+            svg.prepend(defs);
+        }
+
+        // ════════════════════════════════════════════════════
+        // AFFINITY MATRIX
+        // ════════════════════════════════════════════════════
+        function renderAffinity() {
+            if (!DATA) return;
+            const aff = DATA.affinity_matrix;
+            const nE = DATA.meta.num_experts;
+            const hist = DATA.rebalance_history[DATA.rebalance_history.length - 1];
+            const placement = hist.placement_after;
+
+            const cell = Math.min(18, Math.floor(360 / nE));
+            const canvas = document.getElementById('affinityCanvas');
+            canvas.width = nE * cell; canvas.height = nE * cell;
+            const ctx = canvas.getContext('2d');
+
+            let maxA = 0;
+            aff.forEach(row => row.forEach(v => { if (v > maxA) maxA = v; }));
+
+            for (let i = 0; i < nE; i++) for (let j = 0; j < nE; j++) {
+                const v = maxA > 0 ? aff[i][j] / maxA : 0;
+                const sameGpu = placement[i] === placement[j];
+                if (i === j) { ctx.fillStyle = '#1a2333'; }
+                else if (sameGpu) {
+                    const b = Math.round(v * 255); ctx.fillStyle = `rgb(0,${Math.round(b * 0.3)},${b})`;
+                } else {
+                    const r = Math.round(v * 255); ctx.fillStyle = `rgb(${r},${Math.round(r * 0.15)},0)`;
+                }
+                ctx.fillRect(j * cell, i * cell, cell, cell);
+            }
+
+            // GPU partition lines
+            const epg = nE / DATA.meta.num_gpus;
+            ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 1;
+            for (let g = 1; g < DATA.meta.num_gpus; g++) {
+                const p = g * epg * cell;
+                ctx.beginPath(); ctx.moveTo(p, 0); ctx.lineTo(p, nE * cell); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, p); ctx.lineTo(nE * cell, p); ctx.stroke();
+            }
+
+            // Hover tooltip
+            canvas.onmousemove = e => {
+                const rect = canvas.getBoundingClientRect();
+                const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+                const i = Math.floor(my / cell), j = Math.floor(mx / cell);
+                if (i < 0 || i >= nE || j < 0 || j >= nE) return;
+                const tt = document.getElementById('tooltip');
+                tt.style.display = 'block';
+                tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY - 10) + 'px';
+                const sameGpu = placement[i] === placement[j];
+                tt.innerHTML = `<b>E${i} ↔ E${j}</b><br>Affinität: ${aff[i][j].toFixed(3)}<br>GPU ${placement[i]} vs GPU ${placement[j]}<br>${sameGpu ? '✅ Gleiche GPU' : '⚠️ Cross-GPU'}`;
+                document.getElementById('affinityHint').textContent = `E${i}↔E${j}: affinity=${aff[i][j].toFixed(3)}`;
+            };
+            canvas.onmouseleave = () => { document.getElementById('tooltip').style.display = 'none'; };
+
+            // Simple cluster detection: group experts by GPU
+            const clusterList = document.getElementById('clusterList');
+            clusterList.innerHTML = '';
+            for (let g = 0; g < DATA.meta.num_gpus; g++) {
+                const experts = Array.from({ length: nE }, (_, e) => e).filter(e => placement[e] === g);
+                const col = GPU_COLORS[g % GPU_COLORS.length];
+                clusterList.innerHTML += `
+      <div class="cluster-item">
+        <div class="cluster-dot" style="background:${col}"></div>
+        <span style="color:${col}">GPU ${g}</span>
+        <span style="color:var(--muted);margin-left:6px">E[${experts.join(',')}]</span>
+      </div>`;
+            }
+        }
+
+        // ════════════════════════════════════════════════════
+        // TIMELINE
+        // ════════════════════════════════════════════════════
+        function renderTimeline() {
+            if (!DATA) return;
+            const hist = DATA.rebalance_history;
+            const canvas = document.getElementById('timelineCanvas');
+            const W = canvas.parentElement.offsetWidth - 40;
+            canvas.width = W; canvas.height = 180;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, W, 180);
+
+            const allCosts = hist.flatMap(h => [h.init_cost, h.final_cost]);
+            const maxC = Math.max(...allCosts) * 1.1, minC = 0;
+            const pad = 40, chartH = canvas.height - 50, chartW = W - pad * 2;
+            const maxStep = DATA.meta.total_steps;
+
+            ctx.strokeStyle = '#1c2333'; ctx.lineWidth = 1;
+            for (let i = 0; i <= 4; i++) {
+                const y = pad + (1 - i / 4) * chartH;
+                ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - pad, y); ctx.stroke();
+                ctx.fillStyle = '#4a5a72'; ctx.font = '9px JetBrains Mono';
+                ctx.fillText((maxC * i / 4).toFixed(0), 2, y + 3);
+            }
+
+            // Shaded area between before/after per event
+            hist.forEach(h => {
+                const x = pad + (h.step / maxStep) * chartW;
+                const y1 = pad + (1 - h.init_cost / maxC) * chartH;
+                const y2 = pad + (1 - h.final_cost / maxC) * chartH;
+                ctx.fillStyle = 'rgba(127,255,107,0.08)';
+                ctx.fillRect(x - 4, y2, 8, y1 - y2);
+            });
+
+            // Before cost line
+            ctx.strokeStyle = '#ff6b35'; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+            ctx.beginPath();
+            hist.forEach((h, i) => {
+                const x = pad + (h.step / maxStep) * chartW;
+                const y = pad + (1 - h.init_cost / maxC) * chartH;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // After cost line
+            ctx.strokeStyle = '#7fff6b'; ctx.lineWidth = 2;
+            ctx.beginPath();
+            hist.forEach((h, i) => {
+                const x = pad + (h.step / maxStep) * chartW;
+                const y = pad + (1 - h.final_cost / maxC) * chartH;
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Dots
+            hist.forEach(h => {
+                const x = pad + (h.step / maxStep) * chartW;
+                ctx.fillStyle = '#ff6b35'; ctx.beginPath(); ctx.arc(x, pad + (1 - h.init_cost / maxC) * chartH, 4, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#7fff6b'; ctx.beginPath(); ctx.arc(x, pad + (1 - h.final_cost / maxC) * chartH, 4, 0, Math.PI * 2); ctx.fill();
+            });
+
+            // Step axis
+            ctx.fillStyle = '#4a5a72'; ctx.font = '9px JetBrains Mono'; ctx.textAlign = 'center';
+            hist.forEach(h => {
+                ctx.fillText(`${h.step}`, pad + (h.step / maxStep) * chartW, canvas.height - 6);
+            });
+            ctx.textAlign = 'left';
+
+            // Event list
+            const el = document.getElementById('eventList');
+            el.innerHTML = '';
+            hist.forEach(h => {
+                const tag = h.improve_pct > 30 ? `<span class="tag good">+${h.improve_pct}%</span>`
+                    : `<span class="tag ok">+${h.improve_pct}%</span>`;
+                el.innerHTML += `
+      <div class="event-row">
+        <span class="event-step">Step ${h.step}</span>
+        ${tag}
+        <span class="event-swaps">${h.swaps} Swaps · ${h.iters || '?'} Iterationen</span>
+      </div>`;
+            });
+        }
+
+        // ════════════════════════════════════════════════════
+        // BOOT
+        // ════════════════════════════════════════════════════
+        loadDemo();
+
+        window.addEventListener('resize', () => {
+            if (!DATA) return;
+            renderBarChart(); renderLineChart();
+        });
+    </script>
+</body>
+
+</html>

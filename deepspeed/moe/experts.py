@@ -14,7 +14,10 @@ from ..utils import logger
 class Experts(nn.Module):
 
     def __init__(self, expert: nn.Module, num_local_experts: int = 1, expert_group_name: Optional[str] = None) -> None:
+        print("[CUSTOM DEBUG] test3")
         super(Experts, self).__init__()
+
+        print(f"[CUSTOM DEBUG] init {num_local_experts} Experts {expert_group_name if expert_group_name is not None else 'None'}")
 
         self.deepspeed_experts = nn.ModuleList([copy.deepcopy(expert) for _ in range(num_local_experts)])
         self.num_local_experts = num_local_experts
@@ -30,7 +33,9 @@ class Experts(nn.Module):
         chunks = inputs.chunk(self.num_local_experts, dim=1)
         expert_outputs: List[torch.Tensor] = []
 
-        logger.info(f"DEBUG: Experts forward, input shape: {inputs.shape}, num_local_experts: {self.num_local_experts}")
+        print("[CUSTOM DEBUG] test4")
+        # print(f"[CUSTOM DEBUG] {inputs}")
+        logger.info(f"[CUSTOM DEBUG] Experts forward, input shape: {inputs.shape}, num_local_experts: {self.num_local_experts}")
 
         for chunk, expert in zip(chunks, self.deepspeed_experts):
             out = expert(chunk)

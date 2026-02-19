@@ -140,6 +140,7 @@ def initialize(args=None,
         * ``lr_scheduler``: Wrapped lr scheduler if user ``lr_scheduler`` is passed, or
           if ``lr_scheduler`` specified in JSON configuration. Otherwise ``None``.
     """
+    print("[CUSTOM DEBUG] init")
     log_dist("DeepSpeed info: version={}, git-hash={}, git-branch={}".format(__version__, __git_hash__,
                                                                              __git_branch__),
              ranks=[0])

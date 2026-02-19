@@ -338,8 +338,8 @@ def main(args):
         args=args,
         model=net,
         model_parameters=parameters,
-        training_data=trainset,
-        config=ds_config
+        training_data=trainset
+        # config=ds_config
     )
 
     # Get the local device name (str) and local rank (int).

@@ -14,7 +14,7 @@ from torch.nn.functional import log_softmax
 
 from deepspeed.moe.utils import is_moe_param
 
-from TopoMoE.tests.unit import SimpleMoEModel
+from ..tests.unit import SimpleMoEModel
 
 @torch.no_grad()
 def evaluate(engine, dataloader):

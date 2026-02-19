@@ -37,6 +37,7 @@ class MoE(nn.Module):
     """
 
     def __init__(self,
+                 layer_i,
                  hidden_size: int,
                  expert: nn.Module,
                  num_experts: int = 1,
@@ -74,7 +75,8 @@ class MoE(nn.Module):
 
         experts = Experts(expert, self.num_local_experts, self.expert_group_name)
         self.registry = ExpertRegistry(self.num_local_experts)
-        self.deepspeed_moe = MOELayer(TopKGate(hidden_size, num_experts, k, capacity_factor, eval_capacity_factor,
+        self.deepspeed_moe = MOELayer(layer_i,
+                                      TopKGate(hidden_size, num_experts, k, capacity_factor, eval_capacity_factor,
                                                min_capacity, noisy_gate_policy, drop_tokens, use_rts, None,
                                                top2_2nd_expert_sampling),
                                       experts,
@@ -135,3 +137,7 @@ class MoE(nn.Module):
             coef = F.softmax(coef, dim=-1)
             output = output * coef[..., 0:1] + output_mlp * coef[..., 1:]
         return output, self.deepspeed_moe.l_aux, self.deepspeed_moe.exp_counts
+
+    @property
+    def placement_stats(self):
+        return self.deepspeed_moe.placement_manager.rebalance_history

@@ -1,0 +1,30 @@
+{
+    "train_batch_size": 8,
+    "gradient_accumulation_steps": 1,
+    "bf16": {
+        "enabled": true
+    },
+    "zero_optimization": {
+        "stage": 2
+    },
+    "moe": {
+        "enabled": true,
+        "num_experts": 4,
+        "ep_size": 1,
+        "capacity_factor": 1.0,
+        "min_capacity": 4,
+        "top2": false
+    },
+    "comms_logger": {
+        "enabled": true,
+        "verbose": true,
+        "prof_all": true,
+        "debug": true,
+        "prof_ops": [
+            "all_reduce",
+            "all_gather",
+            "all_to_all_single",
+            "all_to_all"
+        ]
+    }
+}

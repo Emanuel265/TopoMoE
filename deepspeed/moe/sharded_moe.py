@@ -24,8 +24,13 @@ import torch
 from torch import Tensor
 from torch.nn import Module
 import torch.nn.functional as F
+
 from deepspeed.utils import groups
 from .mappings import drop_tokens, gather_tokens
+
+from .expert_placement_integrated import ExpertPlacementManager, ExpertPlacementConfig
+from .moelens_exporter import MoeLensExporter
+
 
 if TYPE_CHECKING:
     Base = Module[Tensor]
@@ -552,13 +557,16 @@ class MOELayer(Base):
     """
 
     def __init__(self,
+                 layer_i,
                  gate: Module,
                  experts: Module,
                  ep_group_name,
                  ep_size,
                  num_local_experts: int,
                  use_tutel: bool = False) -> None:
+        print("[CUSTOM DEBUG] ShardedMoE init")
         super().__init__()
+        self.layer_i = layer_i
         self.gate = gate
         self.experts = experts
         self.ep_group = None
@@ -570,11 +578,22 @@ class MOELayer(Base):
         self.time_moe = 0.0
         self.timers = SynchronizedWallClockTimer()
         self.wall_clock_breakdown = False
+        self.comm_matrix_history = []
+        self.placement_manager = ExpertPlacementManager(
+            experts_module    = experts,
+            ep_group          = None,
+            num_local_experts = num_local_experts,
+            ep_size           = ep_size,
+            config            = ExpertPlacementConfig(
+                rebalance_every_n_steps = 200,
+                warmup_steps            = 300,
+            ),
+        )
+        self.moelens = MoeLensExporter(self.placement_manager, layer_id=layer_i)
 
         self.use_tutel = use_tutel and TUTEL_INSTALLED and gate.k == 1
 
                 
-        logger.info("[CUSTOM DEBUG] ShardedMoE init")
 
         if self.use_tutel:
             logger.info('Using Tutel optimizations.')
@@ -588,6 +607,7 @@ class MOELayer(Base):
     def _set_ep_group(self, ep_group):
         self.ep_group = ep_group
         self.gate._set_ep_group(ep_group)
+        self.placement_manager.set_ep_group(ep_group)
 
     def forward(self, *input: Tensor, **kwargs: Any) -> Tensor:
 
@@ -615,6 +635,34 @@ class MOELayer(Base):
         else:
             self.l_aux, combine_weights, dispatch_mask, self.exp_counts = self.gate(reshaped_input, input[1])
             dispatched_input = einsum("sec,sm->ecm", dispatch_mask.type_as(input[0]), reshaped_input)
+
+        # =====================================================================
+        # CUSTOM LOGGING: Build the Rank -> Expert Communication Matrix
+        # =====================================================================
+        # self.exp_counts is a 1D tensor of length [num_global_experts].
+        # It holds the number of tokens THIS rank is sending to EACH expert.
+        
+        # 1. Initialize a list to hold the counts from all ranks
+        world_size = dist.get_world_size(self.ep_group)
+        local_counts = self.exp_counts.clone().detach().to(input[0].device).to(torch.int32)
+        global_counts = [torch.zeros_like(local_counts) for _ in range(world_size)]
+        
+        # 2. Gather the counts from all ranks in the Expert Parallel group
+        dist.all_gather(global_counts, local_counts, group=self.ep_group)
+        
+        # 3. Stack into a Matrix: Shape [world_size, num_global_experts]
+        # Rows = Source Rank, Columns = Destination Expert
+        comm_matrix = torch.stack(global_counts)
+        
+        # 4. Store or print it (Rank 0 only to avoid spam)
+        self.comm_matrix_history.append(comm_matrix)
+        
+        if dist.get_rank(self.ep_group) == 0:
+            print(f"\n--- Layer {self.layer_i} Comm Matrix (Rows: Src Rank, Cols: Dst Expert) ---\n{comm_matrix}\n")
+        # =====================================================================
+
+        self.placement_manager.on_forward(comm_matrix)
+        self.moelens.record_comm_matrix(self.placement_manager.global_step, comm_matrix)
 
         if self.wall_clock_breakdown:
             self.timers(FIRST_ALLTOALL_TIMER).start()
