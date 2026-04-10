@@ -1,0 +1,1186 @@
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+Using DeepSpeed from: /home/emanuel.schoepf/deepspeed_base/TopoMoE/deepspeed/__init__.py
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2026-03-02 01:11:56,514] [WARNING] [runner.py:232:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+Detected VISIBLE_DEVICES=0,1 but ignoring it because one or several of --include/--exclude/--num_gpus/--num_nodes cl args were used. If you want to use CUDA_VISIBLE_DEVICES don't pass any of these arguments to deepspeed.
+[2026-03-02 01:11:56,515] [INFO] [runner.py:630:main] cmd = /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMV19 --master_addr=127.0.0.1 --master_port=29500 --enable_each_rank_log=None --log_level=info escho/train.py --deepspeed_config escho/ds_minimal_moe_test.json
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2026-03-02 01:12:09,781] [INFO] [launch.py:162:main] WORLD INFO DICT: {'localhost': [0, 1]}
+[2026-03-02 01:12:09,781] [INFO] [launch.py:168:main] nnodes=1, num_local_procs=2, node_rank=0
+[2026-03-02 01:12:09,781] [INFO] [launch.py:179:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1]})
+[2026-03-02 01:12:09,781] [INFO] [launch.py:180:main] dist_world_size=2
+[2026-03-02 01:12:09,781] [INFO] [launch.py:182:main] --- [CUSTOM DEBUG] args: Namespace(node_rank=0, master_addr='127.0.0.1', master_port=29500, world_info='eyJsb2NhbGhvc3QiOiBbMCwgMV19', module=False, no_python=False, enable_elastic_training=False, min_elastic_nodes=-1, max_elastic_nodes=-1, no_local_rank=False, save_pid=0, enable_each_rank_log='None', bind_cores_to_rank=False, bind_core_list=None, log_level='info', quiet=False, training_script='escho/train.py', training_script_args=['--deepspeed_config', 'escho/ds_minimal_moe_test.json'], nnodes=1) ---
+[2026-03-02 01:12:09,781] [INFO] [launch.py:186:main] Setting CUDA_VISIBLE_DEVICES=0,1
+[2026-03-02 01:12:09,783] [INFO] [launch.py:274:main] process 1481073 spawned with command: ['/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python', '-u', 'escho/train.py', '--local_rank=0', '--deepspeed_config', 'escho/ds_minimal_moe_test.json']
+[2026-03-02 01:12:09,784] [INFO] [launch.py:274:main] process 1481074 spawned with command: ['/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python', '-u', 'escho/train.py', '--local_rank=1', '--deepspeed_config', 'escho/ds_minimal_moe_test.json']
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+Loaded DeepSpeed config: {'train_batch_size': 512, 'train_micro_batch_size_per_gpu': 8, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 32, 'ep_size': 2, 'capacity_factor': 1.3, 'min_capacity': 4, 'k': 2}, 'comms_logger': {'enabled': False, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}}
+Loaded DeepSpeed config: {'train_batch_size': 512, 'train_micro_batch_size_per_gpu': 8, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 32, 'ep_size': 2, 'capacity_factor': 1.3, 'min_capacity': 4, 'k': 2}, 'comms_logger': {'enabled': False, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}}
+[CUSTOM DEBUG] comm init_distributed called
+[CUSTOM DEBUG] comm init_distributed called
+[CUSTOM DEBUG] init 16 Experts ep_size_2[CUSTOM DEBUG] init 16 Experts ep_size_2
+
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 0 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 0 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 1 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 1 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 2 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 2 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 3 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 3 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 4 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 4 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init 16 Experts ep_size_2
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 5 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 5 with 32 Experts and 2 GPUs
+[CUSTOM DEBUG] init
+[CUSTOM DEBUG] comm init_distributed called
+[CUSTOM DEBUG] Initializing DeepSpeedEngine without PipelineModule
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with config: <deepspeed.runtime.config.DeepSpeedConfig object at 0x7cadc5a7b1d0>
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with has_moe_layers: False, num_experts: [], gate_modules: [], moe_layers: []
+[CUSTOM DEBUG] init
+[CUSTOM DEBUG] comm init_distributed called
+[CUSTOM DEBUG] Initializing DeepSpeedEngine without PipelineModule
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with config: <deepspeed.runtime.config.DeepSpeedConfig object at 0x7bf9410aab10>
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with has_moe_layers: False, num_experts: [], gate_modules: [], moe_layers: []
+No existing process group found, creating a new group named: ep_size_2
+No existing process group found, creating a new group named: ep_size_2
+Step 0000 | Loss 10.9466 | Aux 7.94504 | Step nanms | Tokens/sec warming up
+Step 0020 | Loss 10.9608 | Aux 7.01862 | Step nanms | Tokens/sec warming up
+Step 0040 | Loss 10.8933 | Aux 8.86132 | Step 245.9ms | Tokens/sec 8,328
+Step 0060 | Loss 10.9713 | Aux 8.06787 | Step 275.2ms | Tokens/sec 7,443
+Step 0080 | Loss 10.8318 | Aux 7.40083 | Step 318.4ms | Tokens/sec 6,431
+Placement opt: 25.1% cross-GPU traffic reduction (8 swaps, 8 iters)
+[Rank 0][Expert PLacement Manager] Step 100 | rebalance: 25.1% improvement | 8 swapsplacement: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], new placement: [0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0017, 0.0016,  ..., 0.0043, 0.0027, 0.0018],
+        [0.0017, 0.0000, 0.0002,  ..., 0.0005, 0.0003, 0.0002],
+        [0.0016, 0.0002, 0.0000,  ..., 0.0005, 0.0003, 0.0002],
+        ...,
+        [0.0043, 0.0005, 0.0005,  ..., 0.0000, 0.0008, 0.0005],
+        [0.0027, 0.0003, 0.0003,  ..., 0.0008, 0.0000, 0.0003],
+        [0.0018, 0.0002, 0.0002,  ..., 0.0005, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.264115), 'final_cost': np.float32(0.19790192), 'improve_pct': np.float32(25.069794), 'swaps': 8, 'iters': 8}
+Rank 1: executing 16 expert migrations
+Rank 0: executing 16 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.38831663131713867s
+[Expert PLacement Manager] Rebalance took: 0.38848447799682617s
+Placement opt: 24.3% cross-GPU traffic reduction (6 swaps, 6 iters)
+[Rank 0][Expert PLacement Manager] Step 100 | rebalance: 24.3% improvement | 6 swapsplacement: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0006, 0.0006,  ..., 0.0009, 0.0007, 0.0023],
+        [0.0006, 0.0000, 0.0003,  ..., 0.0004, 0.0003, 0.0009],
+        [0.0006, 0.0003, 0.0000,  ..., 0.0004, 0.0003, 0.0009],
+        ...,
+        [0.0009, 0.0004, 0.0004,  ..., 0.0000, 0.0004, 0.0013],
+        [0.0007, 0.0003, 0.0003,  ..., 0.0004, 0.0000, 0.0010],
+        [0.0023, 0.0009, 0.0009,  ..., 0.0013, 0.0010, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.26403195), 'final_cost': np.float32(0.19997688), 'improve_pct': np.float32(24.260347), 'swaps': 6, 'iters': 6}
+Rank 1: executing 12 expert migrationsRank 0: executing 12 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.2821197509765625s[Expert PLacement Manager] Rebalance took: 0.28211188316345215s
+
+Placement opt: 20.2% cross-GPU traffic reduction (6 swaps, 7 iters)
+[Rank 0][Expert PLacement Manager] Step 100 | rebalance: 20.2% improvement | 6 swapsplacement: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], new placement: [0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0007,  ..., 0.0004, 0.0017, 0.0004],
+        [0.0004, 0.0000, 0.0004,  ..., 0.0002, 0.0010, 0.0002],
+        [0.0007, 0.0004, 0.0000,  ..., 0.0003, 0.0016, 0.0003],
+        ...,
+        [0.0004, 0.0002, 0.0003,  ..., 0.0000, 0.0009, 0.0002],
+        [0.0017, 0.0010, 0.0016,  ..., 0.0009, 0.0000, 0.0009],
+        [0.0004, 0.0002, 0.0003,  ..., 0.0002, 0.0009, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.25457442), 'final_cost': np.float32(0.2031083), 'improve_pct': np.float32(20.216534), 'swaps': 6, 'iters': 7}
+Rank 1: executing 12 expert migrations
+Rank 0: executing 12 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.2807149887084961s[Expert PLacement Manager] Rebalance took: 0.28073811531066895s
+
+Placement opt: 24.1% cross-GPU traffic reduction (8 swaps, 8 iters)
+[Rank 0][Expert PLacement Manager] Step 100 | rebalance: 24.1% improvement | 8 swapsplacement: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], new placement: [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0009, 0.0004,  ..., 0.0003, 0.0007, 0.0004],
+        [0.0009, 0.0000, 0.0008,  ..., 0.0006, 0.0015, 0.0009],
+        [0.0004, 0.0008, 0.0000,  ..., 0.0003, 0.0006, 0.0004],
+        ...,
+        [0.0003, 0.0006, 0.0003,  ..., 0.0000, 0.0005, 0.0003],
+        [0.0007, 0.0015, 0.0006,  ..., 0.0005, 0.0000, 0.0008],
+        [0.0004, 0.0009, 0.0004,  ..., 0.0003, 0.0008, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.2615489), 'final_cost': np.float32(0.19846165), 'improve_pct': np.float32(24.120634), 'swaps': 8, 'iters': 8}
+Rank 1: executing 16 expert migrations
+Rank 0: executing 16 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.3279719352722168s[Expert PLacement Manager] Rebalance took: 0.3280055522918701s
+
+Placement opt: 21.9% cross-GPU traffic reduction (7 swaps, 7 iters)
+[Rank 0][Expert PLacement Manager] Step 100 | rebalance: 21.9% improvement | 7 swapsplacement: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], new placement: [0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0006,  ..., 0.0003, 0.0003, 0.0006],
+        [0.0005, 0.0000, 0.0009,  ..., 0.0005, 0.0006, 0.0010],
+        [0.0006, 0.0009, 0.0000,  ..., 0.0006, 0.0005, 0.0012],
+        ...,
+        [0.0003, 0.0005, 0.0006,  ..., 0.0000, 0.0003, 0.0006],
+        [0.0003, 0.0006, 0.0005,  ..., 0.0003, 0.0000, 0.0006],
+        [0.0006, 0.0010, 0.0012,  ..., 0.0006, 0.0006, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.26331297), 'final_cost': np.float32(0.20552918), 'improve_pct': np.float32(21.944906), 'swaps': 7, 'iters': 7}
+Rank 1: executing 14 expert migrations
+Rank 0: executing 14 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.3157522678375244s[Expert PLacement Manager] Rebalance took: 0.3157839775085449s
+
+Placement opt: 24.3% cross-GPU traffic reduction (9 swaps, 9 iters)
+[Rank 0][Expert PLacement Manager] Step 100 | rebalance: 24.3% improvement | 9 swapsplacement: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], new placement: [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0014,  ..., 0.0005, 0.0003, 0.0004],
+        [0.0004, 0.0000, 0.0009,  ..., 0.0004, 0.0002, 0.0003],
+        [0.0014, 0.0009, 0.0000,  ..., 0.0011, 0.0007, 0.0008],
+        ...,
+        [0.0005, 0.0004, 0.0011,  ..., 0.0000, 0.0003, 0.0003],
+        [0.0003, 0.0002, 0.0007,  ..., 0.0003, 0.0000, 0.0002],
+        [0.0004, 0.0003, 0.0008,  ..., 0.0003, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.2619908), 'final_cost': np.float32(0.19841415), 'improve_pct': np.float32(24.266747), 'swaps': 9, 'iters': 9}
+Rank 1: executing 18 expert migrations
+Rank 0: executing 18 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.37488508224487305s[Expert PLacement Manager] Rebalance took: 0.3748965263366699s
+
+Step 0100 | Loss 10.7559 | Aux 7.62500 | Step 390.8ms | Tokens/sec 5,240
+Step 0120 | Loss 10.8042 | Aux 7.76371 | Step 438.6ms | Tokens/sec 4,670
+Step 0140 | Loss 10.6650 | Aux 7.91012 | Step 531.9ms | Tokens/sec 3,850
+Step 0160 | Loss 10.6245 | Aux 7.76381 | Step 635.0ms | Tokens/sec 3,225
+Step 0180 | Loss 10.5368 | Aux 7.58643 | Step 738.2ms | Tokens/sec 2,774
+Placement opt: 0.9% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 200 | rebalance: 0.9% improvement | 2 swapsplacement: [0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0011, 0.0009,  ..., 0.0023, 0.0015, 0.0010],
+        [0.0011, 0.0000, 0.0002,  ..., 0.0005, 0.0003, 0.0002],
+        [0.0009, 0.0002, 0.0000,  ..., 0.0004, 0.0003, 0.0002],
+        ...,
+        [0.0023, 0.0005, 0.0004,  ..., 0.0000, 0.0007, 0.0005],
+        [0.0015, 0.0003, 0.0003,  ..., 0.0007, 0.0000, 0.0003],
+        [0.0010, 0.0002, 0.0002,  ..., 0.0005, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1999301), 'final_cost': np.float32(0.19815919), 'improve_pct': np.float32(0.8857664), 'swaps': 2, 'iters': 2}
+Rank 0: executing 4 expert migrations
+Rank 1: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.0938713550567627s[Expert PLacement Manager] Rebalance took: 0.0942070484161377s
+
+Placement opt: 2.2% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 200 | rebalance: 2.2% improvement | 2 swapsplacement: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0014, 0.0014,  ..., 0.0024, 0.0023, 0.0048],
+        [0.0014, 0.0000, 0.0002,  ..., 0.0003, 0.0003, 0.0006],
+        [0.0014, 0.0002, 0.0000,  ..., 0.0004, 0.0003, 0.0006],
+        ...,
+        [0.0024, 0.0003, 0.0004,  ..., 0.0000, 0.0006, 0.0011],
+        [0.0023, 0.0003, 0.0003,  ..., 0.0006, 0.0000, 0.0010],
+        [0.0048, 0.0006, 0.0006,  ..., 0.0011, 0.0010, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19457166), 'final_cost': np.float32(0.19024909), 'improve_pct': np.float32(2.2215843), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.09819889068603516s[Expert PLacement Manager] Rebalance took: 0.09714150428771973s
+
+Placement opt: 7.0% cross-GPU traffic reduction (3 swaps, 3 iters)
+[Rank 0][Expert PLacement Manager] Step 200 | rebalance: 7.0% improvement | 3 swapsplacement: [0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1], new placement: [0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0013,  ..., 0.0004, 0.0028, 0.0004],
+        [0.0005, 0.0000, 0.0008,  ..., 0.0003, 0.0017, 0.0002],
+        [0.0013, 0.0008, 0.0000,  ..., 0.0007, 0.0047, 0.0006],
+        ...,
+        [0.0004, 0.0003, 0.0007,  ..., 0.0000, 0.0015, 0.0002],
+        [0.0028, 0.0017, 0.0047,  ..., 0.0015, 0.0000, 0.0013],
+        [0.0004, 0.0002, 0.0006,  ..., 0.0002, 0.0013, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20782955), 'final_cost': np.float32(0.193223), 'improve_pct': np.float32(7.0281396), 'swaps': 3, 'iters': 3}
+Rank 1: executing 6 expert migrations
+Rank 0: executing 6 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.1246633529663086s
+[Expert PLacement Manager] Rebalance took: 0.1289381980895996s
+Placement opt: 1.2% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 200 | rebalance: 1.2% improvement | 2 swapsplacement: [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0], new placement: [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0004, 0.0000, 0.0005,  ..., 0.0004, 0.0007, 0.0004],
+        [0.0002, 0.0005, 0.0000,  ..., 0.0002, 0.0003, 0.0002],
+        ...,
+        [0.0002, 0.0004, 0.0002,  ..., 0.0000, 0.0003, 0.0002],
+        [0.0003, 0.0007, 0.0003,  ..., 0.0003, 0.0000, 0.0003],
+        [0.0002, 0.0004, 0.0002,  ..., 0.0002, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18913056), 'final_cost': np.float32(0.18686356), 'improve_pct': np.float32(1.1986445), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.08784937858581543s
+[Expert PLacement Manager] Rebalance took: 0.08950281143188477s
+Placement opt: 3.7% cross-GPU traffic reduction (2 swaps, 3 iters)
+[Rank 0][Expert PLacement Manager] Step 200 | rebalance: 3.7% improvement | 2 swapsplacement: [0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0008,  ..., 0.0002, 0.0003, 0.0004],
+        [0.0002, 0.0000, 0.0007,  ..., 0.0002, 0.0002, 0.0003],
+        [0.0008, 0.0007, 0.0000,  ..., 0.0007, 0.0009, 0.0012],
+        ...,
+        [0.0002, 0.0002, 0.0007,  ..., 0.0000, 0.0002, 0.0003],
+        [0.0003, 0.0002, 0.0009,  ..., 0.0002, 0.0000, 0.0004],
+        [0.0004, 0.0003, 0.0012,  ..., 0.0003, 0.0004, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19611363), 'final_cost': np.float32(0.1888398), 'improve_pct': np.float32(3.7089915), 'swaps': 2, 'iters': 3}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.09369397163391113s[Expert PLacement Manager] Rebalance took: 0.0933079719543457s
+
+Placement opt: 1.9% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 200 | rebalance: 1.9% improvement | 2 swapsplacement: [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0], new placement: [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0009, 0.0018,  ..., 0.0011, 0.0007, 0.0009],
+        [0.0009, 0.0000, 0.0005,  ..., 0.0003, 0.0002, 0.0002],
+        [0.0018, 0.0005, 0.0000,  ..., 0.0006, 0.0004, 0.0005],
+        ...,
+        [0.0011, 0.0003, 0.0006,  ..., 0.0000, 0.0002, 0.0003],
+        [0.0007, 0.0002, 0.0004,  ..., 0.0002, 0.0000, 0.0002],
+        [0.0009, 0.0002, 0.0005,  ..., 0.0003, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19826367), 'final_cost': np.float32(0.19452974), 'improve_pct': np.float32(1.8833168), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.08442354202270508s[Expert PLacement Manager] Rebalance took: 0.0844430923461914s
+
+Step 0200 | Loss 10.5082 | Aux 7.84941 | Step 864.7ms | Tokens/sec 2,369
+  [Eval] Step 200 | Perplexity 39031.53
+Step 0220 | Loss 10.6250 | Aux 7.80862 | Step 1035.7ms | Tokens/sec 1,977
+Step 0240 | Loss 10.5471 | Aux 7.83769 | Step 1170.7ms | Tokens/sec 1,749
+Placement opt: 3.3% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 300 | rebalance: 3.3% improvement | 1 swapsplacement: [0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0013, 0.0011,  ..., 0.0030, 0.0018, 0.0013],
+        [0.0013, 0.0000, 0.0002,  ..., 0.0005, 0.0003, 0.0002],
+        [0.0011, 0.0002, 0.0000,  ..., 0.0004, 0.0002, 0.0002],
+        ...,
+        [0.0030, 0.0005, 0.0004,  ..., 0.0000, 0.0007, 0.0005],
+        [0.0018, 0.0003, 0.0002,  ..., 0.0007, 0.0000, 0.0003],
+        [0.0013, 0.0002, 0.0002,  ..., 0.0005, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19882359), 'final_cost': np.float32(0.19216447), 'improve_pct': np.float32(3.3492606), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.05508136749267578s[Expert PLacement Manager] Rebalance took: 0.05507922172546387s
+
+Placement opt: 0.1% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 300 | rebalance: 0.1% improvement | 1 swapsplacement: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0021, 0.0021,  ..., 0.0036, 0.0032, 0.0081],
+        [0.0021, 0.0000, 0.0002,  ..., 0.0004, 0.0003, 0.0008],
+        [0.0021, 0.0002, 0.0000,  ..., 0.0004, 0.0003, 0.0008],
+        ...,
+        [0.0036, 0.0004, 0.0004,  ..., 0.0000, 0.0006, 0.0013],
+        [0.0032, 0.0003, 0.0003,  ..., 0.0006, 0.0000, 0.0012],
+        [0.0081, 0.0008, 0.0008,  ..., 0.0013, 0.0012, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19458891), 'final_cost': np.float32(0.19433337), 'improve_pct': np.float32(0.13132301), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.049131155014038086s[Expert PLacement Manager] Rebalance took: 0.0490572452545166s
+
+Placement opt: 2.2% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 300 | rebalance: 2.2% improvement | 2 swapsplacement: [0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1], new placement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0016,  ..., 0.0003, 0.0021, 0.0003],
+        [0.0003, 0.0000, 0.0011,  ..., 0.0002, 0.0015, 0.0002],
+        [0.0016, 0.0011, 0.0000,  ..., 0.0010, 0.0070, 0.0010],
+        ...,
+        [0.0003, 0.0002, 0.0010,  ..., 0.0000, 0.0013, 0.0002],
+        [0.0021, 0.0015, 0.0070,  ..., 0.0013, 0.0000, 0.0013],
+        [0.0003, 0.0002, 0.0010,  ..., 0.0002, 0.0013, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1920853), 'final_cost': np.float32(0.18789963), 'improve_pct': np.float32(2.179064), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.08943796157836914s[Expert PLacement Manager] Rebalance took: 0.08941912651062012s
+
+Placement opt: 0.5% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 300 | rebalance: 0.5% improvement | 1 swapsplacement: [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0], new placement: [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0003, 0.0000, 0.0003,  ..., 0.0003, 0.0005, 0.0003],
+        [0.0002, 0.0003, 0.0000,  ..., 0.0002, 0.0003, 0.0002],
+        ...,
+        [0.0002, 0.0003, 0.0002,  ..., 0.0000, 0.0003, 0.0002],
+        [0.0003, 0.0005, 0.0003,  ..., 0.0003, 0.0000, 0.0003],
+        [0.0002, 0.0003, 0.0002,  ..., 0.0002, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1868854), 'final_cost': np.float32(0.18602942), 'improve_pct': np.float32(0.45802525), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.05197644233703613s[Expert PLacement Manager] Rebalance took: 0.05197644233703613s
+
+Placement opt: 0.2% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 300 | rebalance: 0.2% improvement | 1 swapsplacement: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0010,  ..., 0.0002, 0.0003, 0.0003],
+        [0.0002, 0.0000, 0.0007,  ..., 0.0002, 0.0002, 0.0002],
+        [0.0010, 0.0007, 0.0000,  ..., 0.0007, 0.0008, 0.0011],
+        ...,
+        [0.0002, 0.0002, 0.0007,  ..., 0.0000, 0.0002, 0.0003],
+        [0.0003, 0.0002, 0.0008,  ..., 0.0002, 0.0000, 0.0003],
+        [0.0003, 0.0002, 0.0011,  ..., 0.0003, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1874167), 'final_cost': np.float32(0.18701406), 'improve_pct': np.float32(0.21483906), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.044679880142211914s
+[Expert PLacement Manager] Rebalance took: 0.044873952865600586s
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 300 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0], new placement: [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0015, 0.0029,  ..., 0.0018, 0.0013, 0.0015],
+        [0.0015, 0.0000, 0.0004,  ..., 0.0003, 0.0002, 0.0002],
+        [0.0029, 0.0004, 0.0000,  ..., 0.0005, 0.0004, 0.0004],
+        ...,
+        [0.0018, 0.0003, 0.0005,  ..., 0.0000, 0.0002, 0.0003],
+        [0.0013, 0.0002, 0.0004,  ..., 0.0002, 0.0000, 0.0002],
+        [0.0015, 0.0002, 0.0004,  ..., 0.0003, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19311148), 'final_cost': np.float32(0.19311148), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.003854990005493164s
+[Expert PLacement Manager] Rebalance took: 0.003958702087402344s
+Step 0260 | Loss 10.4629 | Aux 8.01125 | Step 1311.3ms | Tokens/sec 1,562
+Step 0280 | Loss 10.5346 | Aux 8.14996 | Step 1455.5ms | Tokens/sec 1,407
+Step 0300 | Loss 10.4872 | Aux 8.09581 | Step 1549.1ms | Tokens/sec 1,322
+Step 0320 | Loss 10.3823 | Aux 7.75716 | Step 1618.5ms | Tokens/sec 1,265
+Step 0340 | Loss 10.3527 | Aux 7.93078 | Step 1784.9ms | Tokens/sec 1,147
+Placement opt: 0.4% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 400 | rebalance: 0.4% improvement | 1 swapsplacement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0010, 0.0011,  ..., 0.0028, 0.0016, 0.0011],
+        [0.0010, 0.0000, 0.0002,  ..., 0.0004, 0.0002, 0.0002],
+        [0.0011, 0.0002, 0.0000,  ..., 0.0005, 0.0003, 0.0002],
+        ...,
+        [0.0028, 0.0004, 0.0005,  ..., 0.0000, 0.0007, 0.0005],
+        [0.0016, 0.0002, 0.0003,  ..., 0.0007, 0.0000, 0.0003],
+        [0.0011, 0.0002, 0.0002,  ..., 0.0005, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19500212), 'final_cost': np.float32(0.1942009), 'improve_pct': np.float32(0.41087785), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.04710960388183594s[Expert PLacement Manager] Rebalance took: 0.04713845252990723s
+
+Placement opt: 1.0% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 400 | rebalance: 1.0% improvement | 2 swapsplacement: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0015, 0.0014,  ..., 0.0025, 0.0027, 0.0079],
+        [0.0015, 0.0000, 0.0002,  ..., 0.0004, 0.0004, 0.0012],
+        [0.0014, 0.0002, 0.0000,  ..., 0.0004, 0.0004, 0.0011],
+        ...,
+        [0.0025, 0.0004, 0.0004,  ..., 0.0000, 0.0007, 0.0020],
+        [0.0027, 0.0004, 0.0004,  ..., 0.0007, 0.0000, 0.0021],
+        [0.0079, 0.0012, 0.0011,  ..., 0.0020, 0.0021, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19095427), 'final_cost': np.float32(0.18913208), 'improve_pct': np.float32(0.95425385), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.09003806114196777s[Expert PLacement Manager] Rebalance took: 0.09004068374633789s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 400 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], new placement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0016,  ..., 0.0003, 0.0013, 0.0003],
+        [0.0003, 0.0000, 0.0012,  ..., 0.0002, 0.0010, 0.0002],
+        [0.0016, 0.0012, 0.0000,  ..., 0.0011, 0.0048, 0.0011],
+        ...,
+        [0.0003, 0.0002, 0.0011,  ..., 0.0000, 0.0009, 0.0002],
+        [0.0013, 0.0010, 0.0048,  ..., 0.0009, 0.0000, 0.0008],
+        [0.0003, 0.0002, 0.0011,  ..., 0.0002, 0.0008, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18598236), 'final_cost': np.float32(0.18598236), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.00394749641418457s
+[Expert PLacement Manager] Rebalance took: 0.00394749641418457s
+Placement opt: 0.7% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 400 | rebalance: 0.7% improvement | 1 swapsplacement: [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0], new placement: [0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0003, 0.0000, 0.0003,  ..., 0.0003, 0.0004, 0.0002],
+        [0.0002, 0.0003, 0.0000,  ..., 0.0002, 0.0003, 0.0002],
+        ...,
+        [0.0002, 0.0003, 0.0002,  ..., 0.0000, 0.0003, 0.0002],
+        [0.0003, 0.0004, 0.0003,  ..., 0.0003, 0.0000, 0.0003],
+        [0.0002, 0.0002, 0.0002,  ..., 0.0002, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18596943), 'final_cost': np.float32(0.18474649), 'improve_pct': np.float32(0.6576018), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05810856819152832s[Expert PLacement Manager] Rebalance took: 0.058298587799072266s
+
+Placement opt: 0.7% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 400 | rebalance: 0.7% improvement | 2 swapsplacement: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1], new placement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0017,  ..., 0.0002, 0.0003, 0.0003],
+        [0.0002, 0.0000, 0.0011,  ..., 0.0001, 0.0002, 0.0002],
+        [0.0017, 0.0011, 0.0000,  ..., 0.0010, 0.0014, 0.0017],
+        ...,
+        [0.0002, 0.0001, 0.0010,  ..., 0.0000, 0.0002, 0.0002],
+        [0.0003, 0.0002, 0.0014,  ..., 0.0002, 0.0000, 0.0003],
+        [0.0003, 0.0002, 0.0017,  ..., 0.0002, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18272658), 'final_cost': np.float32(0.18139634), 'improve_pct': np.float32(0.7279957), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.10002946853637695s[Expert PLacement Manager] Rebalance took: 0.10004401206970215s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 400 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0], new placement: [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0022, 0.0030,  ..., 0.0024, 0.0014, 0.0022],
+        [0.0022, 0.0000, 0.0003,  ..., 0.0003, 0.0002, 0.0002],
+        [0.0030, 0.0003, 0.0000,  ..., 0.0004, 0.0002, 0.0003],
+        ...,
+        [0.0024, 0.0003, 0.0004,  ..., 0.0000, 0.0002, 0.0003],
+        [0.0014, 0.0002, 0.0002,  ..., 0.0002, 0.0000, 0.0002],
+        [0.0022, 0.0002, 0.0003,  ..., 0.0003, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19278294), 'final_cost': np.float32(0.19278294), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.004341840744018555s
+[Expert PLacement Manager] Rebalance took: 0.0039141178131103516s
+Step 0360 | Loss 10.3652 | Aux 7.61479 | Step 1951.3ms | Tokens/sec 1,050
+Step 0380 | Loss 10.3907 | Aux 7.81661 | Step 2050.0ms | Tokens/sec 999
+Step 0400 | Loss 10.3902 | Aux 7.77008 | Step 2158.7ms | Tokens/sec 949
+Placement opt: 1.0% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 500 | rebalance: 1.0% improvement | 1 swapsplacement: [0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1], new placement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0009, 0.0009,  ..., 0.0025, 0.0016, 0.0010],
+        [0.0009, 0.0000, 0.0002,  ..., 0.0005, 0.0003, 0.0002],
+        [0.0009, 0.0002, 0.0000,  ..., 0.0004, 0.0003, 0.0002],
+        ...,
+        [0.0025, 0.0005, 0.0004,  ..., 0.0000, 0.0008, 0.0005],
+        [0.0016, 0.0003, 0.0003,  ..., 0.0008, 0.0000, 0.0003],
+        [0.0010, 0.0002, 0.0002,  ..., 0.0005, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1959836), 'final_cost': np.float32(0.1940561), 'improve_pct': np.float32(0.9835057), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.057392120361328125s[Expert PLacement Manager] Rebalance took: 0.0575716495513916s
+
+Placement opt: 0.2% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 500 | rebalance: 0.2% improvement | 1 swapsplacement: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0011, 0.0009,  ..., 0.0021, 0.0021, 0.0059],
+        [0.0011, 0.0000, 0.0002,  ..., 0.0005, 0.0006, 0.0015],
+        [0.0009, 0.0002, 0.0000,  ..., 0.0004, 0.0005, 0.0013],
+        ...,
+        [0.0021, 0.0005, 0.0004,  ..., 0.0000, 0.0010, 0.0028],
+        [0.0021, 0.0006, 0.0005,  ..., 0.0010, 0.0000, 0.0029],
+        [0.0059, 0.0015, 0.0013,  ..., 0.0028, 0.0029, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18628676), 'final_cost': np.float32(0.18595076), 'improve_pct': np.float32(0.18037045), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.03969979286193848s
+[Expert PLacement Manager] Rebalance took: 0.042748451232910156s
+Placement opt: 0.7% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 500 | rebalance: 0.7% improvement | 1 swapsplacement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], new placement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0015,  ..., 0.0003, 0.0010, 0.0003],
+        [0.0003, 0.0000, 0.0010,  ..., 0.0002, 0.0008, 0.0002],
+        [0.0015, 0.0010, 0.0000,  ..., 0.0010, 0.0032, 0.0009],
+        ...,
+        [0.0003, 0.0002, 0.0010,  ..., 0.0000, 0.0007, 0.0002],
+        [0.0010, 0.0008, 0.0032,  ..., 0.0007, 0.0000, 0.0007],
+        [0.0003, 0.0002, 0.0009,  ..., 0.0002, 0.0007, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18936878), 'final_cost': np.float32(0.18798326), 'improve_pct': np.float32(0.73165435), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05164074897766113s[Expert PLacement Manager] Rebalance took: 0.05136585235595703s
+
+Placement opt: 0.6% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 500 | rebalance: 0.6% improvement | 1 swapsplacement: [0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0], new placement: [0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0002,  ..., 0.0002, 0.0003, 0.0001],
+        [0.0002, 0.0000, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0002, 0.0000,  ..., 0.0002, 0.0003, 0.0002],
+        ...,
+        [0.0002, 0.0002, 0.0002,  ..., 0.0000, 0.0003, 0.0002],
+        [0.0003, 0.0003, 0.0003,  ..., 0.0003, 0.0000, 0.0002],
+        [0.0001, 0.0002, 0.0002,  ..., 0.0002, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18709186), 'final_cost': np.float32(0.18605788), 'improve_pct': np.float32(0.55265725), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.04378318786621094s[Expert PLacement Manager] Rebalance took: 0.04366660118103027s
+
+Placement opt: 0.3% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 500 | rebalance: 0.3% improvement | 1 swapsplacement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0019,  ..., 0.0002, 0.0002, 0.0003],
+        [0.0002, 0.0000, 0.0013,  ..., 0.0001, 0.0002, 0.0002],
+        [0.0019, 0.0013, 0.0000,  ..., 0.0013, 0.0018, 0.0021],
+        ...,
+        [0.0002, 0.0001, 0.0013,  ..., 0.0000, 0.0002, 0.0002],
+        [0.0002, 0.0002, 0.0018,  ..., 0.0002, 0.0000, 0.0003],
+        [0.0003, 0.0002, 0.0021,  ..., 0.0002, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.17956822), 'final_cost': np.float32(0.17894146), 'improve_pct': np.float32(0.349036), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.04404044151306152s[Expert PLacement Manager] Rebalance took: 0.0444183349609375s
+
+Placement opt: 1.6% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 500 | rebalance: 1.6% improvement | 2 swapsplacement: [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0], new placement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0015, 0.0018,  ..., 0.0018, 0.0012, 0.0016],
+        [0.0015, 0.0000, 0.0002,  ..., 0.0003, 0.0002, 0.0002],
+        [0.0018, 0.0002, 0.0000,  ..., 0.0003, 0.0002, 0.0003],
+        ...,
+        [0.0018, 0.0003, 0.0003,  ..., 0.0000, 0.0002, 0.0003],
+        [0.0012, 0.0002, 0.0002,  ..., 0.0002, 0.0000, 0.0002],
+        [0.0016, 0.0002, 0.0003,  ..., 0.0003, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19437931), 'final_cost': np.float32(0.19134113), 'improve_pct': np.float32(1.5630176), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.09639573097229004s
+[Expert PLacement Manager] Rebalance took: 0.09681820869445801s
+  [Eval] Step 400 | Perplexity 31345.81
+Step 0420 | Loss 10.2404 | Aux 7.63864 | Step 2297.7ms | Tokens/sec 891
+Step 0440 | Loss 10.3574 | Aux 7.61629 | Step 2376.1ms | Tokens/sec 862
+Step 0460 | Loss 10.2393 | Aux 7.52654 | Step 2457.5ms | Tokens/sec 833
+Step 0480 | Loss 10.3211 | Aux 7.89162 | Step 2598.2ms | Tokens/sec 788
+Placement opt: 0.1% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 600 | rebalance: 0.1% improvement | 1 swapsplacement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0007, 0.0008,  ..., 0.0034, 0.0012, 0.0008],
+        [0.0007, 0.0000, 0.0002,  ..., 0.0007, 0.0003, 0.0002],
+        [0.0008, 0.0002, 0.0000,  ..., 0.0008, 0.0003, 0.0002],
+        ...,
+        [0.0034, 0.0007, 0.0008,  ..., 0.0000, 0.0013, 0.0008],
+        [0.0012, 0.0003, 0.0003,  ..., 0.0013, 0.0000, 0.0003],
+        [0.0008, 0.0002, 0.0002,  ..., 0.0008, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19853634), 'final_cost': np.float32(0.19829246), 'improve_pct': np.float32(0.12283515), 'swaps': 1, 'iters': 1}
+Rank 0: executing 2 expert migrations
+Rank 1: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.0516049861907959s[Expert PLacement Manager] Rebalance took: 0.05197882652282715s
+
+Placement opt: 1.5% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 600 | rebalance: 1.5% improvement | 1 swapsplacement: [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0006, 0.0006,  ..., 0.0019, 0.0015, 0.0053],
+        [0.0006, 0.0000, 0.0002,  ..., 0.0008, 0.0006, 0.0021],
+        [0.0006, 0.0002, 0.0000,  ..., 0.0007, 0.0006, 0.0020],
+        ...,
+        [0.0019, 0.0008, 0.0007,  ..., 0.0000, 0.0019, 0.0062],
+        [0.0015, 0.0006, 0.0006,  ..., 0.0019, 0.0000, 0.0050],
+        [0.0053, 0.0021, 0.0020,  ..., 0.0062, 0.0050, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19250204), 'final_cost': np.float32(0.18968137), 'improve_pct': np.float32(1.465268), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05485701560974121s[Expert PLacement Manager] Rebalance took: 0.05525779724121094s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 600 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1], new placement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0011,  ..., 0.0003, 0.0009, 0.0003],
+        [0.0003, 0.0000, 0.0008,  ..., 0.0002, 0.0006, 0.0002],
+        [0.0011, 0.0008, 0.0000,  ..., 0.0007, 0.0024, 0.0008],
+        ...,
+        [0.0003, 0.0002, 0.0007,  ..., 0.0000, 0.0006, 0.0002],
+        [0.0009, 0.0006, 0.0024,  ..., 0.0006, 0.0000, 0.0006],
+        [0.0003, 0.0002, 0.0008,  ..., 0.0002, 0.0006, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18961526), 'final_cost': np.float32(0.18961526), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.0043413639068603516s
+[Expert PLacement Manager] Rebalance took: 0.003970623016357422s
+Placement opt: 0.3% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 600 | rebalance: 0.3% improvement | 1 swapsplacement: [0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0], new placement: [0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0002,  ..., 0.0002, 0.0002, 0.0001],
+        [0.0002, 0.0000, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0002, 0.0000,  ..., 0.0002, 0.0002, 0.0001],
+        ...,
+        [0.0002, 0.0002, 0.0002,  ..., 0.0000, 0.0002, 0.0001],
+        [0.0002, 0.0003, 0.0002,  ..., 0.0002, 0.0000, 0.0002],
+        [0.0001, 0.0002, 0.0001,  ..., 0.0001, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18421541), 'final_cost': np.float32(0.18364811), 'improve_pct': np.float32(0.30795583), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.050301551818847656s
+[Expert PLacement Manager] Rebalance took: 0.05087161064147949s
+Placement opt: 1.0% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 600 | rebalance: 1.0% improvement | 2 swapsplacement: [0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1], new placement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0025,  ..., 0.0002, 0.0003, 0.0003],
+        [0.0002, 0.0000, 0.0017,  ..., 0.0001, 0.0002, 0.0002],
+        [0.0025, 0.0017, 0.0000,  ..., 0.0016, 0.0025, 0.0026],
+        ...,
+        [0.0002, 0.0001, 0.0016,  ..., 0.0000, 0.0002, 0.0002],
+        [0.0003, 0.0002, 0.0025,  ..., 0.0002, 0.0000, 0.0003],
+        [0.0003, 0.0002, 0.0026,  ..., 0.0002, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18219727), 'final_cost': np.float32(0.18035138), 'improve_pct': np.float32(1.0131305), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.09583783149719238s[Expert PLacement Manager] Rebalance took: 0.09539937973022461s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 600 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0], new placement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0009, 0.0011,  ..., 0.0014, 0.0007, 0.0010],
+        [0.0009, 0.0000, 0.0003,  ..., 0.0003, 0.0002, 0.0003],
+        [0.0011, 0.0003, 0.0000,  ..., 0.0004, 0.0002, 0.0003],
+        ...,
+        [0.0014, 0.0003, 0.0004,  ..., 0.0000, 0.0003, 0.0004],
+        [0.0007, 0.0002, 0.0002,  ..., 0.0003, 0.0000, 0.0002],
+        [0.0010, 0.0003, 0.0003,  ..., 0.0004, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18986024), 'final_cost': np.float32(0.18986024), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.004460334777832031s
+[Expert PLacement Manager] Rebalance took: 0.00428318977355957s
+Step 0500 | Loss 10.2938 | Aux 7.50631 | Step 2739.3ms | Tokens/sec 748
+Step 0520 | Loss 10.2230 | Aux 7.45419 | Step 2844.1ms | Tokens/sec 720
+Step 0540 | Loss 10.3495 | Aux 7.60258 | Step 3038.5ms | Tokens/sec 674
+Step 0560 | Loss 10.2311 | Aux 7.48945 | Step 3135.2ms | Tokens/sec 653
+Step 0580 | Loss 10.2384 | Aux 7.43649 | Step 3238.5ms | Tokens/sec 632
+Placement opt: 0.1% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 700 | rebalance: 0.1% improvement | 1 swapsplacement: [0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1], new placement: [0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0005,  ..., 0.0037, 0.0009, 0.0006],
+        [0.0005, 0.0000, 0.0002,  ..., 0.0011, 0.0003, 0.0002],
+        [0.0005, 0.0002, 0.0000,  ..., 0.0011, 0.0003, 0.0002],
+        ...,
+        [0.0037, 0.0011, 0.0011,  ..., 0.0000, 0.0018, 0.0012],
+        [0.0009, 0.0003, 0.0003,  ..., 0.0018, 0.0000, 0.0003],
+        [0.0006, 0.0002, 0.0002,  ..., 0.0012, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19791785), 'final_cost': np.float32(0.1978125), 'improve_pct': np.float32(0.053229764), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.05289149284362793s
+[Expert PLacement Manager] Rebalance took: 0.05531191825866699s
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 700 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0004,  ..., 0.0019, 0.0011, 0.0029],
+        [0.0004, 0.0000, 0.0002,  ..., 0.0011, 0.0007, 0.0016],
+        [0.0004, 0.0002, 0.0000,  ..., 0.0011, 0.0007, 0.0016],
+        ...,
+        [0.0019, 0.0011, 0.0011,  ..., 0.0000, 0.0031, 0.0078],
+        [0.0011, 0.0007, 0.0007,  ..., 0.0031, 0.0000, 0.0046],
+        [0.0029, 0.0016, 0.0016,  ..., 0.0078, 0.0046, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1922378), 'final_cost': np.float32(0.1922378), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.004429340362548828s
+[Expert PLacement Manager] Rebalance took: 0.004109621047973633s
+Placement opt: 1.9% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 700 | rebalance: 1.9% improvement | 1 swapsplacement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1], new placement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0010,  ..., 0.0003, 0.0007, 0.0003],
+        [0.0003, 0.0000, 0.0008,  ..., 0.0002, 0.0006, 0.0002],
+        [0.0010, 0.0008, 0.0000,  ..., 0.0008, 0.0020, 0.0007],
+        ...,
+        [0.0003, 0.0002, 0.0008,  ..., 0.0000, 0.0005, 0.0002],
+        [0.0007, 0.0006, 0.0020,  ..., 0.0005, 0.0000, 0.0005],
+        [0.0003, 0.0002, 0.0007,  ..., 0.0002, 0.0005, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19197693), 'final_cost': np.float32(0.18842256), 'improve_pct': np.float32(1.8514588), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.03801870346069336s[Expert PLacement Manager] Rebalance took: 0.03854250907897949s
+
+Placement opt: 0.3% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 700 | rebalance: 0.3% improvement | 1 swapsplacement: [0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0], new placement: [0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0002,  ..., 0.0002, 0.0002, 0.0001],
+        [0.0002, 0.0000, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0002, 0.0000,  ..., 0.0002, 0.0002, 0.0001],
+        ...,
+        [0.0002, 0.0002, 0.0002,  ..., 0.0000, 0.0002, 0.0001],
+        [0.0002, 0.0003, 0.0002,  ..., 0.0002, 0.0000, 0.0002],
+        [0.0001, 0.0002, 0.0001,  ..., 0.0001, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1876599), 'final_cost': np.float32(0.18703908), 'improve_pct': np.float32(0.33082563), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.037131547927856445s[Expert PLacement Manager] Rebalance took: 0.036458730697631836s
+
+Placement opt: 0.4% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 700 | rebalance: 0.4% improvement | 1 swapsplacement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1], new placement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0027,  ..., 0.0002, 0.0003, 0.0003],
+        [0.0002, 0.0000, 0.0021,  ..., 0.0001, 0.0002, 0.0002],
+        [0.0027, 0.0021, 0.0000,  ..., 0.0021, 0.0033, 0.0032],
+        ...,
+        [0.0002, 0.0001, 0.0021,  ..., 0.0000, 0.0002, 0.0002],
+        [0.0003, 0.0002, 0.0033,  ..., 0.0002, 0.0000, 0.0004],
+        [0.0003, 0.0002, 0.0032,  ..., 0.0002, 0.0004, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18176565), 'final_cost': np.float32(0.18106987), 'improve_pct': np.float32(0.38278958), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.03947854042053223s[Expert PLacement Manager] Rebalance took: 0.03880453109741211s
+
+Placement opt: 0.3% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 700 | rebalance: 0.3% improvement | 1 swapsplacement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0], new placement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0006, 0.0006,  ..., 0.0010, 0.0004, 0.0008],
+        [0.0006, 0.0000, 0.0002,  ..., 0.0004, 0.0002, 0.0003],
+        [0.0006, 0.0002, 0.0000,  ..., 0.0004, 0.0002, 0.0003],
+        ...,
+        [0.0010, 0.0004, 0.0004,  ..., 0.0000, 0.0003, 0.0005],
+        [0.0004, 0.0002, 0.0002,  ..., 0.0003, 0.0000, 0.0002],
+        [0.0008, 0.0003, 0.0003,  ..., 0.0005, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18687741), 'final_cost': np.float32(0.18628626), 'improve_pct': np.float32(0.3163351), 'swaps': 1, 'iters': 1}
+Rank 0: executing 2 expert migrationsRank 1: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.05608773231506348s[Expert PLacement Manager] Rebalance took: 0.05625152587890625s
+
+Step 0600 | Loss 10.2610 | Aux 7.34849 | Step 3352.5ms | Tokens/sec 611
+  [Eval] Step 600 | Perplexity 27555.58
+Step 0620 | Loss 10.2217 | Aux 7.32203 | Step 3486.5ms | Tokens/sec 587
+Step 0640 | Loss 10.2143 | Aux 7.37250 | Step 3530.7ms | Tokens/sec 580
+Placement opt: 1.8% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 800 | rebalance: 1.8% improvement | 1 swapsplacement: [0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1], new placement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0006,  ..., 0.0036, 0.0009, 0.0006],
+        [0.0005, 0.0000, 0.0002,  ..., 0.0011, 0.0003, 0.0002],
+        [0.0006, 0.0002, 0.0000,  ..., 0.0012, 0.0003, 0.0002],
+        ...,
+        [0.0036, 0.0011, 0.0012,  ..., 0.0000, 0.0018, 0.0012],
+        [0.0009, 0.0003, 0.0003,  ..., 0.0018, 0.0000, 0.0003],
+        [0.0006, 0.0002, 0.0002,  ..., 0.0012, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.2007969), 'final_cost': np.float32(0.19718508), 'improve_pct': np.float32(1.7987419), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.06042313575744629s[Expert PLacement Manager] Rebalance took: 0.06053948402404785s
+
+Placement opt: 0.9% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 800 | rebalance: 0.9% improvement | 1 swapsplacement: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0004,  ..., 0.0015, 0.0010, 0.0022],
+        [0.0004, 0.0000, 0.0003,  ..., 0.0011, 0.0008, 0.0016],
+        [0.0004, 0.0003, 0.0000,  ..., 0.0010, 0.0007, 0.0015],
+        ...,
+        [0.0015, 0.0011, 0.0010,  ..., 0.0000, 0.0027, 0.0059],
+        [0.0010, 0.0008, 0.0007,  ..., 0.0027, 0.0000, 0.0038],
+        [0.0022, 0.0016, 0.0015,  ..., 0.0059, 0.0038, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19362186), 'final_cost': np.float32(0.19181891), 'improve_pct': np.float32(0.93117124), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05285286903381348s[Expert PLacement Manager] Rebalance took: 0.0528416633605957s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 800 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], new placement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0015,  ..., 0.0003, 0.0008, 0.0003],
+        [0.0003, 0.0000, 0.0011,  ..., 0.0002, 0.0006, 0.0002],
+        [0.0015, 0.0011, 0.0000,  ..., 0.0010, 0.0026, 0.0010],
+        ...,
+        [0.0003, 0.0002, 0.0010,  ..., 0.0000, 0.0006, 0.0002],
+        [0.0008, 0.0006, 0.0026,  ..., 0.0006, 0.0000, 0.0006],
+        [0.0003, 0.0002, 0.0010,  ..., 0.0002, 0.0006, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19090176), 'final_cost': np.float32(0.19090176), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.004147768020629883s
+[Expert PLacement Manager] Rebalance took: 0.004025697708129883s
+Placement opt: 0.1% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 800 | rebalance: 0.1% improvement | 1 swapsplacement: [0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0], new placement: [0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0002,  ..., 0.0002, 0.0002, 0.0002],
+        [0.0002, 0.0000, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0002, 0.0000,  ..., 0.0002, 0.0002, 0.0001],
+        ...,
+        [0.0002, 0.0002, 0.0002,  ..., 0.0000, 0.0002, 0.0002],
+        [0.0002, 0.0003, 0.0002,  ..., 0.0002, 0.0000, 0.0002],
+        [0.0002, 0.0002, 0.0001,  ..., 0.0002, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18809399), 'final_cost': np.float32(0.18798882), 'improve_pct': np.float32(0.055914808), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.04128527641296387s[Expert PLacement Manager] Rebalance took: 0.04108738899230957s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 800 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1], new placement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0034,  ..., 0.0002, 0.0004, 0.0004],
+        [0.0003, 0.0000, 0.0022,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0034, 0.0022, 0.0000,  ..., 0.0020, 0.0035, 0.0032],
+        ...,
+        [0.0002, 0.0002, 0.0020,  ..., 0.0000, 0.0003, 0.0002],
+        [0.0004, 0.0003, 0.0035,  ..., 0.0003, 0.0000, 0.0004],
+        [0.0004, 0.0002, 0.0032,  ..., 0.0002, 0.0004, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18500693), 'final_cost': np.float32(0.18500693), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.003683805465698242s
+[Expert PLacement Manager] Rebalance took: 0.003958225250244141s
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 800 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], new placement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0005,  ..., 0.0008, 0.0004, 0.0011],
+        [0.0005, 0.0000, 0.0002,  ..., 0.0004, 0.0002, 0.0005],
+        [0.0005, 0.0002, 0.0000,  ..., 0.0004, 0.0002, 0.0005],
+        ...,
+        [0.0008, 0.0004, 0.0004,  ..., 0.0000, 0.0003, 0.0008],
+        [0.0004, 0.0002, 0.0002,  ..., 0.0003, 0.0000, 0.0004],
+        [0.0011, 0.0005, 0.0005,  ..., 0.0008, 0.0004, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18706909), 'final_cost': np.float32(0.18706909), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.004279613494873047s[Expert PLacement Manager] Rebalance took: 0.003927707672119141s
+
+Step 0660 | Loss 10.2452 | Aux 7.33161 | Step 3663.6ms | Tokens/sec 559
+Step 0680 | Loss 10.2345 | Aux 7.82337 | Step 3826.7ms | Tokens/sec 535
+Step 0700 | Loss 10.1273 | Aux 7.26089 | Step 3944.9ms | Tokens/sec 519
+Step 0720 | Loss 10.1485 | Aux 7.03328 | Step 4049.4ms | Tokens/sec 506
+Step 0740 | Loss 10.1172 | Aux 7.03542 | Step 4160.9ms | Tokens/sec 492
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 900 | rebalance: 0.0% improvement | 0 swapsplacement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1], new placement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0004,  ..., 0.0023, 0.0007, 0.0005],
+        [0.0004, 0.0000, 0.0002,  ..., 0.0009, 0.0003, 0.0002],
+        [0.0004, 0.0002, 0.0000,  ..., 0.0009, 0.0003, 0.0002],
+        ...,
+        [0.0023, 0.0009, 0.0009,  ..., 0.0000, 0.0015, 0.0010],
+        [0.0007, 0.0003, 0.0003,  ..., 0.0015, 0.0000, 0.0003],
+        [0.0005, 0.0002, 0.0002,  ..., 0.0010, 0.0003, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20110807), 'final_cost': np.float32(0.20110807), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.0041048526763916016s[Expert PLacement Manager] Rebalance took: 0.0040934085845947266s
+
+Placement opt: 0.6% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 900 | rebalance: 0.6% improvement | 1 swapsplacement: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], new placement: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0003,  ..., 0.0009, 0.0011, 0.0012],
+        [0.0004, 0.0000, 0.0003,  ..., 0.0007, 0.0010, 0.0010],
+        [0.0003, 0.0003, 0.0000,  ..., 0.0006, 0.0007, 0.0008],
+        ...,
+        [0.0009, 0.0007, 0.0006,  ..., 0.0000, 0.0021, 0.0022],
+        [0.0011, 0.0010, 0.0007,  ..., 0.0021, 0.0000, 0.0028],
+        [0.0012, 0.0010, 0.0008,  ..., 0.0022, 0.0028, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19395956), 'final_cost': np.float32(0.19271876), 'improve_pct': np.float32(0.6397234), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.054498910903930664s[Expert PLacement Manager] Rebalance took: 0.055089473724365234s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 900 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], new placement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0013,  ..., 0.0004, 0.0007, 0.0003],
+        [0.0004, 0.0000, 0.0009,  ..., 0.0003, 0.0005, 0.0002],
+        [0.0013, 0.0009, 0.0000,  ..., 0.0009, 0.0018, 0.0008],
+        ...,
+        [0.0004, 0.0003, 0.0009,  ..., 0.0000, 0.0005, 0.0002],
+        [0.0007, 0.0005, 0.0018,  ..., 0.0005, 0.0000, 0.0004],
+        [0.0003, 0.0002, 0.0008,  ..., 0.0002, 0.0004, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19718623), 'final_cost': np.float32(0.19718623), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.00438690185546875s
+[Expert PLacement Manager] Rebalance took: 0.0039937496185302734s
+Placement opt: 0.1% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 900 | rebalance: 0.1% improvement | 1 swapsplacement: [0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0], new placement: [0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0002,  ..., 0.0002, 0.0002, 0.0002],
+        [0.0002, 0.0000, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0002, 0.0000,  ..., 0.0002, 0.0002, 0.0001],
+        ...,
+        [0.0002, 0.0002, 0.0002,  ..., 0.0000, 0.0003, 0.0002],
+        [0.0002, 0.0003, 0.0002,  ..., 0.0003, 0.0000, 0.0002],
+        [0.0002, 0.0002, 0.0001,  ..., 0.0002, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18814375), 'final_cost': np.float32(0.18793258), 'improve_pct': np.float32(0.11223565), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05337381362915039s[Expert PLacement Manager] Rebalance took: 0.0530095100402832s
+
+Placement opt: 3.9% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 900 | rebalance: 3.9% improvement | 1 swapsplacement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1], new placement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0031,  ..., 0.0002, 0.0006, 0.0004],
+        [0.0002, 0.0000, 0.0021,  ..., 0.0001, 0.0004, 0.0002],
+        [0.0031, 0.0021, 0.0000,  ..., 0.0020, 0.0051, 0.0033],
+        ...,
+        [0.0002, 0.0001, 0.0020,  ..., 0.0000, 0.0004, 0.0002],
+        [0.0006, 0.0004, 0.0051,  ..., 0.0004, 0.0000, 0.0006],
+        [0.0004, 0.0002, 0.0033,  ..., 0.0002, 0.0006, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19219893), 'final_cost': np.float32(0.18478319), 'improve_pct': np.float32(3.8583677), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05392646789550781s
+[Expert PLacement Manager] Rebalance took: 0.05411887168884277s
+Placement opt: 0.3% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 900 | rebalance: 0.3% improvement | 1 swapsplacement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], new placement: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0005,  ..., 0.0008, 0.0004, 0.0015],
+        [0.0005, 0.0000, 0.0002,  ..., 0.0003, 0.0002, 0.0007],
+        [0.0005, 0.0002, 0.0000,  ..., 0.0004, 0.0002, 0.0007],
+        ...,
+        [0.0008, 0.0003, 0.0004,  ..., 0.0000, 0.0002, 0.0011],
+        [0.0004, 0.0002, 0.0002,  ..., 0.0002, 0.0000, 0.0005],
+        [0.0015, 0.0007, 0.0007,  ..., 0.0011, 0.0005, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19126488), 'final_cost': np.float32(0.19074334), 'improve_pct': np.float32(0.27267978), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05183243751525879s
+[Expert PLacement Manager] Rebalance took: 0.05461716651916504s
+Step 0760 | Loss 10.2121 | Aux 7.15070 | Step 4269.8ms | Tokens/sec 480
+Step 0780 | Loss 10.1871 | Aux 6.99033 | Step 4346.0ms | Tokens/sec 471
+Step 0800 | Loss 10.1793 | Aux 6.99231 | Step 4468.7ms | Tokens/sec 458
+Placement opt: 0.2% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 1000 | rebalance: 0.2% improvement | 1 swapsplacement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1], new placement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0005,  ..., 0.0022, 0.0012, 0.0005],
+        [0.0005, 0.0000, 0.0002,  ..., 0.0007, 0.0004, 0.0002],
+        [0.0005, 0.0002, 0.0000,  ..., 0.0007, 0.0004, 0.0002],
+        ...,
+        [0.0022, 0.0007, 0.0007,  ..., 0.0000, 0.0016, 0.0008],
+        [0.0012, 0.0004, 0.0004,  ..., 0.0016, 0.0000, 0.0004],
+        [0.0005, 0.0002, 0.0002,  ..., 0.0008, 0.0004, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20233075), 'final_cost': np.float32(0.20195702), 'improve_pct': np.float32(0.18471539), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05236482620239258s[Expert PLacement Manager] Rebalance took: 0.05324673652648926s
+
+Placement opt: 0.7% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1000 | rebalance: 0.7% improvement | 1 swapsplacement: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1], new placement: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0003,  ..., 0.0008, 0.0012, 0.0009],
+        [0.0004, 0.0000, 0.0003,  ..., 0.0007, 0.0011, 0.0008],
+        [0.0003, 0.0003, 0.0000,  ..., 0.0005, 0.0008, 0.0006],
+        ...,
+        [0.0008, 0.0007, 0.0005,  ..., 0.0000, 0.0021, 0.0016],
+        [0.0012, 0.0011, 0.0008,  ..., 0.0021, 0.0000, 0.0024],
+        [0.0009, 0.0008, 0.0006,  ..., 0.0016, 0.0024, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19756298), 'final_cost': np.float32(0.1961528), 'improve_pct': np.float32(0.7137832), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05256962776184082s[Expert PLacement Manager] Rebalance took: 0.05226540565490723s
+
+Placement opt: 1.8% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1000 | rebalance: 1.8% improvement | 1 swapsplacement: [1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], new placement: [1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0015,  ..., 0.0004, 0.0008, 0.0003],
+        [0.0004, 0.0000, 0.0009,  ..., 0.0002, 0.0005, 0.0002],
+        [0.0015, 0.0009, 0.0000,  ..., 0.0009, 0.0019, 0.0008],
+        ...,
+        [0.0004, 0.0002, 0.0009,  ..., 0.0000, 0.0005, 0.0002],
+        [0.0008, 0.0005, 0.0019,  ..., 0.0005, 0.0000, 0.0004],
+        [0.0003, 0.0002, 0.0008,  ..., 0.0002, 0.0004, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20231122), 'final_cost': np.float32(0.19871376), 'improve_pct': np.float32(1.778178), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.054551124572753906s[Expert PLacement Manager] Rebalance took: 0.054135799407958984s
+
+Placement opt: 1.0% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1000 | rebalance: 1.0% improvement | 1 swapsplacement: [0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0], new placement: [0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0002,  ..., 0.0002, 0.0002, 0.0002],
+        [0.0002, 0.0000, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0002, 0.0000,  ..., 0.0002, 0.0002, 0.0001],
+        ...,
+        [0.0002, 0.0002, 0.0002,  ..., 0.0000, 0.0002, 0.0001],
+        [0.0002, 0.0003, 0.0002,  ..., 0.0002, 0.0000, 0.0002],
+        [0.0002, 0.0002, 0.0001,  ..., 0.0001, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19069502), 'final_cost': np.float32(0.18872143), 'improve_pct': np.float32(1.0349427), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05318260192871094s[Expert PLacement Manager] Rebalance took: 0.053287506103515625s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 1000 | rebalance: 0.0% improvement | 0 swapsplacement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1], new placement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0026,  ..., 0.0003, 0.0006, 0.0004],
+        [0.0002, 0.0000, 0.0018,  ..., 0.0002, 0.0004, 0.0003],
+        [0.0026, 0.0018, 0.0000,  ..., 0.0019, 0.0042, 0.0029],
+        ...,
+        [0.0003, 0.0002, 0.0019,  ..., 0.0000, 0.0004, 0.0003],
+        [0.0006, 0.0004, 0.0042,  ..., 0.0004, 0.0000, 0.0007],
+        [0.0004, 0.0003, 0.0029,  ..., 0.0003, 0.0007, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18654484), 'final_cost': np.float32(0.18654484), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.004645347595214844s
+[Expert PLacement Manager] Rebalance took: 0.003953456878662109s
+Placement opt: 0.8% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1000 | rebalance: 0.8% improvement | 1 swapsplacement: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], new placement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0007, 0.0007,  ..., 0.0009, 0.0005, 0.0024],
+        [0.0007, 0.0000, 0.0003,  ..., 0.0003, 0.0002, 0.0010],
+        [0.0007, 0.0003, 0.0000,  ..., 0.0003, 0.0002, 0.0010],
+        ...,
+        [0.0009, 0.0003, 0.0003,  ..., 0.0000, 0.0003, 0.0013],
+        [0.0005, 0.0002, 0.0002,  ..., 0.0003, 0.0000, 0.0007],
+        [0.0024, 0.0010, 0.0010,  ..., 0.0013, 0.0007, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19611081), 'final_cost': np.float32(0.19452922), 'improve_pct': np.float32(0.80647993), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.0601806640625s[Expert PLacement Manager] Rebalance took: 0.05976462364196777s
+
+  [Eval] Step 800 | Perplexity 24546.85
+Step 0820 | Loss 10.1096 | Aux 7.05285 | Step 4817.4ms | Tokens/sec 425
+Step 0840 | Loss 10.0774 | Aux 6.95508 | Step 4948.2ms | Tokens/sec 414
+Step 0860 | Loss 10.0863 | Aux 7.06709 | Step 5147.4ms | Tokens/sec 398
+Step 0880 | Loss 10.0379 | Aux 6.91616 | Step 5399.4ms | Tokens/sec 379
+Placement opt: 0.9% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1100 | rebalance: 0.9% improvement | 1 swapsplacement: [0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0004,  ..., 0.0018, 0.0012, 0.0005],
+        [0.0004, 0.0000, 0.0002,  ..., 0.0007, 0.0004, 0.0002],
+        [0.0004, 0.0002, 0.0000,  ..., 0.0007, 0.0004, 0.0002],
+        ...,
+        [0.0018, 0.0007, 0.0007,  ..., 0.0000, 0.0018, 0.0008],
+        [0.0012, 0.0004, 0.0004,  ..., 0.0018, 0.0000, 0.0005],
+        [0.0005, 0.0002, 0.0002,  ..., 0.0008, 0.0005, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20510168), 'final_cost': np.float32(0.20334597), 'improve_pct': np.float32(0.8560214), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05707550048828125s[Expert PLacement Manager] Rebalance took: 0.0574498176574707s
+
+Placement opt: 1.3% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1100 | rebalance: 1.3% improvement | 1 swapsplacement: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1], new placement: [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0003,  ..., 0.0007, 0.0011, 0.0007],
+        [0.0004, 0.0000, 0.0003,  ..., 0.0007, 0.0012, 0.0008],
+        [0.0003, 0.0003, 0.0000,  ..., 0.0005, 0.0008, 0.0005],
+        ...,
+        [0.0007, 0.0007, 0.0005,  ..., 0.0000, 0.0019, 0.0012],
+        [0.0011, 0.0012, 0.0008,  ..., 0.0019, 0.0000, 0.0019],
+        [0.0007, 0.0008, 0.0005,  ..., 0.0012, 0.0019, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19952337), 'final_cost': np.float32(0.19683747), 'improve_pct': np.float32(1.3461603), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.04704022407531738s[Expert PLacement Manager] Rebalance took: 0.047188520431518555s
+
+Placement opt: 0.5% cross-GPU traffic reduction (1 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 1100 | rebalance: 0.5% improvement | 1 swapsplacement: [1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], new placement: [1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0015,  ..., 0.0004, 0.0008, 0.0003],
+        [0.0004, 0.0000, 0.0010,  ..., 0.0002, 0.0006, 0.0002],
+        [0.0015, 0.0010, 0.0000,  ..., 0.0010, 0.0021, 0.0008],
+        ...,
+        [0.0004, 0.0002, 0.0010,  ..., 0.0000, 0.0005, 0.0002],
+        [0.0008, 0.0006, 0.0021,  ..., 0.0005, 0.0000, 0.0005],
+        [0.0003, 0.0002, 0.0008,  ..., 0.0002, 0.0005, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20511189), 'final_cost': np.float32(0.2041429), 'improve_pct': np.float32(0.47242153), 'swaps': 1, 'iters': 1}
+Rank 1: executing 2 expert migrationsRank 0: executing 2 expert migrations
+
+[Expert PLacement Manager] Rebalance took: 0.03660082817077637s[Expert PLacement Manager] Rebalance took: 0.03656196594238281s
+
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 1100 | rebalance: 0.0% improvement | 0 swapsplacement: [0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0], new placement: [0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0000, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0002, 0.0000,  ..., 0.0002, 0.0002, 0.0001],
+        ...,
+        [0.0002, 0.0002, 0.0002,  ..., 0.0000, 0.0003, 0.0002],
+        [0.0003, 0.0003, 0.0002,  ..., 0.0003, 0.0000, 0.0002],
+        [0.0002, 0.0002, 0.0001,  ..., 0.0002, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.18999293), 'final_cost': np.float32(0.18999293), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.004258871078491211s
+[Expert PLacement Manager] Rebalance took: 0.003919363021850586s
+Placement opt: 0.6% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1100 | rebalance: 0.6% improvement | 1 swapsplacement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1], new placement: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0024,  ..., 0.0002, 0.0010, 0.0004],
+        [0.0002, 0.0000, 0.0019,  ..., 0.0002, 0.0007, 0.0003],
+        [0.0024, 0.0019, 0.0000,  ..., 0.0018, 0.0070, 0.0035],
+        ...,
+        [0.0002, 0.0002, 0.0018,  ..., 0.0000, 0.0007, 0.0003],
+        [0.0010, 0.0007, 0.0070,  ..., 0.0007, 0.0000, 0.0014],
+        [0.0004, 0.0003, 0.0035,  ..., 0.0003, 0.0014, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1870156), 'final_cost': np.float32(0.18590762), 'improve_pct': np.float32(0.59245104), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.052173614501953125s[Expert PLacement Manager] Rebalance took: 0.05218505859375s
+
+Placement opt: 0.6% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1100 | rebalance: 0.6% improvement | 1 swapsplacement: [1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1], new placement: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0006, 0.0006,  ..., 0.0009, 0.0005, 0.0027],
+        [0.0006, 0.0000, 0.0003,  ..., 0.0004, 0.0002, 0.0011],
+        [0.0006, 0.0003, 0.0000,  ..., 0.0004, 0.0002, 0.0011],
+        ...,
+        [0.0009, 0.0004, 0.0004,  ..., 0.0000, 0.0003, 0.0016],
+        [0.0005, 0.0002, 0.0002,  ..., 0.0003, 0.0000, 0.0009],
+        [0.0027, 0.0011, 0.0011,  ..., 0.0016, 0.0009, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.19638267), 'final_cost': np.float32(0.1952505), 'improve_pct': np.float32(0.5765149), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.058976173400878906s[Expert PLacement Manager] Rebalance took: 0.059714555740356445s
+
+Step 0900 | Loss 9.9758 | Aux 6.95872 | Step 5552.0ms | Tokens/sec 369
+Step 0920 | Loss 9.9358 | Aux 6.86557 | Step 5448.3ms | Tokens/sec 376
+Step 0940 | Loss 10.0921 | Aux 6.86415 | Step 5584.4ms | Tokens/sec 367
+Step 0960 | Loss 9.9752 | Aux 6.89939 | Step 5624.9ms | Tokens/sec 364
+Step 0980 | Loss 10.0920 | Aux 6.86123 | Step 5612.4ms | Tokens/sec 365
+Placement opt: 0.0% cross-GPU traffic reduction (0 swaps, 1 iters)
+[Rank 0][Expert PLacement Manager] Step 1200 | rebalance: 0.0% improvement | 0 swapsplacement: [0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], new placement: [0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0005,  ..., 0.0019, 0.0016, 0.0005],
+        [0.0005, 0.0000, 0.0002,  ..., 0.0006, 0.0005, 0.0002],
+        [0.0005, 0.0002, 0.0000,  ..., 0.0005, 0.0005, 0.0002],
+        ...,
+        [0.0019, 0.0006, 0.0005,  ..., 0.0000, 0.0018, 0.0006],
+        [0.0016, 0.0005, 0.0005,  ..., 0.0018, 0.0000, 0.0005],
+        [0.0005, 0.0002, 0.0002,  ..., 0.0006, 0.0005, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20428824), 'final_cost': np.float32(0.20428824), 'improve_pct': np.float32(0.0), 'swaps': 0, 'iters': 1}
+[Expert PLacement Manager] Rebalance took: 0.0045642852783203125s[Expert PLacement Manager] Rebalance took: 0.0045168399810791016s
+
+Placement opt: 2.2% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1200 | rebalance: 2.2% improvement | 2 swapsplacement: [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1], new placement: [0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0005, 0.0003,  ..., 0.0006, 0.0012, 0.0005],
+        [0.0005, 0.0000, 0.0004,  ..., 0.0009, 0.0016, 0.0006],
+        [0.0003, 0.0004, 0.0000,  ..., 0.0005, 0.0009, 0.0004],
+        ...,
+        [0.0006, 0.0009, 0.0005,  ..., 0.0000, 0.0020, 0.0008],
+        [0.0012, 0.0016, 0.0009,  ..., 0.0020, 0.0000, 0.0015],
+        [0.0005, 0.0006, 0.0004,  ..., 0.0008, 0.0015, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20644635), 'final_cost': np.float32(0.20185642), 'improve_pct': np.float32(2.223304), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.1006624698638916s
+[Expert PLacement Manager] Rebalance took: 0.10188770294189453s
+Placement opt: 2.9% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1200 | rebalance: 2.9% improvement | 1 swapsplacement: [1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], new placement: [1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0004, 0.0015,  ..., 0.0004, 0.0009, 0.0004],
+        [0.0004, 0.0000, 0.0009,  ..., 0.0002, 0.0005, 0.0002],
+        [0.0015, 0.0009, 0.0000,  ..., 0.0009, 0.0019, 0.0008],
+        ...,
+        [0.0004, 0.0002, 0.0009,  ..., 0.0000, 0.0006, 0.0002],
+        [0.0009, 0.0005, 0.0019,  ..., 0.0006, 0.0000, 0.0005],
+        [0.0004, 0.0002, 0.0008,  ..., 0.0002, 0.0005, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.2090645), 'final_cost': np.float32(0.2030797), 'improve_pct': np.float32(2.8626564), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.0607759952545166s[Expert PLacement Manager] Rebalance took: 0.060039520263671875s
+
+Placement opt: 2.5% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1200 | rebalance: 2.5% improvement | 1 swapsplacement: [0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0], new placement: [0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0002, 0.0002,  ..., 0.0002, 0.0003, 0.0002],
+        [0.0002, 0.0000, 0.0002,  ..., 0.0002, 0.0002, 0.0002],
+        [0.0002, 0.0002, 0.0000,  ..., 0.0002, 0.0002, 0.0001],
+        ...,
+        [0.0002, 0.0002, 0.0002,  ..., 0.0000, 0.0003, 0.0002],
+        [0.0003, 0.0002, 0.0002,  ..., 0.0003, 0.0000, 0.0002],
+        [0.0002, 0.0002, 0.0001,  ..., 0.0002, 0.0002, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1942224), 'final_cost': np.float32(0.18929778), 'improve_pct': np.float32(2.53556), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.05652213096618652s[Expert PLacement Manager] Rebalance took: 0.05603146553039551s
+
+Placement opt: 1.1% cross-GPU traffic reduction (1 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1200 | rebalance: 1.1% improvement | 1 swapsplacement: [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1], new placement: [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0003, 0.0022,  ..., 0.0003, 0.0011, 0.0008],
+        [0.0003, 0.0000, 0.0015,  ..., 0.0002, 0.0008, 0.0006],
+        [0.0022, 0.0015, 0.0000,  ..., 0.0013, 0.0051, 0.0038],
+        ...,
+        [0.0003, 0.0002, 0.0013,  ..., 0.0000, 0.0007, 0.0005],
+        [0.0011, 0.0008, 0.0051,  ..., 0.0007, 0.0000, 0.0019],
+        [0.0008, 0.0006, 0.0038,  ..., 0.0005, 0.0019, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.1889026), 'final_cost': np.float32(0.18687278), 'improve_pct': np.float32(1.0745332), 'swaps': 1, 'iters': 2}
+Rank 1: executing 2 expert migrations
+Rank 0: executing 2 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.054579734802246094s[Expert PLacement Manager] Rebalance took: 0.05458211898803711s
+
+Placement opt: 1.3% cross-GPU traffic reduction (2 swaps, 2 iters)
+[Rank 0][Expert PLacement Manager] Step 1200 | rebalance: 1.3% improvement | 2 swapsplacement: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1], new placement: [1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], affinity
+[Expert PLacement Manager] affinity matrix:
+tensor([[0.0000, 0.0009, 0.0008,  ..., 0.0013, 0.0006, 0.0041],
+        [0.0009, 0.0000, 0.0003,  ..., 0.0004, 0.0002, 0.0013],
+        [0.0008, 0.0003, 0.0000,  ..., 0.0004, 0.0002, 0.0013],
+        ...,
+        [0.0013, 0.0004, 0.0004,  ..., 0.0000, 0.0003, 0.0020],
+        [0.0006, 0.0002, 0.0002,  ..., 0.0003, 0.0000, 0.0009],
+        [0.0041, 0.0013, 0.0013,  ..., 0.0020, 0.0009, 0.0000]])
+[Expert PLacement Manager] stats: {'init_cost': np.float32(0.20095101), 'final_cost': np.float32(0.19840503), 'improve_pct': np.float32(1.2669668), 'swaps': 2, 'iters': 2}
+Rank 1: executing 4 expert migrations
+Rank 0: executing 4 expert migrations
+[Expert PLacement Manager] Rebalance took: 0.09784841537475586s[Expert PLacement Manager] Rebalance took: 0.09784388542175293s
+
+
+==== Benchmark complete ====
+Total time: 3399.7654864788055
+Steps measured (post-warmup): 980
+Step time: 5683.2 ± 257.0 ms  (last 100 steps)
+Throughput: 360 tok/s
+
+==== Final Evaluation ====
+Perplexity: 22591.60
+[2026-03-02 02:12:13,230] [INFO] [launch.py:369:main] Process 1481073 exits successfully.
+[2026-03-02 02:12:13,230] [INFO] [launch.py:369:main] Process 1481074 exits successfully.

@@ -28,29 +28,28 @@ After finding the optimal assignment we physically migrate expert weights
 between GPUs via point-to-point sends (torch.distributed.send/recv).
 """
 
+import time
+
 import torch
 import torch.distributed as dist
 from torch import nn
 from typing import List, Dict, Tuple, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import logging
 
 logger_ep = logging.getLogger("expert_placement")
 
-
-# ──────────────────────────────────────────────────────────────
-# Config
-# ──────────────────────────────────────────────────────────────
-
 @dataclass
 class ExpertPlacementConfig:
-    rebalance_every_n_steps: int   = 2   # trigger every N forward passes
-    warmup_steps:            int   = 300   # don't rebalance during warmup
+    rebalance_steps: List[int]   = field(default_factory=lambda: [])   # trigger rebalance for these steps
     max_swap_iterations:     int   = 60    # greedy iterations per rebalance
     min_improvement_frac:    float = 0.005 # stop if gain < 0.5 % per swap
     affinity_decay:          float = 0.9   # EMA decay for affinity matrix
     migrate_timeout_sec:     float = 60.0  # safeguard for dist ops
-
+    alpha:                  float = 0.3   # weight for affinity vs. compute cost
+    beta:                   float = 0.3   # weight for current vs. new placement
+    gamma:                  float = 0.4   # weight for swap vs. no-swap (stability)
+    tau_balance:            float = 0.01  # softmin
 
 # ──────────────────────────────────────────────────────────────
 # Affinity accumulator
@@ -201,7 +200,7 @@ class GreedyPlacementOptimizer:
         improve_pct = (init_cost - cur_cost) / init_cost * 100 if init_cost > 0 else 0.0
         stats = dict(init_cost=init_cost, final_cost=cur_cost,
                      improve_pct=improve_pct, swaps=swaps, iters=iteration + 1)
-        logger_ep.info(
+        print(
             f"Placement opt: {improve_pct:.1f}% cross-GPU traffic reduction "
             f"({swaps} swaps, {iteration+1} iters)"
         )
@@ -221,12 +220,15 @@ class ExpertMigrator:
         load_expert_state_dict(local_idx, sd)
     """
 
-    def __init__(self, experts_module, ep_group, num_local_experts: int, ep_size: int):
-        self.experts           = experts_module   # deepspeed_moe.experts  (Experts instance)
+    def __init__(self, experts_module, ep_group, num_local_experts: int, ep_size: int,
+                 device: torch.device = None):
+        self.experts           = experts_module
         self.ep_group          = ep_group
         self.num_local_experts = num_local_experts
         self.ep_size           = ep_size
-        self.my_rank           = dist.get_rank(ep_group)
+        self.my_rank           = dist.get_rank(ep_group)   # group-local rank
+        global_rank            = dist.get_rank()
+        self.device            = device or torch.device(f"cuda:{global_rank % torch.cuda.device_count()}")
 
     # ── helpers ───────────────────────────────────────────────
 
@@ -262,50 +264,50 @@ class ExpertMigrator:
         All other ranks are idle for that migration (simple & correct;
         can be parallelized later with async ops if needed).
         """
+        
         if not migrations:
             return
 
-        logger_ep.info(f"Rank {self.my_rank}: executing {len(migrations)} expert migrations")
+        print(f"Rank {self.my_rank}: executing {len(migrations)} expert migrations")
 
         for global_eid, from_rank, to_rank in migrations:
             from_local = global_eid % self.num_local_experts
-            to_local   = global_eid % self.num_local_experts  # same slot on destination
+            to_local   = global_eid % self.num_local_experts
 
-            # ── Determine flat tensor size (all ranks need to know) ──
-            # Use a dummy broadcast: rank `from_rank` computes the size.
-            size_tensor = torch.zeros(1, dtype=torch.long)
+            # from_rank / to_rank are group-local ranks (0..ep_size-1).
+            # dist.broadcast src= needs GLOBAL rank.
+            # dist.send/recv dst=/src= also need GLOBAL rank.
+            from_global = dist.get_global_rank(self.ep_group, from_rank)
+            to_global   = dist.get_global_rank(self.ep_group, to_rank)
+
+            # ── Broadcast flat tensor size from sender to all ranks ──
+            size_tensor = torch.zeros(1, dtype=torch.long, device=self.device)
             if self.my_rank == from_rank:
                 sd   = self.experts.get_expert_state_dict(from_local)
-                flat = self._state_dict_to_tensor(sd)
+                flat = self._state_dict_to_tensor(sd).to(self.device)
                 size_tensor[0] = flat.numel()
 
-            dist.broadcast(size_tensor, src=from_rank, group=self.ep_group)
-            numel = size_tensor.item()
+            dist.broadcast(size_tensor, src=from_global, group=self.ep_group)
+            numel = int(size_tensor.item())
 
             # ── Sender → Receiver ────────────────────────────────────
             if self.my_rank == from_rank:
-                dist.send(flat, dst=to_rank, group=self.ep_group)
+                dist.send(flat, dst=to_global, group=self.ep_group)
                 logger_ep.debug(f"  Sent   expert g{global_eid} → rank {to_rank}  ({numel} params)")
 
             elif self.my_rank == to_rank:
-                recv_flat = torch.zeros(numel, dtype=torch.float32)
-                dist.recv(recv_flat, src=from_rank, group=self.ep_group)
-                # Reconstruct state dict using the current expert as shape template
+                recv_flat = torch.zeros(numel, dtype=torch.float32, device=self.device)
+                dist.recv(recv_flat, src=from_global, group=self.ep_group)
                 sd_template = self.experts.get_expert_state_dict(to_local)
-                new_sd      = self._tensor_to_state_dict(recv_flat, sd_template)
+                new_sd      = self._tensor_to_state_dict(recv_flat.cpu(), sd_template)
                 self.experts.load_expert_state_dict(to_local, new_sd)
                 logger_ep.debug(f"  Recv'd expert g{global_eid} from rank {from_rank}  ({numel} params)")
 
-            # All other ranks: nothing to do for this migration.
+            # All other ranks: barrier participant only.
 
         # Barrier to make sure all migrations finished before training resumes.
         dist.barrier(group=self.ep_group)
         logger_ep.info(f"Rank {self.my_rank}: migrations complete")
-
-
-# ──────────────────────────────────────────────────────────────
-# Main manager – wire everything together
-# ──────────────────────────────────────────────────────────────
 
 class ExpertPlacementManager:
     """
@@ -372,6 +374,7 @@ class ExpertPlacementManager:
         )
         self.migrator: Optional[ExpertMigrator] = None  # created after ep_group is set
 
+        self.rebalance_steps = config.rebalance_steps
         self.global_step        = 0
         self.last_rebalance     = 0
         self.rebalance_history  = []
@@ -380,11 +383,15 @@ class ExpertPlacementManager:
 
     def set_ep_group(self, ep_group):
         self.ep_group = ep_group
+        # Resolve the correct CUDA device for this process once, here.
+        global_rank  = dist.get_rank()
+        self.device  = torch.device(f"cuda:{global_rank % torch.cuda.device_count()}")
         self.migrator = ExpertMigrator(
             experts_module   = self.experts,
             ep_group         = ep_group,
             num_local_experts= self.num_local_experts,
             ep_size          = self.ep_size,
+            device           = self.device,
         )
 
     # ── main entry point ──────────────────────────────────────
@@ -394,23 +401,28 @@ class ExpertPlacementManager:
         Call at the end of every MOELayer.forward().
 
         comm_matrix: [ep_world_size, num_global_experts]  (already all-gathered)
-        """
+        """        
         self.global_step += 1
 
         # Always update affinity statistics
         self.accumulator.update(comm_matrix)
 
         # Skip rebalancing during warmup or if not ready
-        if self.global_step < self.config.warmup_steps:
+        if self.global_step != self.rebalance_steps[0]:
             return
+        self.rebalance_steps = self.rebalance_steps[1:]
+
         if self.ep_group is None or self.migrator is None:
+            print("[Expert PLacement Manager] ep_group or migrato is None")
             return
 
-        steps_since = self.global_step - self.last_rebalance
-        if steps_since < self.config.rebalance_every_n_steps:
-            return
+        # steps_since = self.global_step - self.last_rebalance
+            # print(f"[Expert PLacement Manager] steps_since {steps_since} is smaller than rebalance interval {self.config.rebalance_every_n_steps}")
+            # return
 
+        before_rebalance = time.time()
         self._rebalance()
+        print(f"[Expert PLacement Manager] Rebalance took: {time.time() - before_rebalance}s")
 
     # ── rebalance pipeline ────────────────────────────────────
 
@@ -418,21 +430,34 @@ class ExpertPlacementManager:
         """Run optimization on rank 0, broadcast result, migrate weights."""
         my_rank = dist.get_rank(self.ep_group)
 
-        # ── 1. Compute new placement (rank 0 only) ────────────
+        # Derive the correct CUDA device from the local rank within the ep_group.
+        # local_rank == my_rank only when ep_group spans consecutive ranks from 0;
+        # using get_local_rank() is more robust but torch.distributed doesn't expose
+        # it directly – so we resolve it via the global rank's local device index.
+        global_rank = dist.get_rank()   # global rank of this process
+        device = torch.device(f"cuda:{global_rank % torch.cuda.device_count()}")
+
+        # ── 1. Compute new placement (rank 0 of ep_group only) ───
         if my_rank == 0:
             affinity    = self.accumulator.get()   # [E, E] CPU
             new_placement, stats = self.optimizer.optimize(affinity, self.placement)
             self.rebalance_history.append({"step": self.global_step, **stats})
-            logger_ep.info(
-                f"Step {self.global_step} | rebalance: "
+            print(
+                f"[Rank {my_rank}][Expert PLacement Manager] Step {self.global_step} | rebalance: "
                 f"{stats['improve_pct']:.1f}% improvement | {stats['swaps']} swaps"
+                f"placement: {self.placement}, new placement: {new_placement}, affinity"
             )
+            print(f"[Expert PLacement Manager] affinity matrix:\n{affinity}")
+            print(f"[Expert PLacement Manager] stats: {stats}")
         else:
             new_placement = [0] * self.num_experts
 
         # ── 2. Broadcast new placement to all ranks ───────────
-        pt = torch.tensor(new_placement, dtype=torch.int32)
-        dist.broadcast(pt, src=0, group=self.ep_group)
+        # pt must live on the same device that was passed to init_process_group.
+        # src must be the GLOBAL rank of group-rank-0, not always 0.
+        pt = torch.tensor(new_placement, dtype=torch.int32, device=device)
+        group_rank0_global = dist.get_global_rank(self.ep_group, 0)
+        dist.broadcast(pt, src=group_rank0_global, group=self.ep_group)
         new_placement = pt.tolist()
 
         # ── 3. Compute migrations ─────────────────────────────
@@ -462,3 +487,4 @@ class ExpertPlacementManager:
     def pending_migrations(self, new_placement: List[int]) -> List[Tuple[int, int, int]]:
         return [(e, self.placement[e], new_placement[e])
                 for e in range(self.num_experts) if self.placement[e] != new_placement[e]]
+        

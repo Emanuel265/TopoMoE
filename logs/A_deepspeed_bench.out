@@ -1,0 +1,86 @@
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+Using DeepSpeed from: /home/emanuel.schoepf/deepspeed_base/TopoMoE/deepspeed/__init__.py
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2026-03-02 09:24:16,560] [WARNING] [runner.py:232:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+Detected VISIBLE_DEVICES=0,1 but ignoring it because one or several of --include/--exclude/--num_gpus/--num_nodes cl args were used. If you want to use CUDA_VISIBLE_DEVICES don't pass any of these arguments to deepspeed.
+[2026-03-02 09:24:16,561] [INFO] [runner.py:630:main] cmd = /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMCwgMV19 --master_addr=127.0.0.1 --master_port=29500 --enable_each_rank_log=None --log_level=info escho/train.py --deepspeed_config escho/ds_minimal_moe_test.json
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[2026-03-02 09:24:29,871] [INFO] [launch.py:162:main] WORLD INFO DICT: {'localhost': [0, 1]}
+[2026-03-02 09:24:29,871] [INFO] [launch.py:168:main] nnodes=1, num_local_procs=2, node_rank=0
+[2026-03-02 09:24:29,871] [INFO] [launch.py:179:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0, 1]})
+[2026-03-02 09:24:29,871] [INFO] [launch.py:180:main] dist_world_size=2
+[2026-03-02 09:24:29,871] [INFO] [launch.py:182:main] --- [CUSTOM DEBUG] args: Namespace(node_rank=0, master_addr='127.0.0.1', master_port=29500, world_info='eyJsb2NhbGhvc3QiOiBbMCwgMV19', module=False, no_python=False, enable_elastic_training=False, min_elastic_nodes=-1, max_elastic_nodes=-1, no_local_rank=False, save_pid=0, enable_each_rank_log='None', bind_cores_to_rank=False, bind_core_list=None, log_level='info', quiet=False, training_script='escho/train.py', training_script_args=['--deepspeed_config', 'escho/ds_minimal_moe_test.json'], nnodes=1) ---
+[2026-03-02 09:24:29,871] [INFO] [launch.py:186:main] Setting CUDA_VISIBLE_DEVICES=0,1
+[2026-03-02 09:24:29,871] [INFO] [launch.py:274:main] process 1483015 spawned with command: ['/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python', '-u', 'escho/train.py', '--local_rank=0', '--deepspeed_config', 'escho/ds_minimal_moe_test.json']
+[2026-03-02 09:24:29,872] [INFO] [launch.py:274:main] process 1483016 spawned with command: ['/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python', '-u', 'escho/train.py', '--local_rank=1', '--deepspeed_config', 'escho/ds_minimal_moe_test.json']
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+Warning: The cache directory for DeepSpeed Triton autotune, /home/emanuel.schoepf/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+Loaded DeepSpeed config: {'train_batch_size': 512, 'train_micro_batch_size_per_gpu': 8, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 32, 'ep_size': 2, 'capacity_factor': 1.3, 'min_capacity': 4, 'k': 2}, 'comms_logger': {'enabled': False, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}}
+Loaded DeepSpeed config: {'train_batch_size': 512, 'train_micro_batch_size_per_gpu': 8, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 32, 'ep_size': 2, 'capacity_factor': 1.3, 'min_capacity': 4, 'k': 2}, 'comms_logger': {'enabled': False, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}}
+No existing process group found, creating a new group named: ep_size_2
+No existing process group found, creating a new group named: ep_size_2
+Step 0000 | Loss 10.9466 | Aux 7.94504 | Step nanms | Tokens/sec warming up
+Step 0020 | Loss 10.9608 | Aux 7.01862 | Step nanms | Tokens/sec warming up
+Step 0040 | Loss 10.8933 | Aux 8.86132 | Step 206.9ms | Tokens/sec 9,898
+Step 0060 | Loss 10.9713 | Aux 8.06787 | Step 248.3ms | Tokens/sec 8,249
+Step 0080 | Loss 10.8318 | Aux 7.40083 | Step 310.9ms | Tokens/sec 6,587
+Step 0100 | Loss 10.7560 | Aux 7.63506 | Step 362.7ms | Tokens/sec 5,647
+Step 0120 | Loss 10.7964 | Aux 7.76162 | Step 408.0ms | Tokens/sec 5,020
+Step 0140 | Loss 10.6650 | Aux 7.90853 | Step 510.2ms | Tokens/sec 4,014
+Step 0160 | Loss 10.6245 | Aux 7.76005 | Step 606.9ms | Tokens/sec 3,374
+Step 0180 | Loss 10.5368 | Aux 7.58427 | Step 696.5ms | Tokens/sec 2,940
+Step 0200 | Loss 10.5003 | Aux 7.84383 | Step 817.9ms | Tokens/sec 2,504
+  [Eval] Step 200 | Perplexity 38898.31
+Step 0220 | Loss 10.6249 | Aux 7.80612 | Step 964.4ms | Tokens/sec 2,124
+Step 0240 | Loss 10.5471 | Aux 7.83437 | Step 1121.9ms | Tokens/sec 1,825
+Step 0260 | Loss 10.4629 | Aux 8.00892 | Step 1250.1ms | Tokens/sec 1,638
+Step 0280 | Loss 10.5346 | Aux 8.14687 | Step 1381.5ms | Tokens/sec 1,482
+Step 0300 | Loss 10.4871 | Aux 8.08952 | Step 1480.2ms | Tokens/sec 1,384
+Step 0320 | Loss 10.3823 | Aux 7.75699 | Step 1562.6ms | Tokens/sec 1,311
+Step 0340 | Loss 10.3527 | Aux 7.93035 | Step 1625.6ms | Tokens/sec 1,260
+Step 0360 | Loss 10.3651 | Aux 7.60865 | Step 1727.2ms | Tokens/sec 1,186
+Step 0380 | Loss 10.3907 | Aux 7.81951 | Step 1890.5ms | Tokens/sec 1,083
+Step 0400 | Loss 10.3902 | Aux 7.76997 | Step 2004.2ms | Tokens/sec 1,022
+  [Eval] Step 400 | Perplexity 31335.20
+Step 0420 | Loss 10.2404 | Aux 7.63769 | Step 2152.4ms | Tokens/sec 951
+Step 0440 | Loss 10.3573 | Aux 7.60900 | Step 2280.2ms | Tokens/sec 898
+Step 0460 | Loss 10.2393 | Aux 7.52619 | Step 2429.6ms | Tokens/sec 843
+Step 0480 | Loss 10.3211 | Aux 7.89239 | Step 2567.8ms | Tokens/sec 798
+Step 0500 | Loss 10.2938 | Aux 7.50119 | Step 2682.4ms | Tokens/sec 763
+Step 0520 | Loss 10.2151 | Aux 7.44921 | Step 2762.5ms | Tokens/sec 741
+Step 0540 | Loss 10.3494 | Aux 7.59922 | Step 2862.5ms | Tokens/sec 715
+Step 0560 | Loss 10.2311 | Aux 7.48761 | Step 2946.5ms | Tokens/sec 695
+Step 0580 | Loss 10.2384 | Aux 7.43440 | Step 2970.2ms | Tokens/sec 690
+Step 0600 | Loss 10.2610 | Aux 7.34923 | Step 3069.4ms | Tokens/sec 667
+  [Eval] Step 600 | Perplexity 27538.48
+Step 0620 | Loss 10.2216 | Aux 7.31748 | Step 3197.1ms | Tokens/sec 641
+Step 0640 | Loss 10.2144 | Aux 7.37272 | Step 3324.1ms | Tokens/sec 616
+Step 0660 | Loss 10.2452 | Aux 7.33086 | Step 3446.0ms | Tokens/sec 594
+Step 0680 | Loss 10.2345 | Aux 7.82296 | Step 3581.3ms | Tokens/sec 572
+Step 0700 | Loss 10.1273 | Aux 7.26147 | Step 3714.5ms | Tokens/sec 551
+Step 0720 | Loss 10.1485 | Aux 7.03456 | Step 3814.1ms | Tokens/sec 537
+Step 0740 | Loss 10.1094 | Aux 7.03374 | Step 4045.5ms | Tokens/sec 506
+Step 0760 | Loss 10.2121 | Aux 7.15229 | Step 4143.5ms | Tokens/sec 494
+Step 0780 | Loss 10.1871 | Aux 6.99200 | Step 4233.7ms | Tokens/sec 484
+Step 0800 | Loss 10.1793 | Aux 6.99313 | Step 4366.2ms | Tokens/sec 469
+  [Eval] Step 800 | Perplexity 24538.84
+Step 0820 | Loss 10.1018 | Aux 7.05646 | Step 4499.8ms | Tokens/sec 455
+Step 0840 | Loss 10.0695 | Aux 6.95456 | Step 4497.8ms | Tokens/sec 455
+Step 0860 | Loss 10.0863 | Aux 7.06850 | Step 4626.2ms | Tokens/sec 443
+Step 0880 | Loss 10.0379 | Aux 6.91752 | Step 4912.0ms | Tokens/sec 417
+Step 0900 | Loss 9.9758 | Aux 6.95952 | Step 5040.2ms | Tokens/sec 406
+Step 0920 | Loss 9.9358 | Aux 6.86375 | Step 5135.8ms | Tokens/sec 399
+Step 0940 | Loss 10.0921 | Aux 6.86493 | Step 5283.9ms | Tokens/sec 388
+Step 0960 | Loss 9.9752 | Aux 6.89822 | Step 5388.3ms | Tokens/sec 380
+Step 0980 | Loss 10.0921 | Aux 6.86126 | Step 5329.6ms | Tokens/sec 384
+
+==== Benchmark complete ====
+Total time: 3209.6601078510284
+Steps measured (post-warmup): 980
+Step time: 5450.3 ± 461.9 ms  (last 100 steps)
+Throughput: 376 tok/s
+
+==== Final Evaluation ====
+Perplexity: 22571.82
+[2026-03-02 10:21:06,284] [INFO] [launch.py:369:main] Process 1483016 exits successfully.
+[2026-03-02 10:21:07,284] [INFO] [launch.py:369:main] Process 1483015 exits successfully.

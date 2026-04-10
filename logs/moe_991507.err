@@ -1,0 +1,367 @@
+[rank0]:[W410 09:45:00.743711914 ProcessGroupNCCL.cpp:4025] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 0] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 4.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[rank1]:[W410 09:45:00.379008127 ProcessGroupNCCL.cpp:4025] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 1] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 4.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[rank2]:[W410 09:45:00.953286866 ProcessGroupNCCL.cpp:4025] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 2] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 4.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[rank1]:[W410 09:45:00.405211860 ProcessGroupNCCL.cpp:4025] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 1] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 4.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[rank3]:[W410 09:45:00.006168869 ProcessGroupNCCL.cpp:4025] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 3] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 4.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[rank0]:[W410 09:45:00.795558454 ProcessGroupNCCL.cpp:4025] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 0] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 4.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[rank3]:[W410 09:45:00.042722312 ProcessGroupNCCL.cpp:4025] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 3] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 4.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[rank2]:[W410 09:45:00.019309059 ProcessGroupNCCL.cpp:4025] Warning: [PG ID 0 PG GUID 0(default_pg) Rank 2] An unbatched P2P op (send/recv) was called on this ProcessGroup with size 4.  In eager initialization mode, unbatched P2P ops are treated as independent collective ops, and are thus serialized with all other ops on this ProcessGroup, including other P2P ops. To avoid serialization, either create additional independent ProcessGroups for the P2P ops or use batched P2P ops. You can squash this warning by setting the environment variable TORCH_NCCL_SHOW_EAGER_INIT_P2P_SERIALIZATION_WARNING to false. (function operator())
+[W410 10:09:17.187318123 TCPStore.cpp:138] [c10d] recvValueWithTimeout failed on SocketImpl(fd=22, addr=[gc10]:37726, remote=[gc8]:29500): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x73cf58972fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a334ed (0x73ce80dda4ed in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0x16b (0x73ce80dd419b in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x2a (0x73ce80dd462a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x112 (0x73ce80dd47c2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: <unknown function> + 0xe71838 (0x73ce90682838 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #6: <unknown function> + 0x40d94a (0x73ce8fc1e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #30: <unknown function> + 0x2a1ca (0x73cf59ffd1ca in /lib/x86_64-linux-gnu/libc.so.6)
+frame #31: __libc_start_main + 0x8b (0x73cf59ffd28b in /lib/x86_64-linux-gnu/libc.so.6)
+frame #32: _start + 0x25 (0x5d5e87456095 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python)
+
+W0410 10:09:17.315000 87811 torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 87916 closing signal SIGTERM
+[W410 10:09:17.086487430 TCPStore.cpp:138] [c10d] recvValueWithTimeout failed on SocketImpl(fd=22, addr=[gc11]:37460, remote=[gc8]:29500): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x70a428372fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a334ed (0x70a3507da4ed in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0x16b (0x70a3507d419b in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x2a (0x70a3507d462a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x112 (0x70a3507d47c2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: <unknown function> + 0xe71838 (0x70a360082838 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #6: <unknown function> + 0x40d94a (0x70a35f61e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #30: <unknown function> + 0x2a1ca (0x70a4299eb1ca in /lib/x86_64-linux-gnu/libc.so.6)
+frame #31: __libc_start_main + 0x8b (0x70a4299eb28b in /lib/x86_64-linux-gnu/libc.so.6)
+frame #32: _start + 0x25 (0x60b813aaf095 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python)
+
+W0410 10:09:17.581000 3672478 torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 3672583 closing signal SIGTERM
+[W410 10:09:17.764051415 TCPStore.cpp:115] [c10d] recvVector failed on SocketImpl(fd=22, addr=[gc8]:59604, remote=[gc8]:29500): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x723602d72fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a323bd (0x72352b1d93bd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x6a343cf (0x72352b1db3cf in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: c10d::TCPStore::compareSet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&) + 0x1d1 (0x72352b1d60a1 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: <unknown function> + 0xe71bf2 (0x72353aa82bf2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #5: <unknown function> + 0x40d94a (0x72353a01e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #18: <unknown function> + 0x9ca94 (0x7236044a8a94 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #19: <unknown function> + 0x129c3c (0x723604535c3c in /lib/x86_64-linux-gnu/libc.so.6)
+
+W0410 10:09:17.687000 439874 torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1341] The node 'gc8_439874_0' has failed to send a keep-alive heartbeat to the rendezvous '991507' due to an error of type RendezvousConnectionError.
+[W410 10:09:17.791897056 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=22, addr=[gc8]:59604, remote=[gc8]:29500): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x723602d72fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a326d1 (0x72352b1d96d1 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x6a3377c (0x72352b1da77c in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x6a338dd (0x72352b1da8dd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::compareSet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&) + 0x184 (0x72352b1d6054 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: <unknown function> + 0xe71bf2 (0x72353aa82bf2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #6: <unknown function> + 0x40d94a (0x72353a01e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #30: <unknown function> + 0x2a1ca (0x7236044361ca in /lib/x86_64-linux-gnu/libc.so.6)
+frame #31: __libc_start_main + 0x8b (0x72360443628b in /lib/x86_64-linux-gnu/libc.so.6)
+frame #32: _start + 0x25 (0x575dba787095 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python)
+
+W0410 10:09:17.727000 439874 torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 439967 closing signal SIGTERM
+[W410 10:09:17.831601955 TCPStore.cpp:138] [c10d] recvValueWithTimeout failed on SocketImpl(fd=22, addr=[gc9]:39090, remote=[gc8]:29500): Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+Exception raised from recvBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:682 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x7d8b49eddfdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a334ed (0x7d8a723da4ed in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0x16b (0x7d8a723d419b in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x2a (0x7d8a723d462a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x112 (0x7d8a723d47c2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: <unknown function> + 0xe71838 (0x7d8a81c82838 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #6: <unknown function> + 0x40d94a (0x7d8a8121e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #30: <unknown function> + 0x2a1ca (0x7d8b4b57b1ca in /lib/x86_64-linux-gnu/libc.so.6)
+frame #31: __libc_start_main + 0x8b (0x7d8b4b57b28b in /lib/x86_64-linux-gnu/libc.so.6)
+frame #32: _start + 0x25 (0x5daea10e9095 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python)
+
+W0410 10:09:17.753000 2571892 torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 2571996 closing signal SIGTERM
+[W410 10:09:18.135712506 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=22, addr=[gc10]:37726, remote=[gc8]:29500): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x73cf58972fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a326d1 (0x73ce80dd96d1 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x6a3377c (0x73ce80dda77c in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x6a338dd (0x73ce80dda8dd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0xc8 (0x73ce80dd40f8 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x2a (0x73ce80dd462a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x112 (0x73ce80dd47c2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: <unknown function> + 0xe71838 (0x73ce90682838 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x40d94a (0x73ce8fc1e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #21: <unknown function> + 0x9ca94 (0x73cf5a06fa94 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #22: <unknown function> + 0x129c3c (0x73cf5a0fcc3c in /lib/x86_64-linux-gnu/libc.so.6)
+
+W0410 10:09:18.249000 87811 torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1341] The node 'gc10_87811_0' has failed to send a keep-alive heartbeat to the rendezvous '991507' due to an error of type RendezvousConnectionError.
+[W410 10:09:18.285946145 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=22, addr=[gc10]:37726, remote=[gc8]:29500): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x73cf58972fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a326d1 (0x73ce80dd96d1 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x6a3377c (0x73ce80dda77c in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x6a338dd (0x73ce80dda8dd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0xc8 (0x73ce80dd40f8 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x2a (0x73ce80dd462a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x112 (0x73ce80dd47c2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: <unknown function> + 0xe71838 (0x73ce90682838 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x40d94a (0x73ce8fc1e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #30: <unknown function> + 0x2a1ca (0x73cf59ffd1ca in /lib/x86_64-linux-gnu/libc.so.6)
+frame #31: __libc_start_main + 0x8b (0x73cf59ffd28b in /lib/x86_64-linux-gnu/libc.so.6)
+frame #32: _start + 0x25 (0x5d5e87456095 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python)
+
+W0410 10:09:18.406000 87811 torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1293] The node 'gc10_87811_0' has failed to shutdown the rendezvous '991507' due to an error of type RendezvousConnectionError.
+Traceback (most recent call last):
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 114, in _call_store
+    return getattr(self._store, store_op)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.distributed.DistNetworkError: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 995, in <module>
+    main()
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 991, in main
+    run(args)
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 982, in run
+    elastic_launch(
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 308, in launch_agent
+    result = agent.run()
+             ^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/metrics/api.py", line 134, in wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 731, in run
+    result = self._invoke_run(role)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 944, in _invoke_run
+    num_nodes_waiting = rdzv_handler.num_nodes_waiting()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 1264, in num_nodes_waiting
+    self._state_holder.sync()
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 438, in sync
+    get_response = self._backend.get_state()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 75, in get_state
+    base64_state: bytes = self._call_store("get", self._key)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 116, in _call_store
+    raise RendezvousConnectionError(
+torch.distributed.elastic.rendezvous.api.RendezvousConnectionError: The connection to the C10d store has failed. See inner exception for details.
+[W410 10:09:18.004949839 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=22, addr=[gc11]:37460, remote=[gc8]:29500): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x70a428372fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a326d1 (0x70a3507d96d1 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x6a3377c (0x70a3507da77c in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x6a338dd (0x70a3507da8dd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0xc8 (0x70a3507d40f8 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x2a (0x70a3507d462a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x112 (0x70a3507d47c2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: <unknown function> + 0xe71838 (0x70a360082838 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x40d94a (0x70a35f61e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #21: <unknown function> + 0x9ca94 (0x70a429a5da94 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #22: <unknown function> + 0x129c3c (0x70a429aeac3c in /lib/x86_64-linux-gnu/libc.so.6)
+
+W0410 10:09:18.482000 3672478 torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1341] The node 'gc11_3672478_0' has failed to send a keep-alive heartbeat to the rendezvous '991507' due to an error of type RendezvousConnectionError.
+[W410 10:09:18.182942682 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=22, addr=[gc11]:37460, remote=[gc8]:29500): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x70a428372fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a326d1 (0x70a3507d96d1 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x6a3377c (0x70a3507da77c in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x6a338dd (0x70a3507da8dd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0xc8 (0x70a3507d40f8 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x2a (0x70a3507d462a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x112 (0x70a3507d47c2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: <unknown function> + 0xe71838 (0x70a360082838 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x40d94a (0x70a35f61e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #30: <unknown function> + 0x2a1ca (0x70a4299eb1ca in /lib/x86_64-linux-gnu/libc.so.6)
+frame #31: __libc_start_main + 0x8b (0x70a4299eb28b in /lib/x86_64-linux-gnu/libc.so.6)
+frame #32: _start + 0x25 (0x60b813aaf095 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python)
+
+W0410 10:09:18.669000 3672478 torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1293] The node 'gc11_3672478_0' has failed to shutdown the rendezvous '991507' due to an error of type RendezvousConnectionError.
+Traceback (most recent call last):
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 114, in _call_store
+    return getattr(self._store, store_op)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.distributed.DistNetworkError: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 995, in <module>
+    main()
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 991, in main
+    run(args)
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 982, in run
+    elastic_launch(
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 308, in launch_agent
+    result = agent.run()
+             ^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/metrics/api.py", line 134, in wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 731, in run
+    result = self._invoke_run(role)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 944, in _invoke_run
+    num_nodes_waiting = rdzv_handler.num_nodes_waiting()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 1264, in num_nodes_waiting
+    self._state_holder.sync()
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 438, in sync
+    get_response = self._backend.get_state()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 75, in get_state
+    base64_state: bytes = self._call_store("get", self._key)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 116, in _call_store
+    raise RendezvousConnectionError(
+torch.distributed.elastic.rendezvous.api.RendezvousConnectionError: The connection to the C10d store has failed. See inner exception for details.
+[W410 10:09:18.885194287 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=22, addr=[gc9]:39090, remote=[gc8]:29500): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x7d8b49eddfdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a326d1 (0x7d8a723d96d1 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x6a3377c (0x7d8a723da77c in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x6a338dd (0x7d8a723da8dd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::doWait(c10::ArrayRef<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::chrono::duration<long, std::ratio<1l, 1000l> >) + 0xc8 (0x7d8a723d40f8 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: c10d::TCPStore::doGet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x2a (0x7d8a723d462a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #6: c10d::TCPStore::get(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) + 0x112 (0x7d8a723d47c2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #7: <unknown function> + 0xe71838 (0x7d8a81c82838 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #8: <unknown function> + 0x40d94a (0x7d8a8121e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #30: <unknown function> + 0x2a1ca (0x7d8b4b57b1ca in /lib/x86_64-linux-gnu/libc.so.6)
+frame #31: __libc_start_main + 0x8b (0x7d8b4b57b28b in /lib/x86_64-linux-gnu/libc.so.6)
+frame #32: _start + 0x25 (0x5daea10e9095 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python)
+
+W0410 10:09:18.795000 2571892 torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1293] The node 'gc9_2571892_0' has failed to shutdown the rendezvous '991507' due to an error of type RendezvousConnectionError.
+Traceback (most recent call last):
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 114, in _call_store
+    return getattr(self._store, store_op)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.distributed.DistNetworkError: Failed to recv, got 0 bytes. Connection was likely closed. Did the remote server shutdown or crash?
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 995, in <module>
+    main()
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+[W410 10:09:18.885626174 TCPStore.cpp:106] [c10d] sendBytes failed on SocketImpl(fd=22, addr=[gc8]:59604, remote=[gc8]:29500): Broken pipe
+Exception raised from sendBytes at /pytorch/torch/csrc/distributed/c10d/Utils.hpp:653 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x9d (0x723602d72fdd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x6a326d1 (0x72352b1d96d1 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: <unknown function> + 0x6a3377c (0x72352b1da77c in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: <unknown function> + 0x6a338dd (0x72352b1da8dd in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #4: c10d::TCPStore::compareSet(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&) + 0x184 (0x72352b1d6054 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_cpu.so)
+frame #5: <unknown function> + 0xe71bf2 (0x72353aa82bf2 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+frame #6: <unknown function> + 0x40d94a (0x72353a01e94a in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/lib/libtorch_python.so)
+<omitting python frames>
+frame #28: <unknown function> + 0x2a1ca (0x7236044361ca in /lib/x86_64-linux-gnu/libc.so.6)
+frame #29: __libc_start_main + 0x8b (0x72360443628b in /lib/x86_64-linux-gnu/libc.so.6)
+frame #30: _start + 0x25 (0x575dba787095 in /home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/bin/python)
+
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 991, in main
+    run(args)
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 982, in run
+W0410 10:09:18.818000 439874 torch/distributed/elastic/rendezvous/dynamic_rendezvous.py:1293] The node 'gc8_439874_0' has failed to shutdown the rendezvous '991507' due to an error of type RendezvousConnectionError.
+Traceback (most recent call last):
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 114, in _call_store
+    return getattr(self._store, store_op)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.distributed.DistNetworkError: Broken pipe
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 995, in <module>
+    elastic_launch(
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+    main()
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 308, in launch_agent
+    result = agent.run()
+             ^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/metrics/api.py", line 134, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 991, in main
+    run(args)
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/run.py", line 982, in run
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 731, in run
+    result = self._invoke_run(role)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 944, in _invoke_run
+    num_nodes_waiting = rdzv_handler.num_nodes_waiting()
+    elastic_launch(
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 1264, in num_nodes_waiting
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 308, in launch_agent
+    self._state_holder.sync()
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 438, in sync
+    result = agent.run()
+             ^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/metrics/api.py", line 134, in wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 731, in run
+    get_response = self._backend.get_state()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 75, in get_state
+    result = self._invoke_run(role)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/agent/server/api.py", line 944, in _invoke_run
+    base64_state: bytes = self._call_store("get", self._key)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 116, in _call_store
+    raise RendezvousConnectionError(
+torch.distributed.elastic.rendezvous.api.RendezvousConnectionError: The connection to the C10d store has failed. See inner exception for details.
+    num_nodes_waiting = rdzv_handler.num_nodes_waiting()
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 1264, in num_nodes_waiting
+    self._state_holder.sync()
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/dynamic_rendezvous.py", line 424, in sync
+    set_response = self._backend.set_state(state_bits, self._token)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 97, in set_state
+    base64_state: bytes = self._call_store(
+                          ^^^^^^^^^^^^^^^^^
+  File "/home/emanuel.schoepf/.pyenv/versions/3.11.9/envs/venv/lib/python3.11/site-packages/torch/distributed/elastic/rendezvous/c10d_rendezvous_backend.py", line 116, in _call_store
+    raise RendezvousConnectionError(
+torch.distributed.elastic.rendezvous.api.RendezvousConnectionError: The connection to the C10d store has failed. See inner exception for details.
+srun: error: gc10: task 2: Exited with exit code 1
+srun: error: gc11: task 3: Exited with exit code 1
+srun: error: gc9: task 1: Exited with exit code 1
+srun: error: gc8: task 0: Exited with exit code 1

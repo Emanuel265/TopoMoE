@@ -1,0 +1,501 @@
+PYTHONPATH=/home/emanuel.schoepf/deepspeed_custom:
+Using DeepSpeed from: /home/emanuel.schoepf/deepspeed_base/TopoMoE/deepspeed/__init__.py
+MASTER_ADDR=10.30.0.108
+Loaded DeepSpeed config: {'train_batch_size': 2048, 'train_micro_batch_size_per_gpu': 32, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 8, 'ep_size': 4, 'capacity_factor': 1.3, 'min_capacity': 64, 'k': 1}, 'comms_logger': {'enabled': True, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}, 'wall_clock_breakdown': False}
+Using TopoMoE: True
+[CUSTOM DEBUG] comm init_distributed called
+Loaded DeepSpeed config: {'train_batch_size': 2048, 'train_micro_batch_size_per_gpu': 32, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 8, 'ep_size': 4, 'capacity_factor': 1.3, 'min_capacity': 64, 'k': 1}, 'comms_logger': {'enabled': True, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}, 'wall_clock_breakdown': False}
+Using TopoMoE: True
+[CUSTOM DEBUG] comm init_distributed called
+Loaded DeepSpeed config: {'train_batch_size': 2048, 'train_micro_batch_size_per_gpu': 32, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 8, 'ep_size': 4, 'capacity_factor': 1.3, 'min_capacity': 64, 'k': 1}, 'comms_logger': {'enabled': True, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}, 'wall_clock_breakdown': False}
+Using TopoMoE: True
+[CUSTOM DEBUG] comm init_distributed called
+Loaded DeepSpeed config: {'train_batch_size': 2048, 'train_micro_batch_size_per_gpu': 32, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 8, 'ep_size': 4, 'capacity_factor': 1.3, 'min_capacity': 64, 'k': 1}, 'comms_logger': {'enabled': True, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}, 'wall_clock_breakdown': False}
+Using TopoMoE: True
+[CUSTOM DEBUG] comm init_distributed called
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 0 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 1 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 2 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 3 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 4 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 5 with 8 Experts and 4 GPUs
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[MoeLensExporter] Initialized for Layer 0 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 1 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] ShardedMoE init
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 2 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[MoeLensExporter] Initialized for Layer 0 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 3 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 1 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[MoeLensExporter] Initialized for Layer 4 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 2 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 5 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 3 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 4 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 5 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 0 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 1 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 2 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 3 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 4 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+[CUSTOM DEBUG] init 2 Experts ep_size_4
+[CUSTOM DEBUG] ShardedMoE init
+[MoeLensExporter] Initialized for Layer 5 with 8 Experts and 4 GPUs
+[MOELayer] init total num_experts 2 num_local_experts 2, ep_size 4
+Group 'parameters': 58 params
+Group 'ep_size_4': 48 params
+
+=== Loading topology from src/topology.csv ===
+
+Loaded 4 devices and 12 links
+[CUSTOM DEBUG] init
+[CUSTOM DEBUG] comm init_distributed called
+[CUSTOM DEBUG] Initializing DeepSpeedEngine without PipelineModule
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with config: <deepspeed.runtime.config.DeepSpeedConfig object at 0x7f39623a1250>
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with has_moe_layers: False, num_experts: [], gate_modules: [], moe_layers: []
+Group 'parameters': 58 params
+Group 'ep_size_4': 48 params
+
+=== Loading topology from src/topology.csv ===
+
+Loaded 4 devices and 12 links
+Group 'parameters': 58 params
+Group 'ep_size_4': 48 params
+
+=== Loading topology from src/topology.csv ===
+[CUSTOM DEBUG] init
+[CUSTOM DEBUG] comm init_distributed called
+
+Loaded 4 devices and 12 links
+[CUSTOM DEBUG] Initializing DeepSpeedEngine without PipelineModule
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with config: <deepspeed.runtime.config.DeepSpeedConfig object at 0x7e41e231b450>
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with has_moe_layers: False, num_experts: [], gate_modules: [], moe_layers: []
+[CUSTOM DEBUG] init
+[CUSTOM DEBUG] comm init_distributed called
+[CUSTOM DEBUG] Initializing DeepSpeedEngine without PipelineModule
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with config: <deepspeed.runtime.config.DeepSpeedConfig object at 0x739178472b10>
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with has_moe_layers: False, num_experts: [], gate_modules: [], moe_layers: []
+No existing process group found, creating a new group named: ep_size_4
+No existing process group found, creating a new group named: ep_size_4
+Group 'parameters': 58 params
+Group 'ep_size_4': 48 params
+
+=== Loading topology from src/topology.csv ===
+
+Loaded 4 devices and 12 links
+[CUSTOM DEBUG] init
+[CUSTOM DEBUG] comm init_distributed called
+No existing process group found, creating a new group named: ep_size_4
+[CUSTOM DEBUG] Initializing DeepSpeedEngine without PipelineModule
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with config: <deepspeed.runtime.config.DeepSpeedConfig object at 0x70214fd70210>
+[CUSTOM DEBUG] Initializing DeepSpeedEngine with has_moe_layers: False, num_experts: [], gate_modules: [], moe_layers: []
+No existing process group found, creating a new group named: ep_size_4
+1 <bound method DeepSpeedEngine.wall_clock_breakdown of DeepSpeedEngine(
+  (module): MoEGPT(
+    (token_emb): Embedding(50257, 256)
+    (pos_emb): Embedding(128, 256)
+    (layers): ModuleList(
+      (0-5): 6 x TransformerBlock(
+        (ln_attn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (ln_ffn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (moe): MoE(
+          (deepspeed_moe): MOELayer(
+            (gate): TopKGate(
+              (wg): Linear(in_features=256, out_features=8, bias=False)
+            )
+            (experts): Experts(
+              (deepspeed_experts): ModuleList(
+                (0-1): 2 x Sequential(
+                  (0): Linear(in_features=256, out_features=1024, bias=True)
+                  (1): GELU(approximate='none')
+                  (2): Linear(in_features=1024, out_features=256, bias=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ln_f): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    (head): Linear(in_features=256, out_features=50257, bias=False)
+  )
+)>
+2 <bound method DeepSpeedEngine.wall_clock_breakdown of DeepSpeedEngine(
+  (module): MoEGPT(
+    (token_emb): Embedding(50257, 256)
+    (pos_emb): Embedding(128, 256)
+    (layers): ModuleList(
+      (0-5): 6 x TransformerBlock(
+        (ln_attn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (ln_ffn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (moe): MoE(
+          (deepspeed_moe): MOELayer(
+            (gate): TopKGate(
+              (wg): Linear(in_features=256, out_features=8, bias=False)
+            )
+            (experts): Experts(
+              (deepspeed_experts): ModuleList(
+                (0-1): 2 x Sequential(
+                  (0): Linear(in_features=256, out_features=1024, bias=True)
+                  (1): GELU(approximate='none')
+                  (2): Linear(in_features=1024, out_features=256, bias=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ln_f): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    (head): Linear(in_features=256, out_features=50257, bias=False)
+  )
+)>
+[Rank 0] time (ms)
+0 <bound method DeepSpeedEngine.wall_clock_breakdown of DeepSpeedEngine(
+  (module): MoEGPT(
+    (token_emb): Embedding(50257, 256)
+    (pos_emb): Embedding(128, 256)
+    (layers): ModuleList(
+      (0-5): 6 x TransformerBlock(
+        (ln_attn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (ln_ffn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (moe): MoE(
+          (deepspeed_moe): MOELayer(
+            (gate): TopKGate(
+              (wg): Linear(in_features=256, out_features=8, bias=False)
+            )
+            (experts): Experts(
+              (deepspeed_experts): ModuleList(
+                (0-1): 2 x Sequential(
+                  (0): Linear(in_features=256, out_features=1024, bias=True)
+                  (1): GELU(approximate='none')
+                  (2): Linear(in_features=1024, out_features=256, bias=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ln_f): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    (head): Linear(in_features=256, out_features=50257, bias=False)
+  )
+)>
+3 <bound method DeepSpeedEngine.wall_clock_breakdown of DeepSpeedEngine(
+  (module): MoEGPT(
+    (token_emb): Embedding(50257, 256)
+    (pos_emb): Embedding(128, 256)
+    (layers): ModuleList(
+      (0-5): 6 x TransformerBlock(
+        (ln_attn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (ln_ffn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (moe): MoE(
+          (deepspeed_moe): MOELayer(
+            (gate): TopKGate(
+              (wg): Linear(in_features=256, out_features=8, bias=False)
+            )
+            (experts): Experts(
+              (deepspeed_experts): ModuleList(
+                (0-1): 2 x Sequential(
+                  (0): Linear(in_features=256, out_features=1024, bias=True)
+                  (1): GELU(approximate='none')
+                  (2): Linear(in_features=1024, out_features=256, bias=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ln_f): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    (head): Linear(in_features=256, out_features=50257, bias=False)
+  )
+)>
+Step 0000 | Loss 11.5891 | Aux 7.60989 | Step nanms | Tokens/sec warming up
+Step 0010 | Loss 11.5661 | Aux 7.77051 | Step nanms | Tokens/sec warming up
+Step 0020 | Loss 11.4722 | Aux 6.90972 | Step 493.6ms | Tokens/sec 33,196
+[Expert Placement Manager] Step 25 — rebalancing. Next Rebalance(s) at: []
+[Expert Placement Manager] Step 25 — rebalancing. Next Rebalance(s) at: []
+[Expert Placement Manager] Step 25 — rebalancing. Next Rebalance(s) at: []
+[Expert Placement Manager] Step 25 — rebalancing. Next Rebalance(s) at: []
+Rank 0: Before rebalance - Layer 0 Expert 0 hash: c880bf5b
+Rank 0: Before rebalance - Layer 0 Expert 1 hash: f9d11708
+Rank 0: Before rebalance - Layer 1 Expert 0 hash: 54a53214
+Rank 0: Before rebalance - Layer 1 Expert 1 hash: 40ecde7a
+Rank 0: Before rebalance - Layer 2 Expert 0 hash: b15308b7
+Rank 0: Before rebalance - Layer 2 Expert 1 hash: a9701d05
+Rank 0: Before rebalance - Layer 3 Expert 0 hash: a5dd5ccb
+Rank 0: Before rebalance - Layer 3 Expert 1 hash: 6a7a440e
+Rank 0: Before rebalance - Layer 4 Expert 0 hash: 4f437969
+Rank 0: Before rebalance - Layer 4 Expert 1 hash: face860c
+Rank 0: Before rebalance - Layer 5 Expert 0 hash: 787b49ed
+Rank 0: Before rebalance - Layer 5 Expert 1 hash: 531466cc
+GetPlacement: iter 0: improved cost -> 0.462761 (expert 1 → 1)
+GetPlacement: iter 5: improved cost -> 0.402948 (expert 6 → 0)
+GetPlacement: iter 6: improved cost -> 0.357034 (expert 0 → 1)
+GetPlacement: iter 16: improved cost -> 0.354245 (expert 3 → 2)
+GetPlacement: iter 22: improved cost -> 0.353059 (expert 1 → 2)
+GetPlacement: final placement: [1, 2, 1, 2, 2, 2, 0, 3]
+GetPlacement: replica placement: [0, 3, 0, 1, 3, 0, 1, 0]
+[Expert Placement Manager] affinity:
+tensor([[2.7592e+04, 4.3940e+03, 1.1140e+03, 4.8230e+03, 3.1760e+03, 2.7290e+03,
+         1.6274e+05, 5.8139e+04],
+        [1.4130e+03, 1.5100e+02, 1.4000e+01, 1.2300e+02, 1.7100e+02, 3.2100e+02,
+         3.8300e+02, 4.3420e+03],
+        [9.0430e+03, 3.9400e+02, 1.6100e+02, 1.3450e+03, 4.1500e+02, 3.9600e+02,
+         6.3992e+04, 6.3790e+03],
+        [7.0430e+03, 1.0230e+03, 6.1700e+02, 2.4430e+03, 5.4900e+02, 1.1170e+03,
+         2.0320e+03, 2.0880e+04],
+        [8.5600e+02, 1.2610e+03, 6.7300e+02, 2.3600e+03, 9.4000e+01, 3.7900e+02,
+         1.4210e+03, 2.4540e+03],
+        [6.9500e+02, 1.7400e+02, 5.8000e+01, 3.3200e+02, 7.2000e+01, 2.8900e+02,
+         3.7900e+02, 3.3130e+03],
+        [1.9440e+03, 1.3900e+02, 1.1300e+02, 4.8000e+02, 1.8700e+02, 2.8000e+02,
+         4.4000e+02, 6.1570e+03],
+        [1.6070e+03, 1.4360e+03, 2.8800e+02, 4.2500e+02, 2.6100e+02, 4.6700e+02,
+         4.4400e+02, 7.0500e+03]])
+migrations: [(0, 0, 1), (1, 0, 2), (3, 1, 2), (6, 3, 0)], new placement: [1, 2, 1, 2, 2, 2, 0, 3]
+migrations: [(0, 0, 1), (1, 0, 2), (3, 1, 2), (6, 3, 0)], new placement: [1, 2, 1, 2, 2, 2, 0, 3]
+migrations: [(0, 0, 1), (1, 0, 2), (3, 1, 2), (6, 3, 0)], new placement: [1, 2, 1, 2, 2, 2, 0, 3]
+migrations: [(0, 0, 1), (1, 0, 2), (3, 1, 2), (6, 3, 0)], new placement: [1, 2, 1, 2, 2, 2, 0, 3]
+Rank 2: executing 4 expert migrations for layer 1
+Rank 0: executing 4 expert migrations for layer 1
+Rank 1: executing 4 expert migrations for layer 1
+Rank 3: executing 4 expert migrations for layer 1
+migrations: [(0, 0, 1), (1, 0, 1), (3, 1, 3), (4, 2, 0), (6, 3, 0), (7, 3, 1)], new placement: [1, 1, 1, 3, 0, 2, 0, 1]
+migrations: [(0, 0, 1), (1, 0, 1), (3, 1, 3), (4, 2, 0), (6, 3, 0), (7, 3, 1)], new placement: [1, 1, 1, 3, 0, 2, 0, 1]
+migrations: [(0, 0, 1), (1, 0, 1), (3, 1, 3), (4, 2, 0), (6, 3, 0), (7, 3, 1)], new placement: [1, 1, 1, 3, 0, 2, 0, 1]
+Rank 2: executing 6 expert migrations for layer 2
+Rank 1: executing 6 expert migrations for layer 2
+Rank 3: executing 6 expert migrations for layer 2
+GetPlacement: iter 0: improved cost -> 0.493065 (expert 4 → 0)
+GetPlacement: iter 1: improved cost -> 0.365942 (expert 3 → 3)
+GetPlacement: iter 6: improved cost -> 0.359327 (expert 7 → 0)
+GetPlacement: iter 11: improved cost -> 0.351384 (expert 1 → 1)
+GetPlacement: iter 35: improved cost -> 0.349266 (expert 7 → 1)
+GetPlacement: final placement: [1, 1, 1, 3, 0, 2, 0, 1]
+GetPlacement: replica placement: [2, 3, 0, 2, 3, 0, 2, 3]
+[Expert Placement Manager] affinity:
+tensor([[4.4600e+02, 1.4790e+03, 4.3900e+02, 2.9255e+04, 2.0290e+03, 8.7460e+03,
+         6.4380e+03, 1.3610e+03],
+        [1.2300e+02, 4.0800e+02, 9.8000e+01, 3.3020e+03, 8.0600e+02, 2.3400e+02,
+         1.0890e+03, 2.9120e+03],
+        [1.7000e+01, 1.0600e+02, 1.4400e+02, 1.1440e+03, 2.0600e+02, 1.4100e+02,
+         1.8200e+02, 1.0980e+03],
+        [2.1700e+02, 1.5840e+03, 8.2000e+01, 6.8710e+03, 8.2800e+02, 2.0000e+02,
+         1.6770e+03, 8.7200e+02],
+        [7.5000e+01, 2.1700e+02, 8.0000e+00, 3.6470e+03, 5.2200e+02, 5.8000e+01,
+         2.2900e+02, 1.6900e+02],
+        [1.7000e+01, 8.8000e+01, 2.0000e+01, 3.4800e+03, 7.0200e+02, 1.9900e+02,
+         1.0120e+03, 4.6000e+02],
+        [4.2000e+02, 6.3100e+02, 1.4400e+02, 2.4571e+04, 1.0390e+03, 2.0247e+05,
+         1.1170e+03, 1.4420e+03],
+        [2.1980e+03, 4.1400e+03, 2.4400e+02, 6.7769e+04, 8.6320e+03, 8.4300e+02,
+         1.7566e+04, 7.3220e+03]])
+migrations: [(0, 0, 1), (1, 0, 1), (3, 1, 3), (4, 2, 0), (6, 3, 0), (7, 3, 1)], new placement: [1, 1, 1, 3, 0, 2, 0, 1]
+Rank 0: executing 6 expert migrations for layer 2
+GetPlacement: iter 0: improved cost -> 0.323061 (expert 0 → 0)
+GetPlacement: iter 20: improved cost -> 0.322969 (expert 6 → 1)
+GetPlacement: iter 41: improved cost -> 0.322890 (expert 2 → 0)
+GetPlacement: final placement: [0, 1, 0, 3, 0, 2, 1, 1]
+GetPlacement: replica placement: [2, 3, 2, 0, 3, 1, 2, 3]
+[Expert Placement Manager] affinity:
+tensor([[3.5100e+02, 1.4800e+02, 1.4300e+02, 5.7400e+02, 8.0000e+00, 6.9700e+02,
+         1.3890e+03, 2.0300e+02],
+        [1.4750e+03, 3.7700e+02, 2.1500e+02, 1.9450e+03, 5.7300e+02, 1.4800e+03,
+         9.4800e+02, 1.6400e+03],
+        [8.6000e+01, 5.1000e+01, 1.9000e+01, 2.7800e+02, 2.2100e+02, 4.0400e+02,
+         8.4000e+01, 3.6000e+01],
+        [2.5770e+04, 9.1860e+03, 1.1020e+03, 3.7536e+04, 1.4434e+04, 1.2228e+04,
+         5.0360e+03, 3.4747e+04],
+        [1.6710e+03, 8.9100e+02, 1.5900e+02, 2.8910e+03, 3.7380e+03, 1.6390e+03,
+         4.4600e+02, 3.3290e+03],
+        [1.5040e+03, 1.1880e+03, 2.2000e+01, 1.4535e+05, 2.7900e+02, 6.0009e+04,
+         3.2900e+02, 4.2110e+03],
+        [8.8790e+03, 4.9500e+02, 1.0800e+02, 2.4510e+03, 5.9870e+03, 2.3620e+03,
+         3.1060e+03, 5.9220e+03],
+        [2.3560e+03, 7.3500e+02, 2.6700e+02, 3.5770e+03, 2.9910e+03, 9.9900e+02,
+         1.2310e+03, 3.4800e+03]])
+migrations: [(1, 0, 1), (2, 1, 0), (3, 1, 3), (4, 2, 0), (6, 3, 1), (7, 3, 1)], new placement: [0, 1, 0, 3, 0, 2, 1, 1]
+migrations: [(1, 0, 1), (2, 1, 0), (3, 1, 3), (4, 2, 0), (6, 3, 1), (7, 3, 1)], new placement: [0, 1, 0, 3, 0, 2, 1, 1]
+migrations: [(1, 0, 1), (2, 1, 0), (3, 1, 3), (4, 2, 0), (6, 3, 1), (7, 3, 1)], new placement: [0, 1, 0, 3, 0, 2, 1, 1]
+migrations: [(1, 0, 1), (2, 1, 0), (3, 1, 3), (4, 2, 0), (6, 3, 1), (7, 3, 1)], new placement: [0, 1, 0, 3, 0, 2, 1, 1]
+Rank 2: executing 6 expert migrations for layer 3
+Rank 0: executing 6 expert migrations for layer 3
+Rank 1: executing 6 expert migrations for layer 3
+Rank 3: executing 6 expert migrations for layer 3
+GetPlacement: iter 3: improved cost -> 0.370102 (expert 4 → 2)
+GetPlacement: iter 7: improved cost -> 0.365082 (expert 0 → 2)
+GetPlacement: iter 14: improved cost -> 0.361927 (expert 7 → 3)
+GetPlacement: iter 15: improved cost -> 0.361274 (expert 4 → 3)
+GetPlacement: iter 28: improved cost -> 0.353652 (expert 6 → 2)
+GetPlacement: final placement: [2, 1, 0, 3, 3, 2, 2, 3]
+GetPlacement: replica placement: [0, 0, 1, 1, 0, 1, 3, 2]
+[Expert Placement Manager] affinity:
+tensor([[8.3000e+02, 3.3023e+04, 9.3600e+02, 1.5380e+03, 1.5340e+03, 3.3420e+03,
+         4.3200e+02, 4.5700e+02],
+        [2.1410e+03, 5.1310e+03, 1.8270e+03, 1.0360e+03, 6.7300e+02, 1.5400e+03,
+         4.5800e+02, 2.6500e+02],
+        [1.6400e+02, 7.3100e+02, 1.9600e+02, 2.5000e+02, 2.3500e+02, 4.0600e+02,
+         1.0000e+00, 5.2000e+01],
+        [9.9900e+02, 8.9681e+04, 9.3266e+04, 8.5600e+02, 6.9320e+03, 7.8800e+02,
+         1.9170e+03, 1.6100e+02],
+        [9.9800e+02, 2.1669e+04, 8.2200e+02, 7.8700e+02, 1.8570e+03, 1.2740e+03,
+         5.3100e+02, 2.9300e+02],
+        [6.9900e+02, 1.5701e+04, 5.4596e+04, 1.0230e+03, 1.9900e+02, 2.7990e+03,
+         3.9590e+03, 8.4200e+02],
+        [1.9650e+03, 4.1180e+03, 7.2200e+02, 1.2610e+03, 1.8440e+03, 2.4790e+03,
+         6.0000e+00, 1.7400e+02],
+        [1.2780e+03, 3.9175e+04, 2.5220e+03, 3.8250e+03, 1.5300e+02, 3.3360e+03,
+         2.0830e+03, 1.1960e+03]])
+migrations: [(0, 0, 2), (1, 0, 1), (2, 1, 0), (3, 1, 3), (4, 2, 3), (6, 3, 2)], new placement: [2, 1, 0, 3, 3, 2, 2, 3]
+migrations: [(0, 0, 2), (1, 0, 1), (2, 1, 0), (3, 1, 3), (4, 2, 3), (6, 3, 2)], new placement: [2, 1, 0, 3, 3, 2, 2, 3]
+migrations: [(0, 0, 2), (1, 0, 1), (2, 1, 0), (3, 1, 3), (4, 2, 3), (6, 3, 2)], new placement: [2, 1, 0, 3, 3, 2, 2, 3]
+migrations: [(0, 0, 2), (1, 0, 1), (2, 1, 0), (3, 1, 3), (4, 2, 3), (6, 3, 2)], new placement: [2, 1, 0, 3, 3, 2, 2, 3]
+Rank 2: executing 6 expert migrations for layer 4
+Rank 0: executing 6 expert migrations for layer 4
+Rank 3: executing 6 expert migrations for layer 4
+Rank 1: executing 6 expert migrations for layer 4
+GetPlacement: iter 0: improved cost -> 0.398701 (expert 5 → 1)
+GetPlacement: iter 1: improved cost -> 0.337908 (expert 3 → 1)
+GetPlacement: iter 3: improved cost -> 0.337338 (expert 1 → 2)
+GetPlacement: iter 12: improved cost -> 0.337317 (expert 5 → 3)
+GetPlacement: iter 14: improved cost -> 0.337283 (expert 5 → 0)
+GetPlacement: iter 18: improved cost -> 0.334272 (expert 1 → 3)
+GetPlacement: iter 23: improved cost -> 0.333221 (expert 0 → 3)
+GetPlacement: iter 29: improved cost -> 0.332971 (expert 1 → 2)
+GetPlacement: iter 41: improved cost -> 0.321898 (expert 4 → 0)
+GetPlacement: iter 47: improved cost -> 0.321131 (expert 2 → 3)
+GetPlacement: final placement: [3, 2, 3, 1, 0, 0, 2, 3]
+GetPlacement: replica placement: [1, 0, 1, 2, 1, 2, 0, 0]
+[Expert Placement Manager] affinity:
+tensor([[3.6700e+02, 3.0800e+02, 1.3800e+02, 2.7000e+01, 3.6180e+03, 1.0000e+00,
+         4.5870e+03, 2.8000e+01],
+        [1.8832e+04, 9.1830e+03, 1.6040e+03, 5.2227e+04, 3.4916e+04, 7.9000e+01,
+         9.1948e+04, 4.4000e+02],
+        [2.1780e+03, 4.9400e+02, 6.0000e+01, 1.0206e+05, 4.5796e+04, 0.0000e+00,
+         4.2760e+03, 2.7000e+01],
+        [9.0100e+02, 7.3100e+02, 1.6900e+02, 8.3000e+01, 1.2200e+03, 0.0000e+00,
+         7.3680e+03, 1.0400e+02],
+        [5.0000e+01, 5.9000e+02, 2.5000e+01, 2.3000e+01, 1.1492e+04, 0.0000e+00,
+         1.2420e+03, 5.0000e+00],
+        [1.7310e+03, 2.4160e+03, 2.5600e+02, 2.0500e+02, 2.1200e+03, 0.0000e+00,
+         8.9250e+03, 3.1100e+02],
+        [2.4550e+03, 6.0000e+01, 0.0000e+00, 4.5590e+03, 2.6200e+02, 0.0000e+00,
+         2.0510e+03, 0.0000e+00],
+        [2.8400e+02, 1.7000e+01, 1.7000e+02, 7.0000e+01, 1.0800e+02, 0.0000e+00,
+         2.7680e+03, 2.3000e+01]])
+migrations: [(0, 0, 3), (1, 0, 2), (2, 1, 3), (4, 2, 0), (5, 2, 0), (6, 3, 2)], new placement: [3, 2, 3, 1, 0, 0, 2, 3]
+migrations: [(0, 0, 3), (1, 0, 2), (2, 1, 3), (4, 2, 0), (5, 2, 0), (6, 3, 2)], new placement: [3, 2, 3, 1, 0, 0, 2, 3]
+migrations: [(0, 0, 3), (1, 0, 2), (2, 1, 3), (4, 2, 0), (5, 2, 0), (6, 3, 2)], new placement: [3, 2, 3, 1, 0, 0, 2, 3]
+migrations: [(0, 0, 3), (1, 0, 2), (2, 1, 3), (4, 2, 0), (5, 2, 0), (6, 3, 2)], new placement: [3, 2, 3, 1, 0, 0, 2, 3]
+Rank 0: executing 6 expert migrations for layer 5
+Rank 2: executing 6 expert migrations for layer 5
+Rank 1: executing 6 expert migrations for layer 5
+Rank 3: executing 6 expert migrations for layer 5
+[Expert Placement Manager] Rebalance took: 0.300s
+[Expert Placement Manager] Rebalance took: 0.300s
+[Expert Placement Manager] Rebalance took: 0.301s
+Rank 0: After rebalance - Layer 0 Expert 0 hash: c880bf5b
+Rank 0: After rebalance - Layer 0 Expert 1 hash: f9d11708
+Rank 0: After rebalance - Layer 1 Expert 0 hash: 494e1b7c
+Rank 0: After rebalance - Layer 1 Expert 1 hash: 40ecde7a
+Rank 0: After rebalance - Layer 2 Expert 0 hash: d68d872e
+Rank 0: After rebalance - Layer 2 Expert 1 hash: a9701d05
+Rank 0: After rebalance - Layer 3 Expert 0 hash: 6d97def8
+Rank 0: After rebalance - Layer 3 Expert 1 hash: 6a7a440e
+Rank 0: After rebalance - Layer 4 Expert 0 hash: 988b97bd
+Rank 0: After rebalance - Layer 4 Expert 1 hash: face860c
+Rank 0: After rebalance - Layer 5 Expert 0 hash: 111750e1
+Rank 0: After rebalance - Layer 5 Expert 1 hash: 531466cc
+[Expert Placement Manager] Rebalance took: 0.300s
+[Rank 0] time (ms)
+Step 0030 | Loss 11.4842 | Aux 7.10731 | Step 600.1ms | Tokens/sec 27,303
+Step 0040 | Loss 11.3651 | Aux 6.54131 | Step 703.2ms | Tokens/sec 23,300
+Step 0050 | Loss 11.3092 | Aux 6.45137 | Step 804.6ms | Tokens/sec 20,363
+Step 0060 | Loss 11.3181 | Aux 6.38380 | Step 900.9ms | Tokens/sec 18,186
+Step 0070 | Loss 11.2433 | Aux 6.41734 | Step 1052.6ms | Tokens/sec 15,566
+Step 0080 | Loss 11.1931 | Aux 6.46183 | Step 1146.9ms | Tokens/sec 14,286
+Step 0090 | Loss 11.1635 | Aux 6.47833 | Step 1248.6ms | Tokens/sec 13,122
+Step 0100 | Loss 11.1511 | Aux 6.43271 | Step 1348.3ms | Tokens/sec 12,151
+Step 0110 | Loss 11.1570 | Aux 6.49182 | Step 1487.3ms | Tokens/sec 11,016
+Step 0120 | Loss 11.0729 | Aux 6.43196 | Step 1595.1ms | Tokens/sec 10,271

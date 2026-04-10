@@ -21,11 +21,16 @@ class MoeLensExporter:
     sie als JSON für das MoeLens-Dashboard.
     """
 
-    def __init__(self, placement_manager, layer_id: int = 0, total_steps: int = 0):
+    def __init__(self, placement_manager, layer_id=0, total_steps=0,
+                 num_experts=None, num_gpus=None):
         self.manager    = placement_manager
         self.layer_id   = layer_id
         self.total_steps = total_steps
         self.comm_matrices = []   # {step, matrix}
+        self.num_experts  = num_experts or (placement_manager.ep_size * placement_manager.num_local_experts)
+        self.num_gpus     = num_gpus    or placement_manager.ep_size
+
+        print(f"[MoeLensExporter] Initialized for Layer {layer_id} with {self.num_experts} Experts and {self.num_gpus} GPUs")
 
     def record_comm_matrix(self, step: int, comm_matrix: torch.Tensor):
         """
@@ -35,8 +40,9 @@ class MoeLensExporter:
 
         Speichert jede 50. Matrix, um die Datei klein zu halten.
         """
-        if step % 50 != 0:
-            return
+        # print(f"[MoeLensExporter] Layer {self.layer_id} | Schritt {step} | Comm-Matrix:")
+        # if step % 50 != 0:
+        #     return
         self.comm_matrices.append({
             "step": step,
             "matrix": comm_matrix.cpu().tolist(),
@@ -45,11 +51,12 @@ class MoeLensExporter:
     def save(self, path: str):
         """Exportiert alle gesammelten Daten als JSON."""
         m   = self.manager
-        nE  = m.num_experts
-        nG  = m.ep_size
+        nE = self.num_experts   # ← jetzt korrekt
+        nG = self.num_gpus
 
         # Rebalancing-History aus dem Manager
         history = []
+        print(f"[MoELens] Manager history: {m.rebalance_history}")
         for event in m.rebalance_history:
             history.append({
                 "step":          event["step"],

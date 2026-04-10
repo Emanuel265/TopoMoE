@@ -17,4 +17,7 @@ import deepspeed
 print("Using DeepSpeed from:", deepspeed.__file__)
 EOF
 
-deepspeed --num_gpus=2 train.py
+deepspeed --num_gpus 2 \
+          escho_copy/train.py \
+          --deepspeed \
+          --deepspeed_config escho_copy/ds_minimal_moe_test.json

@@ -14,7 +14,6 @@ from ..utils import logger
 class Experts(nn.Module):
 
     def __init__(self, expert: nn.Module, num_local_experts: int = 1, expert_group_name: Optional[str] = None) -> None:
-        print("[CUSTOM DEBUG] test3")
         super(Experts, self).__init__()
 
         print(f"[CUSTOM DEBUG] init {num_local_experts} Experts {expert_group_name if expert_group_name is not None else 'None'}")
@@ -33,7 +32,6 @@ class Experts(nn.Module):
         chunks = inputs.chunk(self.num_local_experts, dim=1)
         expert_outputs: List[torch.Tensor] = []
 
-        print("[CUSTOM DEBUG] test4")
         # print(f"[CUSTOM DEBUG] {inputs}")
         logger.info(f"[CUSTOM DEBUG] Experts forward, input shape: {inputs.shape}, num_local_experts: {self.num_local_experts}")
 
@@ -45,31 +43,20 @@ class Experts(nn.Module):
 
         return torch.cat(expert_outputs, dim=1)
 
-    # ------------------------------------------------------------
-    # Read helpers
-    # ------------------------------------------------------------
-
     def get_expert_state_dict(self, local_expert_idx: int) -> dict:
-        """
-        Return a detached, cloned state_dict of a local expert.
-
-        Safe to call during training (read-only).
-        """
-        expert = self.get_expert(local_expert_idx)
+        # Ohne get_expert() – direkt auf ModuleList zugreifen:
+        expert = self.deepspeed_experts[local_expert_idx]
         return {k: v.detach().clone() for k, v in expert.state_dict().items()}
 
-    # ------------------------------------------------------------
-    # Write helpers
-    # ------------------------------------------------------------
-
     def load_expert_state_dict(self, local_expert_idx: int, state_dict: dict, strict: bool = True) -> None:
-        """
-        Overwrite the weights of a local expert.
-
-        IMPORTANT:
-        - Must be called under torch.no_grad()
-        - Should be called only at synchronization-safe points
-        """
-        expert = self.get_expert(local_expert_idx)
+        expert = self.deepspeed_experts[local_expert_idx]
         with torch.no_grad():
             expert.load_state_dict(state_dict, strict=strict)
+
+    def get_expert(self, local_expert_idx: int) -> nn.Module:
+        """Returns the expert module at the given local index."""
+        return self.deepspeed_experts[local_expert_idx]
+
+    def get_expert_state_dict(self, local_expert_idx: int) -> dict:
+        expert = self.get_expert(local_expert_idx)   # ← funktioniert jetzt
+        return {k: v.detach().clone() for k, v in expert.state_dict().items()}

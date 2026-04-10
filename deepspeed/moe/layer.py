@@ -38,6 +38,7 @@ class MoE(nn.Module):
 
     def __init__(self,
                  layer_i,
+                 expert_placement_config,
                  hidden_size: int,
                  expert: nn.Module,
                  num_experts: int = 1,
@@ -50,7 +51,7 @@ class MoE(nn.Module):
                  noisy_gate_policy: Optional[str] = None,
                  drop_tokens: bool = True,
                  use_rts: bool = True,
-                 use_tutel: bool = False,
+                 use_tutel: bool = True,
                  enable_expert_tensor_parallelism: bool = False,
                  top2_2nd_expert_sampling: bool = True) -> None:
 
@@ -76,6 +77,7 @@ class MoE(nn.Module):
         experts = Experts(expert, self.num_local_experts, self.expert_group_name)
         self.registry = ExpertRegistry(self.num_local_experts)
         self.deepspeed_moe = MOELayer(layer_i,
+                                      expert_placement_config,
                                       TopKGate(hidden_size, num_experts, k, capacity_factor, eval_capacity_factor,
                                                min_capacity, noisy_gate_policy, drop_tokens, use_rts, None,
                                                top2_2nd_expert_sampling),

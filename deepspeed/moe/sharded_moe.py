@@ -15,10 +15,13 @@ The file has been adapted from two fairscale files:
 # This source code is licensed under the BSD license found in the
 # LICENSE file in the root directory of this source tree.
 
+import math
+import time
+
 from deepspeed.utils.timer import SynchronizedWallClockTimer
 from deepspeed.utils import logger
 from deepspeed.utils.bwc import bwc_tensor_model_parallel_world_size
-from typing import Callable, Dict, TYPE_CHECKING, Any, Optional, Tuple, Union
+from typing import Callable, Dict, TYPE_CHECKING, Any, List, Optional, Tuple, Union
 
 import torch
 from torch import Tensor
@@ -53,6 +56,7 @@ try:
     TUTEL_INSTALLED = True
 except:
     # Fail silently so we don't spam logs unnecessarily if user isn't using tutel
+    print("TUTEL cannot be installed")
     TUTEL_INSTALLED = False
     pass
 
@@ -112,6 +116,63 @@ class _AllToAll(torch.autograd.Function):
     def backward(ctx: Any, *grad_output: Tensor) -> Tuple[None, Tensor]:
         return (None, _AllToAll.apply(ctx.group, *grad_output))
 
+class _PartialAllToAll(torch.autograd.Function):
+
+    @staticmethod
+    def forward(ctx, group: dist.ProcessGroup, input: Tensor, 
+                input_split_sizes: List[int], output_split_sizes: List[int]) -> Tensor:
+        ctx.group = group
+        ctx.input_split_sizes = input_split_sizes
+        ctx.output_split_sizes = output_split_sizes
+
+        input = input.contiguous()
+        rank = dist.get_rank(group)
+        world_size = dist.get_world_size(group)
+
+        # single GPU
+        if world_size == 1 or input_split_sizes[rank] == sum(input_split_sizes):
+            return input
+
+        # Fast path 3: zero remote tokens to/from some ranks
+        # all_to_all_single with split sizes already skips zero-byte transfers
+        # but we still pay the barrier — at least we minimize bandwidth
+        output = torch.empty(
+            [sum(output_split_sizes)] + list(input.shape[1:]),
+            dtype=input.dtype,
+            device=input.device
+        )
+
+        # Copy local slice directly without going through network
+        local_input_offset  = sum(input_split_sizes[:rank])
+        local_output_offset = sum(output_split_sizes[:rank])
+        local_size = input_split_sizes[rank]  # tokens staying on this GPU
+
+        # Only call all_to_all for remote portions
+        dist.all_to_all_single(
+            output, input,
+            output_split_sizes=output_split_sizes,
+            input_split_sizes=input_split_sizes,
+            group=group
+        )
+
+        # Overwrite local slice with direct copy (no network round-trip)
+        if local_size > 0:
+            output[local_output_offset:local_output_offset + local_size].copy_(
+                input[local_input_offset:local_input_offset + local_size]
+            )
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output: Tensor):
+        # all_to_all is its own inverse — swap split sizes
+        grad_input = _PartialAllToAll.apply(
+            ctx.group,
+            grad_output,
+            ctx.output_split_sizes,  # swapped
+            ctx.input_split_sizes,   # swapped
+        )
+        return None, grad_input, None, None
 
 # einsum rewrites are on par or more performant
 # switch can be bubbled up in future
@@ -558,6 +619,7 @@ class MOELayer(Base):
 
     def __init__(self,
                  layer_i,
+                 placement_manager_config,
                  gate: Module,
                  experts: Module,
                  ep_group_name,
@@ -584,16 +646,18 @@ class MOELayer(Base):
             ep_group          = None,
             num_local_experts = num_local_experts,
             ep_size           = ep_size,
-            config            = ExpertPlacementConfig(
-                rebalance_every_n_steps = 200,
-                warmup_steps            = 300,
-            ),
+            config            = placement_manager_config,
         )
-        self.moelens = MoeLensExporter(self.placement_manager, layer_id=layer_i)
-
+        self.moelens = MoeLensExporter(
+            placement_manager = self.placement_manager,
+            layer_id          = layer_i,
+            num_experts       = ep_size * num_local_experts,
+            num_gpus          = ep_size,
+        )
         self.use_tutel = use_tutel and TUTEL_INSTALLED and gate.k == 1
+        self._routing_callback = None
 
-                
+        print(f"[MOELayer] init total num_experts {len(self.experts.deepspeed_experts)} num_local_experts {self.num_local_experts}, ep_size {self.ep_size}")  
 
         if self.use_tutel:
             logger.info('Using Tutel optimizations.')
@@ -608,6 +672,42 @@ class MOELayer(Base):
         self.ep_group = ep_group
         self.gate._set_ep_group(ep_group)
         self.placement_manager.set_ep_group(ep_group)
+
+    def topo_moe_helper(self, input):
+        # No further rebalancing needed
+        if len(self.placement_manager.rebalance_steps) == 0:
+            return
+        # =====================================================================
+        # CUSTOM LOGGING: Build the Rank -> Expert Communication Matrix
+        # =====================================================================
+        # self.exp_counts is a 1D tensor of length [num_global_experts].
+        # It holds the number of tokens THIS rank is sending to EACH expert.
+        
+        # 1. Initialize a list to hold the counts from all ranks
+        world_size = dist.get_world_size(self.ep_group)
+        local_counts = self.exp_counts.clone().detach().to(input[0].device).to(torch.int32).flatten()
+        global_counts = [torch.zeros_like(local_counts) for _ in range(world_size)]
+        
+        # 2. Gather the counts from all ranks in the Expert Parallel group
+        dist.all_gather(global_counts, local_counts, group=self.ep_group)
+        
+        # 3. Stack into a Matrix: Shape [world_size, num_global_experts]
+        # Rows = Source Rank, Columns = Destination Expert
+        comm_matrix = torch.stack(global_counts)
+        
+        # 4. Store or print it (Rank 0 only to avoid spam)
+        # self.comm_matrix_history.append(comm_matrix)
+        
+        # if dist.get_rank(self.ep_group) == 0:
+        #     assert comm_matrix.shape == (world_size, self.ep_size * self.num_local_experts), \
+        #         f"Wrong comm_matrix shape: {comm_matrix.shape}, expected ({world_size}, {self.ep_size * self.num_local_experts})"
+        # print(f"[Rank {dist.get_rank(self.ep_group)}] Layer {self.layer_i} | comm_matrix {comm_matrix.shape} | "
+                # f"tokens/expert: {comm_matrix.sum(0).tolist()}")
+        # =====================================================================
+
+        self.placement_manager.on_forward(comm_matrix)
+        # self.moelens.record_comm_matrix(self.placement_manager.global_step, comm_matrix)
+
 
     def forward(self, *input: Tensor, **kwargs: Any) -> Tensor:
 
@@ -628,47 +728,79 @@ class MOELayer(Base):
             self.l_aux, C, E, indices_, locations_, gates_, self.exp_counts = self.gate(reshaped_input, input[1], True)
             S, M = reshaped_input.size(0), reshaped_input.size(1)
 
-            if not hasattr(self, '_tutel_dispatcher'):
-                self._tutel_dispatcher = tutel_moe.fast_dispatcher(E, C, M, dispatch_dtype=reshaped_input.dtype)
-            self._tutel_dispatcher.update(indices_, locations_, gates_, capacity=C)
-            dispatched_input = self._tutel_dispatcher.encode(reshaped_input)
+            if self._routing_callback is not None:
+                # ---------------------------------------------------------------
+                # Compute split sizes and exchange ONCE before any all_to_all
+                # ---------------------------------------------------------------
+                device   = reshaped_input.device
+                rank     = dist.get_rank(self.ep_group)
+                ep_size  = self.ep_size
+
+                # Fixed capacity splits — uniform, Tutel-safe
+                # tokens_per_rank = int(self.num_local_experts * C)
+                # input_split_sizes = [tokens_per_rank] * ep_size
+
+                # Pack tokens in rank order
+                placement_dict = self.placement_manager.get_placement()
+                # Convert dict to a list where placement_list[i] = new_rank for old index i
+                placement_list = [placement_dict[i] for i in range(len(placement_dict))]
+
+                # Now safe to convert to a tensor
+                placement_tensor = torch.tensor(placement_list, device=indices_[0].device, dtype=torch.long)
+                mapped_ranks_tensor = placement_tensor[indices_[0]]
+                perm = torch.argsort(mapped_ranks_tensor, dim=-1)  # [S, d_model] — sorted by expert
+                dispatched_input = reshaped_input[perm]
+
+                # Count tokens per rank using routing decisions
+                input_split_sizes = [
+                    int(self.exp_counts[r * self.num_local_experts:(r+1) * self.num_local_experts].sum())
+                    for r in range(self.ep_size)
+                ]
+
+                # Exchange so every rank knows what it will receive
+                local_splits = torch.tensor(input_split_sizes, dtype=torch.long, device=device)
+                # local_combined = torch.cat([local_splits, self.exp_counts.long()])  # [ep_size + E]
+                # all_combined   = torch.zeros(ep_size, ep_size + E, dtype=torch.long, device=device)
+                # torch.cuda.synchronize()  # flush all pending ops
+                # start = time.perf_counter()
+                # dist.all_gather_into_tensor(all_combined, local_combined, group=self.ep_group)
+                # torch.cuda.synchronize()
+                # print(f"True all_gather latency: {time.perf_counter()-start:.4f}s")                
+                local_combined = torch.cat([local_splits, self.exp_counts.long()])
+                all_combined   = torch.zeros(ep_size, ep_size + E, dtype=torch.long, device=device)
+
+                dist.all_gather_into_tensor(all_combined, local_combined, group=self.ep_group)
+                # torch.cuda.current_stream().wait_stream(self._gather_stream)
+
+                all_splits     = all_combined[:, :ep_size]   # [ep_size, ep_size]
+                output_split_sizes = all_splits[:, rank].tolist()   # column = what I receive
+                # ---------------------------------------------------------------
+                recieved = _PartialAllToAll.apply(
+                    self.ep_group,
+                    dispatched_input,
+                    input_split_sizes,   # tokens this rank sends to each rank
+                    output_split_sizes   # tokens this rank receives from each rank
+                )
+            else:
+                if not hasattr(self, '_tutel_dispatcher'):
+                    self._tutel_dispatcher = tutel_moe.fast_dispatcher(E, C, M, dispatch_dtype=reshaped_input.dtype)
+                self._tutel_dispatcher.update(indices_, locations_, gates_, capacity=C)
+                dispatched_input = self._tutel_dispatcher.encode(reshaped_input)
+
+            if self._routing_callback is not None:
+                self._routing_callback(torch.stack(indices_).detach())
+
+            # self.topo_moe_helper(input)
         else:
             self.l_aux, combine_weights, dispatch_mask, self.exp_counts = self.gate(reshaped_input, input[1])
             dispatched_input = einsum("sec,sm->ecm", dispatch_mask.type_as(input[0]), reshaped_input)
 
-        # =====================================================================
-        # CUSTOM LOGGING: Build the Rank -> Expert Communication Matrix
-        # =====================================================================
-        # self.exp_counts is a 1D tensor of length [num_global_experts].
-        # It holds the number of tokens THIS rank is sending to EACH expert.
-        
-        # 1. Initialize a list to hold the counts from all ranks
-        world_size = dist.get_world_size(self.ep_group)
-        local_counts = self.exp_counts.clone().detach().to(input[0].device).to(torch.int32)
-        global_counts = [torch.zeros_like(local_counts) for _ in range(world_size)]
-        
-        # 2. Gather the counts from all ranks in the Expert Parallel group
-        dist.all_gather(global_counts, local_counts, group=self.ep_group)
-        
-        # 3. Stack into a Matrix: Shape [world_size, num_global_experts]
-        # Rows = Source Rank, Columns = Destination Expert
-        comm_matrix = torch.stack(global_counts)
-        
-        # 4. Store or print it (Rank 0 only to avoid spam)
-        self.comm_matrix_history.append(comm_matrix)
-        
-        if dist.get_rank(self.ep_group) == 0:
-            print(f"\n--- Layer {self.layer_i} Comm Matrix (Rows: Src Rank, Cols: Dst Expert) ---\n{comm_matrix}\n")
-        # =====================================================================
-
-        self.placement_manager.on_forward(comm_matrix)
-        self.moelens.record_comm_matrix(self.placement_manager.global_step, comm_matrix)
 
         if self.wall_clock_breakdown:
             self.timers(FIRST_ALLTOALL_TIMER).start()
 
         tensor_model_world_size = bwc_tensor_model_parallel_world_size(groups.mpu)
-        if tensor_model_world_size > 1:
+        if tensor_model_world_size > 1 and self._routing_callback is None:
             # If the non-expert is tensor-parallel,
             # Whether expert is tensor-parallel or not , it will create
             # duplicate tokens on the tensor-parallel ranks.
@@ -681,33 +813,93 @@ class MOELayer(Base):
             # an allgather to ensure correctness,
             dispatched_input = drop_tokens(dispatched_input, dim=1)
 
-        dispatched_input = _AllToAll.apply(self.ep_group, dispatched_input)
+        # dispatched_input = _AllToAll.apply(self.ep_group, dispatched_input)
 
         if self.wall_clock_breakdown:
             self.timers(FIRST_ALLTOALL_TIMER).stop()
             self.time_falltoall = self.timers(FIRST_ALLTOALL_TIMER).elapsed(reset=False)
 
-        if tensor_model_world_size > 1 and groups._get_expert_model_parallel_world_size() > 1:
+        if tensor_model_world_size > 1 and groups._get_expert_model_parallel_world_size() > 1 and self._routing_callback is None:
             # if both expert and non-expert are tensor-parallel
             # the dropped duplicate tokens need to be gathered on each
             # tensor parallel rank again to ensure correctness
             dispatched_input = gather_tokens(dispatched_input, dim=1)
 
-        # Re-shape after all-to-all: ecm -> gecm
-        dispatched_input = dispatched_input.reshape(self.ep_size, self.num_local_experts, -1, d_model)
-        expert_output = self.experts(dispatched_input)
+        if self._routing_callback is not None:
+            # Re-shape after all-to-all: ecm -> gecm
+            # all_exp_counts = torch.zeros(ep_size, E, dtype=torch.long, device=device)
+            all_exp_counts = all_combined[:, ep_size:]   # [ep_size, E]
+
+            # dist.all_gather_into_tensor(all_exp_counts, self.exp_counts.long(), group=self.ep_group)
+            # recv_per_expert[r, e] = how many tokens rank r sent to my local expert e
+            my_expert_start = rank * self.num_local_experts
+            recv_per_expert = all_exp_counts[:, my_expert_start:my_expert_start + self.num_local_experts]
+
+            local_expert_totals = recv_per_expert.sum(dim=0)   # [num_local_experts]
+            local_C = int(local_expert_totals.max().item())
+
+            expert_buf = torch.zeros(
+                self.ep_size, self.num_local_experts, local_C, d_model,
+                dtype=reshaped_input.dtype, device=device
+            )
+
+            dst_rank_offsets = torch.cat([
+                torch.zeros(1, self.num_local_experts, dtype=torch.long, device=device),
+                recv_per_expert[:-1].cumsum(dim=0)
+            ], dim=0)
+
+            # For each received token, compute its (r, e, pos) destination
+            counts_flat  = recv_per_expert.flatten()                          # [ep_size * num_local_experts]
+            total_recv   = int(counts_flat.sum().item())
+
+            re_idx = torch.repeat_interleave(
+                torch.arange(ep_size * self.num_local_experts, dtype=torch.long, device=device),
+                counts_flat
+            )                                                                  # [total_recv]
+            r_idx  = re_idx // self.num_local_experts
+            e_idx  = re_idx %  self.num_local_experts
+
+            group_starts = torch.cat([
+                torch.zeros(1, dtype=torch.long, device=device),
+                counts_flat[:-1].cumsum(0)
+            ])                                                                 # [ep_size * num_local_experts]
+            within_pos = (torch.arange(total_recv, dtype=torch.long, device=device)
+                        - torch.repeat_interleave(group_starts, counts_flat))
+            pos_idx = torch.repeat_interleave(dst_rank_offsets.flatten(), counts_flat) + within_pos
+
+            expert_buf[r_idx, e_idx, pos_idx] = recieved                      # single scatter, no loop
+            local_input = expert_buf
+        else:
+            # Re-shape after all-to-all: ecm -> gecm
+            local_input = dispatched_input.reshape(self.ep_size, self.num_local_experts, -1, d_model)
+        expert_output = self.experts(local_input)
         # Re-shape before drop_tokens: gecm -> ecm
-        expert_output = expert_output.reshape(self.ep_size * self.num_local_experts, -1, d_model)
-        if tensor_model_world_size > 1 and groups._get_expert_model_parallel_world_size() > 1:
-            # if both expert and non-expert are tensor-parallel
-            # drop duplicate tokens to ensure both correctness
-            # and reduce all-to-all communication.
-            expert_output = drop_tokens(expert_output, dim=1)
+        # expert_output = expert_output.reshape(self.ep_size * self.num_local_experts, -1, d_model)
+        # if tensor_model_world_size > 1 and groups._get_expert_model_parallel_world_size() > 1:
+        #     # if both expert and non-expert are tensor-parallel
+        #     # drop duplicate tokens to ensure both correctness
+        #     # and reduce all-to-all communication.
+        #     expert_output = drop_tokens(expert_output, dim=1)
 
         if self.wall_clock_breakdown:
             self.timers(SECOND_ALLTOALL_TIMER).start()
 
-        expert_output = _AllToAll.apply(self.ep_group, expert_output)
+        positions    = torch.arange(local_C, dtype=torch.long, device=device)[None, None, :]
+        valid_mask   = positions < recv_per_expert[:, :, None]             # [ep_size, num_local, local_C]
+        expert_output_packed = expert_output[valid_mask]   # [sum(output_split_sizes), d_model]
+
+        # Sanity check
+        assert expert_output_packed.shape[0] == sum(output_split_sizes), \
+            f"Pack mismatch: {expert_output_packed.shape[0]} != {sum(output_split_sizes)}"
+
+
+        # expert_output = _AllToAll.apply(self.ep_group, expert_output)
+        expert_output = _PartialAllToAll.apply(
+            self.ep_group,
+            expert_output_packed,
+            output_split_sizes,   # tokens this rank sends to each rank
+            input_split_sizes   # tokens this rank receives from each rank
+        )
 
         if self.wall_clock_breakdown:
             self.timers(SECOND_ALLTOALL_TIMER).stop()
@@ -719,10 +911,36 @@ class MOELayer(Base):
             # non-expert of the next layer.
             expert_output = gather_tokens(expert_output, dim=1)
 
-        if self.use_tutel:
-            combined_output = self._tutel_dispatcher.decode(expert_output.view(E * C, M))
+        # print(f"[rank{dist.get_rank()}] expert_output shape: {expert_output.shape}, "
+        #     f"input_split_sizes: {input_split_sizes}, "
+        #     f"output_split_sizes: {output_split_sizes}, "
+        #     f"perm size: {perm.shape}, S: {S}")
+
+        if self.use_tutel and self._routing_callback is not None:
+            # Undo the sort from dispatch
+            inv_perm = torch.argsort(perm)
+
+            if expert_output.shape[0] == 0:
+                # This rank received no tokens back — valid if router skipped local experts
+                combined_output = torch.zeros(S, d_model, dtype=reshaped_input.dtype, device=device)
+            elif expert_output.shape[0] != S:
+                # Partial return — some tokens were dropped by capacity
+                combined_output = torch.zeros(S, d_model, dtype=reshaped_input.dtype, device=device)
+                combined_output[inv_perm[:expert_output.shape[0]]] = (
+                    expert_output * gates_[0][:expert_output.shape[0]].unsqueeze(-1).to(expert_output.dtype)
+                )
+            else:
+                # Normal case — all tokens returned
+                combined_output = expert_output[inv_perm] * gates_[0].unsqueeze(-1).to(expert_output.dtype)
+            # expert_output = expert_output[inv_perm]  # back to original token order [S, d_model]
+
+            # # Apply gate weights — equivalent to what Tutel decode() does internally
+            # combined_output = expert_output * gates_[0].unsqueeze(-1).to(expert_output.dtype)
         else:
-            combined_output = einsum("sec,ecm->sm", combine_weights.type_as(input[0]), expert_output)
+            if self.use_tutel:
+                combined_output = self._tutel_dispatcher.decode(expert_output.view(E * C, M))
+            else:
+                combined_output = einsum("sec,ecm->sm", combine_weights.type_as(input[0]), expert_output)
 
         a = combined_output.reshape(input[0].shape)
 
@@ -731,3 +949,159 @@ class MOELayer(Base):
             self.time_moe = self.timers(MOE_TIMER).elapsed(reset=False)
 
         return a
+
+    # def forward(self, *input: Tensor, **kwargs: Any) -> Tensor:
+
+    #     if self.wall_clock_breakdown:
+    #         self.timers(MOE_TIMER).start()
+
+    #     # Implement Algorithm 2 from GShard paper.
+    #     d_model = input[0].shape[-1]
+
+    #     logger.info("[CUSTOM DEBUG] ShardedMoE forward")
+
+    #     # Initial implementation -> Reshape into S tokens by dropping sequence dimension.
+    #     # Reshape into G groups so that each group can distribute tokens equally
+    #     # group_size = kwargs['group_size'] if 'group_size' in kwargs.keys() else 1
+    #     reshaped_input = input[0].reshape(-1, d_model)
+
+    #     if self.use_tutel:
+    #         self.l_aux, C, E, indices_, locations_, gates_, self.exp_counts = self.gate(reshaped_input, input[1], True)
+    #         S, M = reshaped_input.size(0), reshaped_input.size(1)
+
+    #         if self._routing_callback is not None:
+    #             # ---------------------------------------------------------------
+    #             # Compute split sizes and exchange ONCE before any all_to_all
+    #             # ---------------------------------------------------------------
+    #             device   = reshaped_input.device
+    #             rank     = dist.get_rank(self.ep_group)
+    #             ep_size  = self.ep_size
+
+    #             # Fixed capacity splits — uniform, Tutel-safe
+    #             # tokens_per_rank = int(self.num_local_experts * C)
+    #             # input_split_sizes = [tokens_per_rank] * ep_size
+
+    #             # Pack tokens in rank order
+    #             perm = torch.argsort(indices_[0])
+    #             dispatched_input = reshaped_input[perm]  # [S, d_model] — sorted by expert
+
+    #             # Count tokens per rank using routing decisions
+    #             input_split_sizes = [
+    #                 int(self.exp_counts[r * self.num_local_experts:(r+1) * self.num_local_experts].sum())
+    #                 for r in range(self.ep_size)
+    #             ]
+    #             print(f"Rank {rank} | input_split_sizes: {input_split_sizes}")
+
+    #             # Exchange so every rank knows what it will receive
+    #             local_splits = torch.tensor(input_split_sizes, dtype=torch.long, device=device)
+    #             all_splits   = torch.zeros(ep_size, ep_size, dtype=torch.long, device=device)
+    #             dist.all_gather_into_tensor(all_splits, local_splits, group=self.ep_group)
+    #             output_split_sizes = all_splits[:, rank].tolist()   # column = what I receive
+    #             # ---------------------------------------------------------------
+
+    #             print(f"Rank{rank} | Expected C = {int(math.ceil(1.3 * S / E))}")
+    #             print(f"Rank{rank} | exp_counts = {self.exp_counts}")
+    #             print(f"Rank{rank} | E={E}, S={S}, C={C}, num_local_experts={self.num_local_experts}")
+    #             print(f"Rank{rank} | dispatched_input.shape={dispatched_input.shape}")
+    #             print(f"Rank{rank} | dispatching")
+    #             dispatched_input = _PartialAllToAll.apply(
+    #                 self.ep_group,
+    #                 dispatched_input,
+    #                 input_split_sizes,   # tokens this rank sends to each rank
+    #                 output_split_sizes   # tokens this rank receives from each rank
+    #             )
+    #             print(f"Rank{rank} | dispatch complete")
+
+    #             print(f"Rank {rank} | input_splits:  {input_split_sizes}")
+    #             print(f"Rank {rank} | output_splits: {output_split_sizes}")
+    #             print(f"Rank {rank} | dispatched_input shape: {dispatched_input.shape}")
+    #         else:
+    #             if not hasattr(self, '_tutel_dispatcher'):
+    #                 self._tutel_dispatcher = tutel_moe.fast_dispatcher(E, C, M, dispatch_dtype=reshaped_input.dtype)
+    #             self._tutel_dispatcher.update(indices_, locations_, gates_, capacity=C)
+    #             dispatched_input = self._tutel_dispatcher.encode(reshaped_input)
+
+    #         if self._routing_callback is not None:
+    #             self._routing_callback(torch.stack(indices_).detach())
+
+    #         # self.topo_moe_helper(input)
+    #     else:
+    #         self.l_aux, combine_weights, dispatch_mask, self.exp_counts = self.gate(reshaped_input, input[1])
+    #         dispatched_input = einsum("sec,sm->ecm", dispatch_mask.type_as(input[0]), reshaped_input)
+
+
+    #     if self.wall_clock_breakdown:
+    #         self.timers(FIRST_ALLTOALL_TIMER).start()
+
+    #     tensor_model_world_size = bwc_tensor_model_parallel_world_size(groups.mpu)
+    #     if tensor_model_world_size > 1:
+    #         # If the non-expert is tensor-parallel,
+    #         # Whether expert is tensor-parallel or not , it will create
+    #         # duplicate tokens on the tensor-parallel ranks.
+    #         # drop duplicate tokens also doubles up as a communication
+    #         # optimization as we are reducing the all-to-all communication volume.
+    #         # 1: for not tensor-parallel expert,drop duplicate tokens to ensure
+    #         # both correctness and reduce all-to-all communication.
+    #         # 2: for tensor-parallel expert,drop duplicate tokens to reduce all-to-all
+    #         # communication volume,before expert execution, it is necessary to perform
+    #         # an allgather to ensure correctness,
+    #         dispatched_input = drop_tokens(dispatched_input, dim=1)
+
+    #     # dispatched_input = _AllToAll.apply(self.ep_group, dispatched_input)
+
+    #     if self.wall_clock_breakdown:
+    #         self.timers(FIRST_ALLTOALL_TIMER).stop()
+    #         self.time_falltoall = self.timers(FIRST_ALLTOALL_TIMER).elapsed(reset=False)
+
+    #     if tensor_model_world_size > 1 and groups._get_expert_model_parallel_world_size() > 1:
+    #         # if both expert and non-expert are tensor-parallel
+    #         # the dropped duplicate tokens need to be gathered on each
+    #         # tensor parallel rank again to ensure correctness
+    #         dispatched_input = gather_tokens(dispatched_input, dim=1)
+
+    #     # Re-shape after all-to-all: ecm -> gecm
+    #     dispatched_input = dispatched_input.reshape(self.ep_size, self.num_local_experts, -1, d_model)
+    #     expert_output = self.experts(dispatched_input)
+    #     # Re-shape before drop_tokens: gecm -> ecm
+    #     expert_output = expert_output.reshape(self.ep_size * self.num_local_experts, -1, d_model)
+    #     if tensor_model_world_size > 1 and groups._get_expert_model_parallel_world_size() > 1:
+    #         # if both expert and non-expert are tensor-parallel
+    #         # drop duplicate tokens to ensure both correctness
+    #         # and reduce all-to-all communication.
+    #         expert_output = drop_tokens(expert_output, dim=1)
+
+    #     expert_output = expert_output.reshape(-1, d_model)  # [E*C, d_model]
+
+    #     if self.wall_clock_breakdown:
+    #         self.timers(SECOND_ALLTOALL_TIMER).start()
+
+    #     # expert_output = _AllToAll.apply(self.ep_group, expert_output)
+    #     expert_output = _PartialAllToAll.apply(
+    #         self.ep_group,
+    #         expert_output,
+    #         input_split_sizes,   # tokens this rank sends to each rank
+    #         output_split_sizes   # tokens this rank receives from each rank
+    #     )
+
+    #     if self.wall_clock_breakdown:
+    #         self.timers(SECOND_ALLTOALL_TIMER).stop()
+    #         self.time_salltoall = self.timers(SECOND_ALLTOALL_TIMER).elapsed(reset=False)
+
+    #     if tensor_model_world_size > 1:
+    #         # the dropped duplicate tokens need to be gathered on each
+    #         # tensor parallel rank again for the tensor-parallel
+    #         # non-expert of the next layer.
+    #         expert_output = gather_tokens(expert_output, dim=1)
+
+    #     if self.use_tutel:
+    #         combined_output = self._tutel_dispatcher.decode(expert_output.view(E * C, M))
+    #     else:
+    #         combined_output = einsum("sec,ecm->sm", combine_weights.type_as(input[0]), expert_output)
+
+    #     a = combined_output.reshape(input[0].shape)
+
+    #     if self.wall_clock_breakdown:
+    #         self.timers(MOE_TIMER).stop()
+    #         self.time_moe = self.timers(MOE_TIMER).elapsed(reset=False)
+
+    #     return a
