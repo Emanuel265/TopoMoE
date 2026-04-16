@@ -15,14 +15,17 @@ The file has been adapted from two fairscale files:
 # This source code is licensed under the BSD license found in the
 # LICENSE file in the root directory of this source tree.
 
+from time import time
+
 from deepspeed.utils.timer import SynchronizedWallClockTimer
 from deepspeed.utils import logger
 from deepspeed.utils.bwc import bwc_tensor_model_parallel_world_size
-from typing import Callable, Dict, TYPE_CHECKING, Any, Optional, Tuple, Union
+from typing import Callable, Dict, TYPE_CHECKING, Any, List, Optional, Tuple, Union
 
 import torch
 from torch import Tensor
 from torch.nn import Module
+from torch.distributed import P2POp
 import torch.nn.functional as F
 from deepspeed.utils import groups
 from .mappings import drop_tokens, gather_tokens
@@ -107,6 +110,44 @@ class _AllToAll(torch.autograd.Function):
     def backward(ctx: Any, *grad_output: Tensor) -> Tuple[None, Tensor]:
         return (None, _AllToAll.apply(ctx.group, *grad_output))
 
+class _AllToAllV(torch.autograd.Function):
+
+    @staticmethod
+    def forward(ctx, group, input, input_split_sizes, output_split_sizes):
+
+        ctx.group = group
+        ctx.input_split_sizes = input_split_sizes
+        ctx.output_split_sizes = output_split_sizes
+
+        input = input.contiguous()
+
+        output = torch.empty(
+            [sum(output_split_sizes)] + list(input.shape[1:]),
+            dtype=input.dtype,
+            device=input.device
+        )
+
+        dist.all_to_all_single(
+            output,
+            input,
+            input_split_sizes=input_split_sizes,
+            output_split_sizes=output_split_sizes,
+            group=group
+        )
+
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+
+        grad_input = _AllToAllV.apply(
+            ctx.group,
+            grad_output,
+            ctx.output_split_sizes,
+            ctx.input_split_sizes,
+        )
+
+        return None, grad_input, None, None
 
 # einsum rewrites are on par or more performant
 # switch can be bubbled up in future
@@ -495,6 +536,11 @@ class TopKGate(Module):
         self.use_rts = use_rts
         self.top2_2nd_expert_sampling = top2_2nd_expert_sampling
 
+        # TopoMoE
+        self.accumulate_decisions = True
+        self.accumulated_gating_decision = torch.zeros(num_experts)
+
+
     def _set_ep_group(self, ep_group):
         assert self.ep_group is None, 'Attempting to override an existing ep_group'
         self.ep_group = ep_group
@@ -581,6 +627,195 @@ class MOELayer(Base):
         elif use_tutel and TUTEL_INSTALLED and gate.k != 1:
             logger.warning("To enable Tutel optimization, use top-1 instead of top-2 gate. "
                            "Proceeding without Tutel.")
+                        
+        # This holds all global expert indices and the permutation of them. (first num_local_experts are on device 1)
+        self.expert_permutation = [i for i in range(self.ep_size * self.num_local_experts)] 
+        self.last_dispatch_mask = None
+
+    def getPhysicalExpertID(self, global_expert_id):
+        # this global id could be permuted, so first the current placement needs to be found.
+        for (physical_global_id, logical_global_id) in enumerate(self.expert_permutation):
+            if logical_global_id == global_expert_id:
+                return physical_global_id
+        raise ValueError(f"Global expert id {global_expert_id} not found in permutation mapping.")
+     
+    def getRankAndLocal(self, global_expert_id):
+        physical_global_id = self.getPhysicalExpertID(global_expert_id)
+        local_expert_id = physical_global_id % self.num_local_experts
+        rank = physical_global_id // self.num_local_experts
+        return rank, local_expert_id
+
+    def _get_expert(self, expert_idx) -> Module:
+        return self.experts.deepspeed_experts[expert_idx]
+
+    def _send_expert(self, expert_idx, dst, group) -> List[torch.distributed.Work]:
+        e = self._get_expert(expert_idx)
+        reqs = []
+        for p in e.parameters():
+            reqs.append(dist.isend(p.data, dst=dst, group=group))
+        return reqs
+
+    def _recv_expert(self, expert_idx, src, group) -> List[torch.distributed.Work]:
+        e = self._get_expert(expert_idx)
+        reqs = []
+        for p in e.parameters():
+            reqs.append(dist.irecv(p.data, src=src, group=group))
+        return reqs
+
+    def execute_migrations_p2p(self, migrations):
+        """
+        Perform expert migrations using batch_isend_irecv.
+
+        migrations: list of tuples
+            (src_rank, dst_rank, src_expert_idx, dst_expert_idx)
+        """
+
+        start_time = time.time()
+        rank = dist.get_rank(self.ep_group)
+        ops = []
+
+        for (src_rank, dst_rank, src_idx, dst_idx) in migrations:
+            if src_rank == rank:
+                expert = self._get_expert(src_idx)
+
+                for p in expert.parameters():
+                    ops.append(P2POp(dist.isend, p.data, dst_rank, self.ep_group))
+
+                for b in expert.buffers():
+                    ops.append(P2POp(dist.isend, b.data, dst_rank, self.ep_group))
+
+            if dst_rank == rank:
+                expert = self._get_expert(dst_idx)
+
+                for p in expert.parameters():
+                    ops.append(P2POp(dist.irecv, p.data, src_rank, self.ep_group))
+
+                for b in expert.buffers():
+                    ops.append(P2POp(dist.irecv, b.data, src_rank, self.ep_group))
+
+        reqs = torch.distributed.batch_isend_irecv(ops)
+
+        for r in reqs:
+            r.wait()
+        print("[MoELayer] P2P migration completed in {:.4f} seconds".format(time.time() - start_time))
+
+    def migrate_experts_alltoallv(
+        self,
+        perm_old,
+        perm_new,
+        num_local_experts
+    ):
+        """
+        Perform expert migration using a single AllToAllV.
+
+        perm_old / perm_new:
+            perm.find() = global position of expert e
+        """
+        start_time = time.time()
+
+        rank = dist.get_rank(self.ep_group)
+        world_size = self.ep_size
+        device = next(self.parameters()).device
+
+        expert_source_rank_and_local_idx = dict()
+        for pos, e in enumerate(perm_old):
+            expert_source_rank_and_local_idx[e] = (pos // num_local_experts, pos % num_local_experts)
+
+        expert_dest_rank_and_local_idx = dict()
+        for pos, e in enumerate(perm_new):
+            expert_dest_rank_and_local_idx[e] = (pos // num_local_experts, pos % num_local_experts)
+
+        # Helpers
+        def flatten_expert(expert : Module):
+            return torch.cat([p.data.view(-1) for p in expert.parameters()])
+        def unflatten_into_expert(flat, expert : Module):
+            offset = 0
+            for p in expert.parameters():
+                numel = p.numel()
+                p.data.copy_(flat[offset:offset+numel].view_as(p))
+                offset += numel
+
+        # Build send buckets
+                # Build receive plan
+        recv_plan = [[] for _ in range(world_size)]
+        send_buckets = [[] for _ in range(world_size)]
+
+        for e in range(len(perm_old)):
+            src_rank, src_idx = expert_source_rank_and_local_idx[e]
+            dst_rank, dst_idx = expert_dest_rank_and_local_idx[e]
+
+            if src_rank == rank:
+                send_buckets[dst_rank].append((src_idx, dst_idx))
+            if dst_rank == rank:
+                recv_plan[src_rank].append(dst_idx)
+
+        send_chunks = []
+        input_split_sizes = []
+
+        for r in range(world_size):
+            bucket = send_buckets[r]
+            if len(bucket) == 0:
+                input_split_sizes.append(0)
+                continue
+
+            flats = []
+            for (src_idx, _) in bucket:
+                flats.append(flatten_expert(self._get_expert(src_idx)))
+
+            chunk = torch.cat(flats)
+            send_chunks.append(chunk)
+            input_split_sizes.append(chunk.numel())
+
+        send_buffer = (
+            torch.cat(send_chunks) if len(send_chunks) > 0
+            else torch.empty(0, device=device)
+        )
+
+        # Exchange split sizes and AllToAllV
+        local_splits = torch.tensor(input_split_sizes, device=device, dtype=torch.long)
+        all_splits = torch.zeros(world_size, world_size, device=device, dtype=torch.long)
+
+        dist.all_gather_into_tensor(all_splits, local_splits, group=self.ep_group)
+
+        output_split_sizes = all_splits[:, rank].tolist()
+
+        total_recv = sum(output_split_sizes)
+
+        recv_buffer = torch.empty(
+            total_recv,
+            device=device,
+            dtype=send_buffer.dtype
+        )
+
+        dist.all_to_all_single(
+            recv_buffer,
+            send_buffer,
+            input_split_sizes=input_split_sizes,
+            output_split_sizes=output_split_sizes,
+            group=self.ep_group
+        )
+
+        # Unflatten into experts
+        offset = 0
+        for src_rank in range(world_size):
+            numel = output_split_sizes[src_rank]
+            if numel == 0:
+                continue
+
+            chunk = recv_buffer[offset:offset + numel]
+            offset += numel
+
+            idx = 0
+            for dst_idx in recv_plan[src_rank]:
+                expert = self._get_expert(dst_idx)
+
+                size = sum(p.numel() for p in expert.parameters())
+                flat = chunk[idx:idx+size]
+
+                unflatten_into_expert(flat, expert)
+                idx += size
+        print("[MoELayer] P2P migration completed in {:.4f} seconds".format(time.time() - start_time))
+
 
     def _set_ep_group(self, ep_group):
         self.ep_group = ep_group
@@ -611,6 +846,8 @@ class MOELayer(Base):
             self.l_aux, combine_weights, dispatch_mask, self.exp_counts = self.gate(reshaped_input, input[1])
             dispatched_input = einsum("sec,sm->ecm", dispatch_mask.type_as(input[0]), reshaped_input)
 
+        self.last_dispatch_mask = torch.tensor(dispatch_mask)
+
         if self.wall_clock_breakdown:
             self.timers(FIRST_ALLTOALL_TIMER).start()
 
@@ -628,7 +865,37 @@ class MOELayer(Base):
             # an allgather to ensure correctness,
             dispatched_input = drop_tokens(dispatched_input, dim=1)
 
-        dispatched_input = _AllToAll.apply(self.ep_group, dispatched_input)
+        perm = torch.tensor(self.expert_permutation, device=dispatched_input.device)            
+        dispatched_input = dispatched_input[perm]
+
+        rank = dist.get_rank(self.ep_group)
+
+        input_split_sizes = [
+            int(self.exp_counts[r * self.num_local_experts:(r + 1) * self.num_local_experts].sum())
+            for r in range(self.ep_size)
+        ]
+
+        local_splits = torch.tensor(input_split_sizes, device=dispatched_input.device, dtype=torch.long)
+
+        local_combined = torch.cat([local_splits, self.exp_counts.long()])
+        all_combined = torch.zeros(
+            self.ep_size,
+            self.ep_size + self.exp_counts.numel(),
+            device=dispatched_input.device,
+            dtype=torch.long
+        )
+
+        dist.all_gather_into_tensor(all_combined, local_combined, group=self.ep_group)
+
+        all_splits = all_combined[:, :self.ep_size]
+        output_split_sizes = all_splits[:, rank].tolist()
+
+        dispatched_input = _AllToAllV.apply(
+            self.ep_group,
+            dispatched_input,
+            input_split_sizes,
+            output_split_sizes
+        )
 
         if self.wall_clock_breakdown:
             self.timers(FIRST_ALLTOALL_TIMER).stop()
@@ -654,7 +921,7 @@ class MOELayer(Base):
         if self.wall_clock_breakdown:
             self.timers(SECOND_ALLTOALL_TIMER).start()
 
-        expert_output = _AllToAll.apply(self.ep_group, expert_output)
+        expert_output = _AllToAllV.apply(self.ep_group, expert_output, output_split_sizes, input_split_sizes)
 
         if self.wall_clock_breakdown:
             self.timers(SECOND_ALLTOALL_TIMER).stop()
