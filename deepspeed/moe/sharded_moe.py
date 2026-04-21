@@ -15,7 +15,7 @@ The file has been adapted from two fairscale files:
 # This source code is licensed under the BSD license found in the
 # LICENSE file in the root directory of this source tree.
 
-from time import time
+import time
 
 from deepspeed.utils.timer import SynchronizedWallClockTimer
 from deepspeed.utils import logger
@@ -814,7 +814,8 @@ class MOELayer(Base):
 
                 unflatten_into_expert(flat, expert)
                 idx += size
-        print("[MoELayer] P2P migration completed in {:.4f} seconds".format(time.time() - start_time))
+        if rank == 0:
+            print("[MoELayer] AllToAllV migration completed in {:.4f} seconds".format(time.time() - start_time))
 
 
     def _set_ep_group(self, ep_group):
@@ -822,6 +823,8 @@ class MOELayer(Base):
         self.gate._set_ep_group(ep_group)
 
     def forward(self, *input: Tensor, **kwargs: Any) -> Tensor:
+        rank = dist.get_rank(self.ep_group)
+        world = self.ep_size
 
         if self.wall_clock_breakdown:
             self.timers(MOE_TIMER).start()
@@ -830,8 +833,6 @@ class MOELayer(Base):
         d_model = input[0].shape[-1]
 
         # Initial implementation -> Reshape into S tokens by dropping sequence dimension.
-        # Reshape into G groups so that each group can distribute tokens equally
-        # group_size = kwargs['group_size'] if 'group_size' in kwargs.keys() else 1
         reshaped_input = input[0].reshape(-1, d_model)
 
         if self.use_tutel:
@@ -842,59 +843,69 @@ class MOELayer(Base):
                 self._tutel_dispatcher = tutel_moe.fast_dispatcher(E, C, M, dispatch_dtype=reshaped_input.dtype)
             self._tutel_dispatcher.update(indices_, locations_, gates_, capacity=C)
             dispatched_input = self._tutel_dispatcher.encode(reshaped_input)
+
+            S = reshaped_input.shape[0]
+            dispatch_mask = torch.zeros(S, E, C, device=reshaped_input.device)
+
+            dispatch_mask[
+                torch.arange(S, device=reshaped_input.device),
+                indices_,
+                locations_
+            ] = 1
         else:
             self.l_aux, combine_weights, dispatch_mask, self.exp_counts = self.gate(reshaped_input, input[1])
             dispatched_input = einsum("sec,sm->ecm", dispatch_mask.type_as(input[0]), reshaped_input)
 
-        self.last_dispatch_mask = torch.tensor(dispatch_mask)
+        self.last_dispatch_mask = dispatch_mask.detach().clone()
+        # print("Rank: ", rank, ", last_dispatch_mask: ", self.last_dispatch_mask)
 
         if self.wall_clock_breakdown:
             self.timers(FIRST_ALLTOALL_TIMER).start()
 
         tensor_model_world_size = bwc_tensor_model_parallel_world_size(groups.mpu)
         if tensor_model_world_size > 1:
-            # If the non-expert is tensor-parallel,
-            # Whether expert is tensor-parallel or not , it will create
-            # duplicate tokens on the tensor-parallel ranks.
-            # drop duplicate tokens also doubles up as a communication
-            # optimization as we are reducing the all-to-all communication volume.
-            # 1: for not tensor-parallel expert,drop duplicate tokens to ensure
-            # both correctness and reduce all-to-all communication.
-            # 2: for tensor-parallel expert,drop duplicate tokens to reduce all-to-all
-            # communication volume,before expert execution, it is necessary to perform
-            # an allgather to ensure correctness,
             dispatched_input = drop_tokens(dispatched_input, dim=1)
 
-        perm = torch.tensor(self.expert_permutation, device=dispatched_input.device)            
-        dispatched_input = dispatched_input[perm]
+        # Flatten dispatched_input to [num_tokens, d_model] for routing
+        # dispatched_input shape is [E, C, M] -> flatten to [E*C, M]
+        E, C, M = dispatched_input.shape
+        dispatched_input_flat = dispatched_input.reshape(-1, M)  # [E*C, M]
+        
+        # Get expert assignment for each token position
+        # Create expert ID mapping for each position in the flattened tensor
+        expert_ids = torch.arange(E, device=dispatched_input.device).view(E, 1).expand(E, C).reshape(-1)  # [E*C]
+        
+        # Ensure expert_ids are within bounds of perm
+        perm = torch.tensor(self.expert_permutation, device=dispatched_input.device)
+        expert_ids = expert_ids.clamp(0, len(perm) - 1)
+        
+        # Map expert IDs to target ranks
+        target_ranks = perm[expert_ids] // self.num_local_experts
 
-        rank = dist.get_rank(self.ep_group)
+        # Sort by destination rank
+        idx = torch.argsort(target_ranks)
+        dispatched_input_sorted = dispatched_input_flat[idx]
+        target_ranks_sorted = target_ranks[idx]
 
-        input_split_sizes = [
-            int(self.exp_counts[r * self.num_local_experts:(r + 1) * self.num_local_experts].sum())
-            for r in range(self.ep_size)
-        ]
+        # Compute send splits
+        input_split_sizes = torch.bincount(target_ranks_sorted, minlength=world)
+        input_split_sizes_list = input_split_sizes.tolist()
 
-        local_splits = torch.tensor(input_split_sizes, device=dispatched_input.device, dtype=torch.long)
+        assert sum(input_split_sizes_list) == dispatched_input_sorted.shape[0], \
+            f"Split size sum {sum(input_split_sizes_list)} != input size {dispatched_input_sorted.shape[0]}"
 
-        local_combined = torch.cat([local_splits, self.exp_counts.long()])
-        all_combined = torch.zeros(
-            self.ep_size,
-            self.ep_size + self.exp_counts.numel(),
-            device=dispatched_input.device,
-            dtype=torch.long
-        )
+        # Exchange split sizes
+        all_splits = torch.zeros(world, world, device=dispatched_input.device, dtype=torch.long)
+        dist.all_gather_into_tensor(all_splits, input_split_sizes, group=self.ep_group)
 
-        dist.all_gather_into_tensor(all_combined, local_combined, group=self.ep_group)
+        output_split_sizes_list = all_splits[:, rank].tolist()
 
-        all_splits = all_combined[:, :self.ep_size]
-        output_split_sizes = all_splits[:, rank].tolist()
-
-        dispatched_input = _AllToAllV.apply(
+        # All-to-all communication
+        dispatched_input_recv = _AllToAllV.apply(
             self.ep_group,
-            dispatched_input,
-            input_split_sizes,
-            output_split_sizes
+            dispatched_input_sorted,
+            input_split_sizes_list,
+            output_split_sizes_list
         )
 
         if self.wall_clock_breakdown:
@@ -902,36 +913,55 @@ class MOELayer(Base):
             self.time_falltoall = self.timers(FIRST_ALLTOALL_TIMER).elapsed(reset=False)
 
         if tensor_model_world_size > 1 and groups._get_expert_model_parallel_world_size() > 1:
-            # if both expert and non-expert are tensor-parallel
-            # the dropped duplicate tokens need to be gathered on each
-            # tensor parallel rank again to ensure correctness
-            dispatched_input = gather_tokens(dispatched_input, dim=1)
+            dispatched_input_recv = gather_tokens(dispatched_input_recv, dim=1)
 
-        # Re-shape after all-to-all: ecm -> gecm
-        dispatched_input = dispatched_input.reshape(self.ep_size, self.num_local_experts, -1, d_model)
-        expert_output = self.experts(dispatched_input)
-        # Re-shape before drop_tokens: gecm -> ecm
-        expert_output = expert_output.reshape(self.ep_size * self.num_local_experts, -1, d_model)
+        # Re-shape for expert computation
+        # We received sum(output_split_sizes_list) tokens
+        num_recv_tokens = dispatched_input_recv.shape[0]
+        
+        # Reshape to [ep_size, num_local_experts, tokens_per_expert, d_model]
+        # Calculate tokens per expert
+        tokens_per_expert = num_recv_tokens // (self.ep_size * self.num_local_experts)
+        
+        dispatched_input_recv = dispatched_input_recv.reshape(
+            self.ep_size, 
+            self.num_local_experts, 
+            tokens_per_expert, 
+            d_model
+        )
+        
+        expert_output = self.experts(dispatched_input_recv)
+        
+        # Flatten back to [num_recv_tokens, d_model] to match what we received
+        expert_output = expert_output.reshape(num_recv_tokens, d_model)
+        
         if tensor_model_world_size > 1 and groups._get_expert_model_parallel_world_size() > 1:
-            # if both expert and non-expert are tensor-parallel
-            # drop duplicate tokens to ensure both correctness
-            # and reduce all-to-all communication.
             expert_output = drop_tokens(expert_output, dim=1)
 
         if self.wall_clock_breakdown:
             self.timers(SECOND_ALLTOALL_TIMER).start()
 
-        expert_output = _AllToAllV.apply(self.ep_group, expert_output, output_split_sizes, input_split_sizes)
+        # Reverse all-to-all - we send back num_recv_tokens, expect to receive E*C tokens
+        expert_output = _AllToAllV.apply(
+            self.ep_group,
+            expert_output,
+            output_split_sizes_list,  # We send back what we received
+            input_split_sizes_list    # We receive back what we originally sent
+        )
 
         if self.wall_clock_breakdown:
             self.timers(SECOND_ALLTOALL_TIMER).stop()
             self.time_salltoall = self.timers(SECOND_ALLTOALL_TIMER).elapsed(reset=False)
 
         if tensor_model_world_size > 1:
-            # the dropped duplicate tokens need to be gathered on each
-            # tensor parallel rank again for the tensor-parallel
-            # non-expert of the next layer.
             expert_output = gather_tokens(expert_output, dim=1)
+
+        # Unsort the expert output to match original order
+        unsort_idx = torch.argsort(idx)
+        expert_output = expert_output[unsort_idx]
+        
+        # Reshape back to [E, C, M]
+        expert_output = expert_output.reshape(E, C, M)
 
         if self.use_tutel:
             combined_output = self._tutel_dispatcher.decode(expert_output.view(E * C, M))

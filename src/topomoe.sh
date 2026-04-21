@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=16
 #SBATCH --time=2:00:00              
-#SBATCH --mem=50G                 
+#SBATCH --mem-per-cpu=12G                 
 #SBATCH --partition=IFIgpu2070S
 #SBATCH --output=logs/moe_%j.out
 #SBATCH --error=logs/moe_%j.err
@@ -36,4 +36,5 @@ srun python -m torch.distributed.run \
     src/train.py \
     --deepspeed \
     --deepspeed_config src/ds_config.json \
-    --use-topomoe
+    --use-topomoe \
+    --rebalance-step 25

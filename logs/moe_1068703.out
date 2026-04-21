@@ -1,0 +1,1191 @@
+PYTHONPATH=/home/emanuel.schoepf/deepspeed_custom:
+Using DeepSpeed from: /home/emanuel.schoepf/deepspeed_base/TopoMoE/deepspeed/__init__.py
+MASTER_ADDR=10.30.0.108
+Loaded DeepSpeed config: {'train_batch_size': 64, 'train_micro_batch_size_per_gpu': 8, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 8, 'ep_size': 4, 'capacity_factor': 1.3, 'min_capacity': 64, 'k': 1}, 'topomoe': {'token_d': 512, 'alpha': 1, 'beta': 0, 'gamma': 0}, 'comms_logger': {'enabled': True, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}, 'wall_clock_breakdown': False}
+Using TopoMoE: True
+Loaded DeepSpeed config: {'train_batch_size': 64, 'train_micro_batch_size_per_gpu': 8, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 8, 'ep_size': 4, 'capacity_factor': 1.3, 'min_capacity': 64, 'k': 1}, 'topomoe': {'token_d': 512, 'alpha': 1, 'beta': 0, 'gamma': 0}, 'comms_logger': {'enabled': True, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}, 'wall_clock_breakdown': False}
+Using TopoMoE: True
+Loaded DeepSpeed config: {'train_batch_size': 64, 'train_micro_batch_size_per_gpu': 8, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 8, 'ep_size': 4, 'capacity_factor': 1.3, 'min_capacity': 64, 'k': 1}, 'topomoe': {'token_d': 512, 'alpha': 1, 'beta': 0, 'gamma': 0}, 'comms_logger': {'enabled': True, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}, 'wall_clock_breakdown': False}
+Using TopoMoE: True
+Loaded DeepSpeed config: {'train_batch_size': 64, 'train_micro_batch_size_per_gpu': 8, 'fp16': {'enabled': True, 'loss_scale': 0, 'loss_scale_window': 1000, 'initial_scale_power': 16, 'hysteresis': 2, 'min_loss_scale': 1}, 'zero_optimization': {'stage': 0}, 'moe': {'enabled': True, 'num_experts': 8, 'ep_size': 4, 'capacity_factor': 1.3, 'min_capacity': 64, 'k': 1}, 'topomoe': {'token_d': 512, 'alpha': 1, 'beta': 0, 'gamma': 0}, 'comms_logger': {'enabled': True, 'verbose': False, 'prof_all': True, 'debug': False, 'prof_ops': ['all_reduce', 'all_gather', 'all_to_all_single', 'all_to_all']}, 'flops_profiler': {'enabled': False, 'profile_step': 5, 'module_depth': -1, 'top_modules': 3, 'detailed': True, 'output_file': 'flops_profile.txt'}, 'wall_clock_breakdown': False}
+Using TopoMoE: True
+
+=== Loading topology from src/topology.csv ===
+
+Loaded 4 devices and 12 links
+
+=== Loading topology from src/topology.csv ===
+
+Loaded 4 devices and 12 links
+
+=== Loading topology from src/topology.csv ===
+
+Loaded 4 devices and 12 links
+
+=== Loading topology from src/topology.csv ===
+
+Loaded 4 devices and 12 links
+Group 'parameters': 58 params
+Group 'ep_size_4': 48 params
+Group 'parameters': 58 params
+Group 'ep_size_4': 48 params
+No existing process group found, creating a new group named: ep_size_4
+No existing process group found, creating a new group named: ep_size_4
+Group 'parameters': 58 params
+Group 'ep_size_4': 48 params
+No existing process group found, creating a new group named: ep_size_4
+Group 'parameters': 58 params
+Group 'ep_size_4': 48 params
+No existing process group found, creating a new group named: ep_size_4
+[Rank 0] time (ms)
+0 <bound method DeepSpeedEngine.wall_clock_breakdown of DeepSpeedEngine(
+  (module): MoEGPT(
+    (token_emb): Embedding(50257, 256)
+    (pos_emb): Embedding(128, 256)
+    (layers): ModuleList(
+      (0-5): 6 x TransformerBlock(
+        (ln_attn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (ln_ffn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (moe): MoE(
+          (deepspeed_moe): MOELayer(
+            (gate): TopKGate(
+              (wg): Linear(in_features=256, out_features=8, bias=False)
+            )
+            (experts): Experts(
+              (deepspeed_experts): ModuleList(
+                (0-1): 2 x Sequential(
+                  (0): Linear(in_features=256, out_features=1024, bias=True)
+                  (1): GELU(approximate='none')
+                  (2): Linear(in_features=1024, out_features=256, bias=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ln_f): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    (head): Linear(in_features=256, out_features=50257, bias=False)
+  )
+)>
+1 <bound method DeepSpeedEngine.wall_clock_breakdown of DeepSpeedEngine(
+  (module): MoEGPT(
+    (token_emb): Embedding(50257, 256)
+    (pos_emb): Embedding(128, 256)
+    (layers): ModuleList(
+      (0-5): 6 x TransformerBlock(
+        (ln_attn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (ln_ffn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (moe): MoE(
+          (deepspeed_moe): MOELayer(
+            (gate): TopKGate(
+              (wg): Linear(in_features=256, out_features=8, bias=False)
+            )
+            (experts): Experts(
+              (deepspeed_experts): ModuleList(
+                (0-1): 2 x Sequential(
+                  (0): Linear(in_features=256, out_features=1024, bias=True)
+                  (1): GELU(approximate='none')
+                  (2): Linear(in_features=1024, out_features=256, bias=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ln_f): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    (head): Linear(in_features=256, out_features=50257, bias=False)
+  )
+)>
+3 <bound method DeepSpeedEngine.wall_clock_breakdown of DeepSpeedEngine(
+  (module): MoEGPT(
+    (token_emb): Embedding(50257, 256)
+    (pos_emb): Embedding(128, 256)
+    (layers): ModuleList(
+      (0-5): 6 x TransformerBlock(
+        (ln_attn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (ln_ffn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (moe): MoE(
+          (deepspeed_moe): MOELayer(
+            (gate): TopKGate(
+              (wg): Linear(in_features=256, out_features=8, bias=False)
+            )
+            (experts): Experts(
+              (deepspeed_experts): ModuleList(
+                (0-1): 2 x Sequential(
+                  (0): Linear(in_features=256, out_features=1024, bias=True)
+                  (1): GELU(approximate='none')
+                  (2): Linear(in_features=1024, out_features=256, bias=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ln_f): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    (head): Linear(in_features=256, out_features=50257, bias=False)
+  )
+)>
+2 <bound method DeepSpeedEngine.wall_clock_breakdown of DeepSpeedEngine(
+  (module): MoEGPT(
+    (token_emb): Embedding(50257, 256)
+    (pos_emb): Embedding(128, 256)
+    (layers): ModuleList(
+      (0-5): 6 x TransformerBlock(
+        (ln_attn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (attn): MultiheadAttention(
+          (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+        )
+        (ln_ffn): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        (moe): MoE(
+          (deepspeed_moe): MOELayer(
+            (gate): TopKGate(
+              (wg): Linear(in_features=256, out_features=8, bias=False)
+            )
+            (experts): Experts(
+              (deepspeed_experts): ModuleList(
+                (0-1): 2 x Sequential(
+                  (0): Linear(in_features=256, out_features=1024, bias=True)
+                  (1): GELU(approximate='none')
+                  (2): Linear(in_features=1024, out_features=256, bias=True)
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+    (ln_f): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+    (head): Linear(in_features=256, out_features=50257, bias=False)
+  )
+)>
+Step 0000 | Loss 11.6327 | Aux 7.81153 | Step nanms | Tokens/sec warming up
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0010 | Loss 11.3981 | Aux 6.79388 | Step nanms | Tokens/sec warming up
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0020 | Loss 11.2846 | Aux 6.51742 | Step 383.6ms | Tokens/sec 10,677
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0030 | Loss 11.2008 | Aux 6.61757 | Step 511.3ms | Tokens/sec 8,011
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0040 | Loss 11.0633 | Aux 6.33597 | Step 631.9ms | Tokens/sec 6,482
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0050 | Loss 11.1146 | Aux 6.38040 | Step 761.7ms | Tokens/sec 5,377
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0060 | Loss 11.0528 | Aux 6.46524 | Step 882.2ms | Tokens/sec 4,643
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0070 | Loss 10.9471 | Aux 6.42453 | Step 1011.7ms | Tokens/sec 4,049
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0080 | Loss 10.8896 | Aux 6.08323 | Step 1130.8ms | Tokens/sec 3,622
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0090 | Loss 10.6976 | Aux 6.11712 | Step 1250.2ms | Tokens/sec 3,276
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0100 | Loss 10.8715 | Aux 6.05877 | Step 1372.1ms | Tokens/sec 2,985
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0110 | Loss 10.8652 | Aux 6.46444 | Step 1497.3ms | Tokens/sec 2,736
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0120 | Loss 10.7566 | Aux 6.08174 | Step 1621.3ms | Tokens/sec 2,526
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0130 | Loss 10.6845 | Aux 6.06368 | Step 1751.4ms | Tokens/sec 2,339
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0140 | Loss 10.7294 | Aux 6.04361 | Step 1876.4ms | Tokens/sec 2,183
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0150 | Loss 10.6582 | Aux 6.03518 | Step 2001.2ms | Tokens/sec 2,047
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0160 | Loss 10.6177 | Aux 6.09915 | Step 2133.0ms | Tokens/sec 1,920
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0170 | Loss 10.6304 | Aux 6.14819 | Step 2262.9ms | Tokens/sec 1,810
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0180 | Loss 10.4829 | Aux 6.00037 | Step 2381.4ms | Tokens/sec 1,720
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0190 | Loss 10.5899 | Aux 6.05556 | Step 2518.4ms | Tokens/sec 1,626
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0200 | Loss 10.5540 | Aux 6.00831 | Step 2637.9ms | Tokens/sec 1,553
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0210 | Loss 10.5124 | Aux 6.06161 | Step 2768.6ms | Tokens/sec 1,479
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0220 | Loss 10.5320 | Aux 6.10117 | Step 2896.1ms | Tokens/sec 1,414
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0230 | Loss 10.2966 | Aux 6.09141 | Step 3020.8ms | Tokens/sec 1,356
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0240 | Loss 10.4085 | Aux 6.11592 | Step 3150.6ms | Tokens/sec 1,300
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0250 | Loss 10.3826 | Aux 6.09188 | Step 3271.7ms | Tokens/sec 1,252
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0260 | Loss 10.5325 | Aux 6.10601 | Step 3398.5ms | Tokens/sec 1,205
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0270 | Loss 10.1976 | Aux 6.03807 | Step 3528.1ms | Tokens/sec 1,161
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0280 | Loss 10.3447 | Aux 6.02506 | Step 3649.5ms | Tokens/sec 1,122
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0290 | Loss 10.3373 | Aux 6.02895 | Step 3779.7ms | Tokens/sec 1,084
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0300 | Loss 10.1014 | Aux 6.01386 | Step 3904.6ms | Tokens/sec 1,049
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0310 | Loss 10.1281 | Aux 6.04695 | Step 4027.5ms | Tokens/sec 1,017
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0320 | Loss 10.2519 | Aux 6.11241 | Step 4157.5ms | Tokens/sec 985
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0330 | Loss 10.0661 | Aux 6.05168 | Step 4287.3ms | Tokens/sec 955
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0340 | Loss 10.2821 | Aux 6.10270 | Step 4398.4ms | Tokens/sec 931
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0350 | Loss 10.0848 | Aux 6.08261 | Step 4529.0ms | Tokens/sec 904
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0360 | Loss 10.2622 | Aux 6.13729 | Step 4661.8ms | Tokens/sec 879
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0370 | Loss 10.1651 | Aux 6.10420 | Step 4783.0ms | Tokens/sec 856
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0380 | Loss 10.0058 | Aux 6.07412 | Step 4897.6ms | Tokens/sec 836
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0390 | Loss 9.9230 | Aux 6.02647 | Step 5028.1ms | Tokens/sec 815
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0400 | Loss 10.0528 | Aux 6.07446 | Step 5151.5ms | Tokens/sec 795
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0410 | Loss 10.0368 | Aux 6.14971 | Step 5276.3ms | Tokens/sec 776
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0420 | Loss 9.9895 | Aux 6.22280 | Step 5406.7ms | Tokens/sec 758
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0430 | Loss 9.8560 | Aux 6.06035 | Step 5527.8ms | Tokens/sec 741
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0440 | Loss 10.0097 | Aux 6.42529 | Step 5655.2ms | Tokens/sec 724
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0450 | Loss 9.8295 | Aux 6.10736 | Step 5790.0ms | Tokens/sec 707
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0460 | Loss 9.8675 | Aux 6.01913 | Step 5912.7ms | Tokens/sec 693
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0470 | Loss 9.7506 | Aux 6.02127 | Step 6052.3ms | Tokens/sec 677
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0480 | Loss 9.7506 | Aux 6.02200 | Step 6161.4ms | Tokens/sec 665
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0490 | Loss 9.4192 | Aux 6.06683 | Step 6292.3ms | Tokens/sec 651
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+[Rank 0] time (ms)
+Step 0500 | Loss 9.8729 | Aux 5.99504 | Step 6415.1ms | Tokens/sec 638
+  [Eval] Step 500 | Perplexity 17817.61
+Comm. Op            Message Size        Count               Total Latency(ms)   Avg Latency(ms)     tput_avg (Gbps)     busbw_avg (Gbps)    
+broadcast
+                    512.0 B             44                  4900.78             111.42              0.00                0.00                
+                    1.5 KB              6                   664.45              110.82              0.00                0.00                
+                    2.0 KB              12                  1340.70             111.72              0.00                0.00                
+                    4.0 KB              6                   668.28              111.38              0.00                0.00                
+                    64.0 KB             1                   105.34              105.34              0.00                0.00                
+                    128.0 KB            6                   665.30              110.92              0.01                0.01                
+                    384.0 KB            6                   663.66              110.71              0.03                0.03                
+                    512.0 KB            24                  2681.45             111.73              0.04                0.04                
+                    24.54 MB            1                   105.07              105.07              1.96                1.96                
+all_reduce
+                    1.0 B               250                 2833725.16          10934.03            0.00                0.00                
+                    8.0 B               3306                42290350.69         12396.00            0.00                0.00                
+                    12.03 MB            250                 2833118.15          10931.63            0.03                0.02                
+                    27.65 MB            250                 2833069.58          10931.43            0.07                0.05                
+all_gather_into_tensor
+                    32.0 B              3306                9718087.32          2791.28             0.00                0.00                
+all_to_all_single
+                    664.0 KB            4                   139017.33           34754.33            0.00                0.00                
+                    672.0 KB            4                   261045.30           65261.32            0.00                0.00                
+                    676.0 KB            2                   137759.19           68879.59            0.00                0.00                
+                    684.0 KB            4                   159722.13           39930.53            0.00                0.00                
+                    692.0 KB            8                   274115.85           34261.52            0.00                0.00                
+                    696.0 KB            4                   252837.38           63209.34            0.00                0.00                
+                    700.0 KB            4                   269875.14           67468.79            0.00                0.00                
+                    704.0 KB            4                   180938.94           45234.73            0.00                0.00                
+                    708.0 KB            8                   159493.90           19934.89            0.00                0.00                
+                    712.0 KB            16                  678443.96           40603.50            0.00                0.00                
+                    716.0 KB            6                   247189.62           37653.76            0.00                0.00                
+                    720.0 KB            8                   516272.27           64534.06            0.00                0.00                
+                    724.0 KB            8                   346707.46           43337.23            0.00                0.00                
+                    728.0 KB            2                   136047.33           68023.67            0.00                0.00                
+                    732.0 KB            8                   217237.35           27149.81            0.00                0.00                
+                    736.0 KB            10                  574831.72           56770.18            0.00                0.00                
+                    740.0 KB            14                  368776.30           23757.91            0.00                0.00                
+                    744.0 KB            18                  923084.53           52327.66            0.00                0.00                
+                    748.0 KB            10                  443557.79           44564.94            0.00                0.00                
+                    752.0 KB            12                  611696.61           51258.76            0.00                0.00                
+                    756.0 KB            24                  848769.47           35926.19            0.00                0.00                
+                    760.0 KB            18                  601178.90           30311.72            0.00                0.00                
+                    764.0 KB            18                  894063.00           52002.13            0.00                0.00                
+                    768.0 KB            24                  875580.30           36661.12            0.00                0.00                
+                    772.0 KB            20                  558685.26           26276.96            0.00                0.00                
+                    776.0 KB            20                  666144.23           32118.33            0.00                0.00                
+                    780.0 KB            30                  993128.81           31747.28            0.00                0.00                
+                    784.0 KB            12                  306497.81           26124.94            0.00                0.00                
+                    788.0 KB            18                  831295.41           47025.24            0.00                0.00                
+                    792.0 KB            20                  406201.75           18423.78            0.00                0.00                
+                    796.0 KB            20                  459839.03           23119.19            0.00                0.00                
+                    800.0 KB            24                  821687.46           33167.87            0.00                0.00                
+                    804.0 KB            16                  647751.92           40097.74            0.00                0.00                
+                    808.0 KB            16                  480251.79           28914.55            0.00                0.00                
+                    812.0 KB            30                  1009748.81          32321.37            0.00                0.00                
+                    816.0 KB            24                  592840.09           23615.65            0.00                0.00                
+                    820.0 KB            24                  1263558.44          52445.85            0.00                0.00                
+                    824.0 KB            28                  967282.01           33412.89            0.00                0.00                
+                    828.0 KB            32                  1080515.92          32341.95            0.00                0.00                
+                    832.0 KB            38                  1540322.05          40607.94            0.00                0.00                
+                    836.0 KB            30                  1159369.44          37986.92            0.00                0.00                
+                    840.0 KB            62                  2589299.33          42243.63            0.00                0.00                
+                    844.0 KB            36                  1123266.66          29461.61            0.00                0.00                
+                    848.0 KB            28                  1271918.41          47462.93            0.00                0.00                
+                    852.0 KB            10                  333844.16           30155.63            0.00                0.00                
+                    856.0 KB            30                  1001522.09          32870.25            0.00                0.00                
+                    860.0 KB            44                  2041562.25          46541.22            0.00                0.00                
+                    864.0 KB            24                  855934.05           35331.84            0.00                0.00                
+                    868.0 KB            36                  784603.31           20547.36            0.00                0.00                
+                    872.0 KB            34                  1003620.65          27901.49            0.00                0.00                
+                    876.0 KB            36                  1353561.59          36457.04            0.00                0.00                
+                    880.0 KB            50                  2129481.95          43240.35            0.00                0.00                
+                    884.0 KB            20                  504337.75           24282.96            0.00                0.00                
+                    888.0 KB            24                  1063781.63          44476.65            0.00                0.00                
+                    892.0 KB            44                  1241509.29          27692.11            0.00                0.00                
+                    896.0 KB            40                  1540786.51          38346.79            0.00                0.00                
+                    900.0 KB            40                  1502955.05          36038.16            0.00                0.00                
+                    904.0 KB            54                  2548969.57          48465.48            0.00                0.00                
+                    908.0 KB            44                  1681527.69          38408.52            0.00                0.00                
+                    912.0 KB            32                  1381776.25          44120.99            0.00                0.00                
+                    916.0 KB            34                  1212661.56          34761.34            0.00                0.00                
+                    920.0 KB            46                  1534091.70          32671.24            0.00                0.00                
+                    924.0 KB            28                  1349608.23          50410.13            0.00                0.00                
+                    928.0 KB            48                  1770406.59          36127.46            0.00                0.00                
+                    932.0 KB            30                  1008835.48          32810.73            0.00                0.00                
+                    936.0 KB            60                  1854789.64          29752.26            0.00                0.00                
+                    940.0 KB            42                  1223965.06          27343.93            0.00                0.00                
+                    944.0 KB            64                  1904500.07          29421.38            0.00                0.00                
+                    948.0 KB            40                  1258113.30          30997.13            0.00                0.00                
+                    952.0 KB            42                  1817846.72          44500.30            0.00                0.00                
+                    956.0 KB            38                  1290834.85          31814.08            0.00                0.00                
+                    960.0 KB            40                  1817649.79          46868.60            0.00                0.00                
+                    964.0 KB            52                  1545028.84          29106.53            0.00                0.00                
+                    968.0 KB            24                  1117887.87          46021.30            0.00                0.00                
+                    972.0 KB            44                  1479544.30          32524.97            0.00                0.00                
+                    976.0 KB            34                  1493727.16          44874.16            0.00                0.00                
+                    980.0 KB            56                  1795702.64          31170.95            0.00                0.00                
+                    984.0 KB            58                  2567513.23          44994.74            0.00                0.00                
+                    988.0 KB            50                  1833158.38          37429.06            0.00                0.00                
+                    992.0 KB            34                  1526744.97          46476.02            0.00                0.00                
+                    996.0 KB            44                  1402255.99          29917.59            0.00                0.00                
+                    1000.0 KB           62                  2189553.20          34667.33            0.00                0.00                
+                    1004.0 KB           44                  1728816.86          38280.71            0.00                0.00                
+                    1008.0 KB           122                 4499764.08          36237.72            0.00                0.00                
+                    1012.0 KB           56                  2649225.11          47949.49            0.00                0.00                
+                    1016.0 KB           64                  2369684.96          36604.00            0.00                0.00                
+                    1020.0 KB           44                  1424609.10          31512.94            0.00                0.00                
+                    1.0 MB              44                  1716483.70          38912.14            0.00                0.00                
+                    1.0 MB              86                  3193615.74          37596.34            0.00                0.00                
+                    1.01 MB             58                  2293767.57          39645.99            0.00                0.00                
+                    1.01 MB             60                  2097530.61          34774.52            0.00                0.00                
+                    1.02 MB             64                  1998294.00          29843.16            0.00                0.00                
+                    1.02 MB             62                  2619558.67          42807.30            0.00                0.00                
+                    1.02 MB             60                  2247994.81          37584.22            0.00                0.00                
+                    1.03 MB             54                  1678103.27          29854.45            0.00                0.00                
+                    1.03 MB             84                  3522803.43          41688.93            0.00                0.00                
+                    1.04 MB             60                  2380574.22          39516.71            0.00                0.00                
+                    1.04 MB             54                  1736276.37          31794.41            0.00                0.00                
+                    1.04 MB             98                  3517054.07          34928.02            0.00                0.00                
+                    1.05 MB             52                  2050232.98          39027.44            0.00                0.00                
+                    1.05 MB             64                  2621521.72          40894.55            0.00                0.00                
+                    1.05 MB             60                  2775731.72          47404.18            0.00                0.00                
+                    1.06 MB             88                  2689166.04          29367.54            0.00                0.00                
+                    1.06 MB             66                  2462608.88          36599.74            0.00                0.00                
+                    1.07 MB             102                 3403329.48          32839.32            0.00                0.00                
+                    1.07 MB             68                  2296581.95          33837.62            0.00                0.00                
+                    1.07 MB             112                 3997623.68          35711.09            0.00                0.00                
+                    1.08 MB             82                  3541664.80          43556.87            0.00                0.00                
+                    1.08 MB             64                  1819062.98          27330.94            0.00                0.00                
+                    1.09 MB             80                  2974126.38          36736.67            0.00                0.00                
+                    1.09 MB             70                  2632408.80          36985.45            0.00                0.00                
+                    1.09 MB             128                 4487947.64          34354.79            0.00                0.00                
+                    1.1 MB              76                  2668408.65          34582.58            0.00                0.00                
+                    1.1 MB              66                  2184227.44          31654.94            0.00                0.00                
+                    1.11 MB             62                  1878294.70          28864.06            0.00                0.00                
+                    1.11 MB             88                  3308499.91          36648.02            0.00                0.00                
+                    1.11 MB             88                  4029735.34          47066.06            0.00                0.00                
+                    1.12 MB             46                  1636888.32          35443.56            0.00                0.00                
+                    1.12 MB             70                  2816785.64          40300.47            0.00                0.00                
+                    1.12 MB             74                  2195642.55          27805.47            0.00                0.00                
+                    1.13 MB             80                  2506565.46          29178.27            0.00                0.00                
+                    1.13 MB             54                  2353277.39          44331.18            0.00                0.00                
+                    1.14 MB             66                  2402791.97          35998.35            0.00                0.00                
+                    1.14 MB             48                  1891794.76          39314.95            0.00                0.00                
+                    1.14 MB             98                  3121488.31          31137.46            0.00                0.00                
+                    1.15 MB             52                  1998793.45          38294.77            0.00                0.00                
+                    1.15 MB             98                  3575774.52          36466.36            0.00                0.00                
+                    1.16 MB             88                  2929327.78          32677.41            0.00                0.00                
+                    1.16 MB             62                  1951656.86          30496.82            0.00                0.00                
+                    1.16 MB             50                  1560724.78          31019.75            0.00                0.00                
+                    1.17 MB             60                  2029095.44          32494.31            0.00                0.00                
+                    1.17 MB             52                  2021988.89          39225.70            0.00                0.00                
+                    1.18 MB             54                  1961402.25          36125.49            0.00                0.00                
+                    1.18 MB             58                  1983967.78          33345.47            0.00                0.00                
+                    1.18 MB             68                  2756172.12          41806.63            0.00                0.00                
+                    1.19 MB             44                  1559873.92          35086.96            0.00                0.00                
+                    1.19 MB             60                  2342037.25          39737.19            0.00                0.00                
+                    1.2 MB              72                  2128374.96          28387.02            0.00                0.00                
+                    1.2 MB              74                  2239755.79          29529.65            0.00                0.00                
+                    1.2 MB              96                  3548484.37          37588.34            0.00                0.00                
+                    1.21 MB             72                  2096376.80          27051.31            0.00                0.00                
+                    1.21 MB             42                  1512525.29          36281.04            0.00                0.00                
+                    1.21 MB             82                  2797455.21          33742.90            0.00                0.00                
+                    1.22 MB             84                  3154173.13          37203.77            0.00                0.00                
+                    1.22 MB             96                  3051826.95          30987.74            0.00                0.00                
+                    1.23 MB             44                  1680283.44          38978.69            0.00                0.00                
+                    1.23 MB             60                  1859145.72          28700.92            0.00                0.00                
+                    1.23 MB             76                  2098551.68          26737.21            0.00                0.00                
+                    1.24 MB             76                  2596602.97          33294.74            0.00                0.00                
+                    1.24 MB             70                  2140282.96          28486.07            0.00                0.00                
+                    1.25 MB             56                  1380970.55          21493.44            0.00                0.00                
+                    1.25 MB             82                  2637748.64          30782.03            0.00                0.00                
+                    1.25 MB             48                  1220000.46          22174.55            0.00                0.00                
+                    1.26 MB             54                  1987396.03          36400.96            0.00                0.00                
+                    1.26 MB             40                  1427284.45          35221.47            0.00                0.00                
+                    1.27 MB             48                  1673575.41          34105.78            0.00                0.00                
+                    1.27 MB             62                  1916791.68          28891.99            0.00                0.00                
+                    1.27 MB             54                  1345524.61          22220.45            0.00                0.00                
+                    1.28 MB             78                  2581821.94          32328.40            0.00                0.00                
+                    1.28 MB             26                  757196.71           27813.64            0.00                0.00                
+                    1.29 MB             66                  2060394.83          30689.52            0.00                0.00                
+                    1.29 MB             50                  1539846.31          29891.25            0.00                0.00                
+                    1.29 MB             58                  1929857.29          32300.06            0.00                0.00                
+                    1.3 MB              60                  2286703.04          38492.73            0.00                0.00                
+                    1.3 MB              44                  1492198.51          33832.23            0.00                0.00                
+                    1.3 MB              48                  1453398.17          29668.40            0.00                0.00                
+                    1.31 MB             74                  2224499.90          28788.15            0.00                0.00                
+                    1.31 MB             58                  1877906.86          31437.22            0.00                0.00                
+                    1.32 MB             60                  1952589.02          31353.40            0.00                0.00                
+                    1.32 MB             36                  748849.34           19312.81            0.00                0.00                
+                    1.32 MB             48                  1303970.86          25016.59            0.00                0.00                
+                    1.33 MB             38                  1023383.09          25051.36            0.00                0.00                
+                    1.33 MB             66                  1798557.34          26151.26            0.00                0.00                
+                    1.34 MB             58                  2123415.56          36706.12            0.00                0.00                
+                    1.34 MB             40                  1189175.90          28720.60            0.00                0.00                
+                    1.34 MB             66                  2497944.05          37486.68            0.00                0.00                
+                    1.35 MB             44                  674486.11           13757.77            0.00                0.00                
+                    1.35 MB             34                  1007357.86          28329.37            0.00                0.00                
+                    1.36 MB             44                  1562558.11          34554.36            0.00                0.00                
+                    1.36 MB             58                  1224330.70          19121.37            0.00                0.00                
+                    1.36 MB             56                  1810112.74          32637.26            0.00                0.00                
+                    1.37 MB             26                  949930.16           35847.21            0.00                0.00                
+                    1.37 MB             60                  2127832.78          35222.17            0.00                0.00                
+                    1.38 MB             72                  1946611.59          25941.23            0.00                0.00                
+                    1.38 MB             50                  1491917.90          28686.00            0.00                0.00                
+                    1.38 MB             42                  1150581.04          25337.13            0.00                0.00                
+                    1.39 MB             72                  1593254.83          19218.00            0.00                0.00                
+                    1.39 MB             64                  1701652.36          25624.63            0.00                0.00                
+                    1.39 MB             36                  1170230.95          31403.55            0.00                0.00                
+                    1.4 MB              54                  1868296.22          34332.57            0.00                0.00                
+                    1.4 MB              34                  1104739.42          31117.68            0.00                0.00                
+                    1.41 MB             62                  1132431.88          15925.79            0.00                0.00                
+                    1.41 MB             48                  955038.67           17066.23            0.00                0.00                
+                    1.41 MB             48                  1829682.16          38764.10            0.00                0.00                
+                    1.42 MB             52                  1373187.09          24359.03            0.00                0.00                
+                    1.42 MB             48                  1514541.38          31271.81            0.00                0.00                
+                    1.43 MB             62                  2022554.43          31740.55            0.00                0.00                
+                    1.43 MB             60                  1614113.02          25149.11            0.00                0.00                
+                    1.43 MB             38                  1350285.46          35855.53            0.00                0.00                
+                    1.44 MB             44                  1267203.42          27654.99            0.00                0.00                
+                    1.44 MB             42                  1058888.85          23633.26            0.00                0.00                
+                    1.45 MB             50                  1443632.85          26723.33            0.00                0.00                
+                    1.45 MB             40                  1243860.41          30428.85            0.00                0.00                
+                    1.45 MB             34                  897506.23           24980.14            0.00                0.00                
+                    1.46 MB             20                  421681.73           17796.54            0.00                0.00                
+                    1.46 MB             34                  1170656.78          33580.33            0.00                0.00                
+                    1.46 MB             26                  632050.96           20869.79            0.00                0.00                
+                    1.47 MB             32                  354410.89           9574.08             0.00                0.00                
+                    1.47 MB             24                  687849.25           28047.06            0.00                0.00                
+                    1.48 MB             64                  1339432.80          18949.82            0.00                0.00                
+                    1.48 MB             40                  1192296.81          27999.77            0.00                0.00                
+                    1.48 MB             46                  568884.73           8690.68             0.00                0.00                
+                    1.49 MB             32                  807203.16           24321.24            0.00                0.00                
+                    1.49 MB             16                  453850.53           27015.61            0.00                0.00                
+                    1.5 MB              22                  615643.67           25829.85            0.00                0.00                
+                    1.5 MB              44                  875747.68           16760.48            0.00                0.00                
+                    1.5 MB              20                  107354.49           5005.46             0.00                0.00                
+                    1.51 MB             52                  1341776.39          23418.33            0.00                0.00                
+                    1.51 MB             24                  844782.10           34827.02            0.00                0.00                
+                    1.52 MB             14                  374383.84           24750.79            0.00                0.00                
+                    1.52 MB             18                  534464.72           27732.20            0.00                0.00                
+                    1.52 MB             24                  692235.21           27317.57            0.00                0.00                
+                    1.53 MB             40                  856718.93           19482.59            0.00                0.00                
+                    1.53 MB             44                  1045324.75          20986.02            0.00                0.00                
+                    1.54 MB             20                  365973.26           14481.34            0.00                0.00                
+                    1.54 MB             36                  892771.92           23908.90            0.00                0.00                
+                    1.54 MB             16                  536510.46           32263.77            0.00                0.00                
+                    1.55 MB             38                  1006378.35          23730.14            0.00                0.00                
+                    1.55 MB             38                  659064.77           13916.12            0.00                0.00                
+                    1.55 MB             16                  219133.57           13710.98            0.00                0.00                
+                    1.56 MB             8                   224881.61           28107.46            0.00                0.00                
+                    1.56 MB             32                  368446.80           10807.33            0.01                0.00                
+                    1.57 MB             8                   165048.60           20636.20            0.00                0.00                
+                    1.57 MB             26                  384389.98           10876.31            0.00                0.00                
+                    1.57 MB             36                  613864.85           11422.54            0.00                0.00                
+                    1.58 MB             20                  228605.03           10735.64            0.00                0.00                
+                    1.58 MB             18                  622162.92           33403.07            0.00                0.00                
+                    1.59 MB             20                  497320.64           23870.49            0.00                0.00                
+                    1.59 MB             14                  458376.52           31941.75            0.00                0.00                
+                    1.59 MB             32                  752969.48           23314.72            0.00                0.00                
+                    1.6 MB              12                  341287.31           27649.10            0.00                0.00                
+                    1.6 MB              48                  623565.36           11097.56            0.00                0.00                
+                    1.61 MB             22                  385866.81           13102.72            0.00                0.00                
+                    1.61 MB             20                  556480.78           27641.63            0.00                0.00                
+                    1.61 MB             34                  732567.44           18638.13            0.00                0.00                
+                    1.62 MB             8                   32302.43            4041.81             0.00                0.00                
+                    1.62 MB             28                  409903.32           12727.22            0.00                0.00                
+                    1.62 MB             26                  502405.94           16162.02            0.00                0.00                
+                    1.63 MB             8                   43335.80            5421.80             0.00                0.00                
+                    1.63 MB             8                   194514.30           24321.02            0.00                0.00                
+                    1.64 MB             16                  186790.20           11675.24            0.00                0.00                
+                    1.64 MB             16                  537048.80           32887.36            0.00                0.00                
+                    1.64 MB             12                  118403.72           9932.34             0.00                0.00                
+                    1.65 MB             20                  333091.88           11594.29            0.00                0.00                
+                    1.65 MB             8                   224469.55           28055.04            0.00                0.00                
+                    1.66 MB             20                  288292.06           13014.59            0.00                0.00                
+                    1.66 MB             16                  147033.46           7761.95             0.01                0.00                
+                    1.66 MB             2                   141126.97           70563.49            0.00                0.00                
+                    1.67 MB             12                  40416.01            3312.00             0.01                0.00                
+                    1.67 MB             12                  85785.01            7044.63             0.00                0.00                
+                    1.68 MB             4                   109004.74           27251.19            0.00                0.00                
+                    1.68 MB             20                  110182.28           4988.70             0.00                0.00                
+                    1.68 MB             10                  185825.88           14579.97            0.01                0.01                
+                    1.69 MB             16                  319526.12           15841.36            0.00                0.00                
+                    1.69 MB             6                   145962.92           18807.17            0.00                0.00                
+                    1.7 MB              46                  525889.24           8609.31             0.00                0.00                
+                    1.7 MB              12                  189400.38           14991.49            0.00                0.00                
+                    1.7 MB              12                  154442.82           12022.67            0.00                0.00                
+                    1.71 MB             12                  89075.06            7117.35             0.01                0.01                
+                    1.71 MB             8                   162508.31           20313.97            0.00                0.00                
+                    1.71 MB             16                  306411.30           15307.40            0.00                0.00                
+                    1.72 MB             8                   173944.15           21741.23            0.00                0.00                
+                    1.72 MB             16                  184253.16           10606.24            0.00                0.00                
+                    1.73 MB             20                  234231.97           9795.84             0.00                0.00                
+                    1.73 MB             16                  289584.67           13395.16            0.01                0.00                
+                    1.73 MB             16                  264067.06           12457.90            0.00                0.00                
+                    1.74 MB             20                  211709.94           9019.39             0.00                0.00                
+                    1.74 MB             12                  99728.93            7963.47             0.00                0.00                
+                    1.75 MB             12                  130524.98           10555.72            0.00                0.00                
+                    1.75 MB             6                   165194.57           22377.26            0.00                0.00                
+                    1.75 MB             10                  266011.92           22753.57            0.00                0.00                
+                    1.76 MB             12                  202651.25           15807.51            0.00                0.00                
+                    1.76 MB             12                  211331.65           16866.70            0.00                0.00                
+                    1.77 MB             22                  432870.38           16373.52            0.00                0.00                
+                    1.77 MB             14                  164232.80           7709.33             0.01                0.01                
+                    1.77 MB             28                  359602.72           8027.93             0.00                0.00                
+                    1.78 MB             24                  498699.49           19383.12            0.00                0.00                
+                    1.78 MB             2                   137789.92           68894.96            0.00                0.00                
+                    1.79 MB             12                  205662.97           16490.56            0.00                0.00                
+                    1.79 MB             12                  282668.06           22041.74            0.00                0.00                
+                    1.79 MB             16                  233898.63           12359.14            0.00                0.00                
+                    1.8 MB              12                  87042.84            6979.07             0.00                0.00                
+                    1.8 MB              8                   141812.78           17722.18            0.00                0.00                
+                    1.8 MB              10                  206696.99           16051.95            0.00                0.00                
+                    1.81 MB             8                   58610.83            7328.42             0.00                0.00                
+                    1.81 MB             8                   43573.55            5445.02             0.00                0.00                
+                    1.82 MB             12                  63269.34            5270.19             0.00                0.00                
+                    1.82 MB             12                  491533.48           42261.38            0.00                0.00                
+                    1.83 MB             12                  107983.31           8463.64             0.00                0.00                
+                    1.83 MB             4                   80465.55            20116.39            0.00                0.00                
+                    1.84 MB             22                  292229.30           8132.72             0.01                0.00                
+                    1.84 MB             16                  64951.15            3531.42             0.01                0.01                
+                    1.84 MB             6                   336723.71           54550.33            0.00                0.00                
+                    1.85 MB             12                  21493.71            1770.60             0.01                0.01                
+                    1.85 MB             24                  304566.34           10964.44            0.00                0.00                
+                    1.86 MB             12                  33206.26            2800.15             0.01                0.00                
+                    1.86 MB             4                   41034.53            10258.63            0.00                0.00                
+                    1.86 MB             16                  236938.26           10650.86            0.01                0.01                
+                    1.87 MB             4                   8616.56             2154.14             0.01                0.01                
+                    1.87 MB             8                   151536.00           18941.78            0.00                0.00                
+                    1.88 MB             8                   153760.56           19219.15            0.00                0.00                
+                    1.88 MB             14                  385521.06           26145.73            0.00                0.00                
+                    1.89 MB             4                   38925.26            9731.32             0.00                0.00                
+                    1.89 MB             4                   211475.78           52868.94            0.00                0.00                
+                    1.9 MB              12                  57850.86            4673.64             0.00                0.00                
+                    1.9 MB              4                   13380.18            3345.05             0.00                0.00                
+                    1.91 MB             8                   100563.41           12574.38            0.01                0.00                
+                    1.91 MB             4                   169878.64           42469.66            0.00                0.00                
+                    1.91 MB             4                   17547.12            4386.78             0.00                0.00                
+                    1.92 MB             8                   516483.80           64331.30            0.00                0.00                
+                    1.92 MB             12                  44199.03            3397.99             0.03                0.02                
+                    1.93 MB             8                   90762.28            11345.64            0.00                0.00                
+                    1.93 MB             4                   5052.97             1263.24             0.01                0.01                
+                    1.93 MB             8                   137629.37           17200.57            0.00                0.00                
+                    1.94 MB             8                   16374.73            2046.26             0.01                0.01                
+                    1.94 MB             4                   7049.31             1762.33             0.01                0.01                
+                    1.95 MB             8                   153756.63           19217.92            0.00                0.00                
+                    1.96 MB             4                   6124.73             1531.18             0.01                0.01                
+                    1.96 MB             8                   88252.19            11031.92            0.00                0.00                
+                    1.96 MB             4                   8611.33             2152.83             0.01                0.01                
+                    1.97 MB             4                   37543.44            9385.86             0.00                0.00                
+                    1.97 MB             4                   4435.88             1108.97             0.01                0.01                
+                    1.98 MB             4                   15024.80            3756.20             0.00                0.00                
+                    1.98 MB             12                  44052.98            3670.36             0.00                0.00                
+                    1.99 MB             12                  221885.37           16688.26            0.04                0.03                
+                    2.0 MB              8                   49749.91            6224.13             0.00                0.00                
+                    2.0 MB              4                   82635.09            20658.77            0.00                0.00                
+                    2.01 MB             8                   57065.74            7127.81             0.00                0.00                
+                    2.02 MB             12                  38627.44            3279.10             0.01                0.00                
+                    2.02 MB             4                   28545.55            7136.39             0.00                0.00                
+                    2.03 MB             4                   23658.51            5914.63             0.00                0.00                
+                    2.03 MB             4                   152764.76           38191.19            0.00                0.00                
+                    2.04 MB             4                   12659.04            3164.76             0.01                0.00                
+                    2.04 MB             14                  319768.22           20529.12            0.01                0.00                
+                    2.04 MB             8                   9895.45             1235.11             0.01                0.01                
+                    2.05 MB             4                   12266.50            3066.63             0.01                0.00                
+                    2.06 MB             4                   3779.84             944.96              0.02                0.01                
+                    2.06 MB             8                   27988.27            3501.72             0.01                0.01                
+                    2.07 MB             6                   142565.33           18162.33            0.01                0.01                
+                    2.07 MB             10                  179235.14           13316.76            0.00                0.00                
+                    2.08 MB             16                  135353.50           7596.13             0.01                0.01                
+                    2.08 MB             4                   46480.17            11620.04            0.00                0.00                
+                    2.09 MB             4                   13705.85            3426.46             0.01                0.00                
+                    2.09 MB             4                   292.51              73.13               0.24                0.18                
+                    2.1 MB              4                   238959.64           59739.91            0.00                0.00                
+                    2.1 MB              12                  44836.88            3560.87             0.02                0.01                
+                    2.11 MB             8                   299330.78           37288.42            0.00                0.00                
+                    2.11 MB             2                   137675.94           68837.97            0.00                0.00                
+                    2.12 MB             4                   9990.23             2497.56             0.01                0.01                
+                    2.12 MB             4                   18264.43            4566.11             0.00                0.00                
+                    2.12 MB             8                   118912.12           14865.84            0.00                0.00                
+                    2.13 MB             8                   25967.95            3244.30             0.02                0.01                
+                    2.15 MB             8                   12001.23            1496.69             0.02                0.01                
+                    2.15 MB             8                   19094.93            2390.60             0.01                0.01                
+                    2.16 MB             4                   20055.91            5013.98             0.00                0.00                
+                    2.16 MB             4                   12663.31            3165.83             0.01                0.00                
+                    2.16 MB             4                   22519.66            5629.92             0.00                0.00                
+                    2.17 MB             8                   88087.81            11008.88            0.01                0.01                
+                    2.18 MB             4                   33492.30            8373.08             0.00                0.00                
+                    2.19 MB             12                  19771.84            1657.66             0.01                0.01                
+                    2.19 MB             8                   11260.98            1410.01             0.01                0.01                
+                    2.2 MB              8                   4550.67             568.90              0.04                0.03                
+                    2.2 MB              4                   4743.10             1185.77             0.02                0.01                
+                    2.21 MB             4                   8638.14             2159.53             0.01                0.01                
+                    2.21 MB             4                   126848.00           31712.00            0.00                0.00                
+                    2.21 MB             4                   37547.74            9386.94             0.00                0.00                
+                    2.23 MB             4                   9645.02             2411.26             0.01                0.01                
+                    2.24 MB             4                   2701.50             675.37              0.03                0.02                
+                    2.25 MB             8                   23068.87            2884.79             0.01                0.01                
+                    2.25 MB             4                   17557.28            4389.32             0.00                0.00                
+                    2.26 MB             4                   17205.82            4301.46             0.00                0.00                
+                    2.27 MB             4                   100611.86           25152.97            0.00                0.00                
+                    2.27 MB             8                   62489.25            7807.45             0.00                0.00                
+                    2.29 MB             8                   32327.25            4045.94             0.01                0.01                
+                    2.29 MB             4                   12273.17            3068.29             0.01                0.00                
+                    2.3 MB              4                   7873.30             1968.32             0.01                0.01                
+                    2.31 MB             4                   4117.44             1029.36             0.02                0.01                
+                    2.32 MB             4                   5430.57             1357.64             0.01                0.01                
+                    2.32 MB             4                   1086.72             271.68              0.07                0.05                
+                    2.33 MB             8                   8135.11             1020.61             0.02                0.02                
+                    2.34 MB             8                   13070.65            1636.62             0.02                0.01                
+                    2.34 MB             4                   10334.34            2583.58             0.01                0.01                
+                    2.36 MB             4                   1083.51             270.88              0.07                0.05                
+                    2.36 MB             8                   18994.45            2376.44             0.04                0.03                
+                    2.37 MB             8                   33284.74            4160.25             0.00                0.00                
+                    2.38 MB             4                   9645.44             2411.36             0.01                0.01                
+                    2.38 MB             4                   16461.89            4115.47             0.00                0.00                
+                    2.43 MB             4                   21779.59            5444.90             0.00                0.00                
+                    2.44 MB             2                   138424.08           69212.04            0.00                0.00                
+                    2.46 MB             4                   16122.45            4030.61             0.01                0.00                
+                    2.46 MB             4                   9991.25             2497.81             0.01                0.01                
+                    2.47 MB             8                   36539.58            4570.45             0.01                0.00                
+                    2.48 MB             12                  22840.65            1910.27             0.02                0.01                
+                    2.49 MB             8                   58019.61            7253.79             0.01                0.00                
+                    2.5 MB              4                   8629.59             2157.40             0.01                0.01                
+                    2.51 MB             4                   15764.19            3941.05             0.01                0.00                
+                    2.52 MB             20                  14791.93            722.56              0.04                0.03                
+                    2.54 MB             8                   37875.71            4733.99             0.00                0.00                
+                    2.55 MB             8                   20273.69            2535.30             0.02                0.01                
+                    2.55 MB             4                   299.44              74.86               0.34                0.25                
+                    2.59 MB             4                   2705.09             676.27              0.03                0.02                
+                    2.62 MB             8                   5784.72             723.88              0.03                0.02                
+                    2.66 MB             8                   17496.36            2186.32             0.15                0.11                
+                    2.67 MB             4                   5440.60             1360.15             0.02                0.01                
+                    2.68 MB             4                   1096.08             274.02              0.08                0.06                
+                    2.73 MB             4                   1480.71             370.18              0.06                0.05                
+                    2.75 MB             4                   3083.91             770.98              0.03                0.02                
+                    2.78 MB             4                   1473.78             368.45              0.06                0.05                
+                    2.8 MB              6                   139438.03           17505.39            0.06                0.05                
+                    2.81 MB             4                   698.40              174.60              0.14                0.10                
+                    2.82 MB             4                   15759.57            3939.89             0.01                0.00                
+                    2.83 MB             4                   2318.82             579.71              0.04                0.03                
+                    2.84 MB             4                   2311.71             577.93              0.04                0.03                
+                    2.84 MB             4                   2322.05             580.51              0.04                0.03                
+                    2.84 MB             4                   701.81              175.45              0.14                0.10                
+                    2.85 MB             4                   3779.93             944.98              0.03                0.02                
+                    2.87 MB             4                   300.11              75.03               0.42                0.32                
+                    2.87 MB             4                   708.34              177.09              0.15                0.11                
+                    2.9 MB              4                   704.27              176.07              0.14                0.11                
+                    2.96 MB             4                   1482.81             370.70              0.07                0.05                
+                    3.0 MB              4                   298.81              74.70               0.36                0.27                
+                    3.0 MB              2                   138461.38           69230.69            0.00                0.00                
+                    3.13 MB             4                   1901.42             475.35              0.06                0.04                
+                    3.24 MB             4                   1906.11             476.53              0.06                0.04                
+                    3.24 MB             4                   697.02              174.26              0.16                0.12                
+                    3.27 MB             4                   300.24              75.06               0.60                0.45                
+                    3.75 MB             2                   138388.48           69194.24            0.00                0.00                
+log_summary_barrier
+                    0B                  1                   2.27                2.27                0.00                0.00                
+
+==== Benchmark complete ====
+Total time: 1852.6438343524933
+Steps measured (post-warmup): 491
+Step time: 6415.1 ± 141.6 ms  (last 10 steps)
+Throughput: 638 tok/s
+
+==== Final Evaluation ====
+Perplexity: 17817.61

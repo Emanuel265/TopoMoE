@@ -44,6 +44,8 @@ def get_expert_permutation_single_layer(
         token_d, alpha, beta, gamma, replicas
     )
 
+    print("init cost: ", best_cost, best_perm)
+
     E = len(perm)
 
     # ------------------------------------------------------------
@@ -63,6 +65,8 @@ def get_expert_permutation_single_layer(
         if new_cost < best_cost:
             best_cost = new_cost
             best_perm = new_perm
+    
+    print("cost after: ", best_cost, best_perm)
 
     return best_perm
 

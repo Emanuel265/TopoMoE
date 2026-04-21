@@ -80,7 +80,7 @@ def main():
     p.add_argument("--num_layers", type=int, default=6, help="Number of moe layers")
     p.add_argument("--vocab_size", type=int, default=50257, help="Vocabulary size of the model")
 
-    p.add_argument("--batch_size", type=int, default=32, help="Batch size per GPU (must match ds_config)")
+    p.add_argument("--batch_size", type=int, default=8, help="Batch size per GPU (must match ds_config)")
     p.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
     p.add_argument("--train_steps", type=int, default=500, help="Total number of training steps")
     p.add_argument("--aux_weight", type=float, default=0.1, help="Coefficient for MoE auxiliary loss")
@@ -162,10 +162,10 @@ def main():
     model = MoEGPT(
         use_topomoe=args.use_topomoe,
         topology=topology,
-        token_d=ds_config["token_d"],
-        alpha=ds_config["alpha"],
-        beta=ds_config["beta"],
-        gamma=ds_config["gamma"],
+        token_d=ds_config["topomoe"]["token_d"],
+        alpha=ds_config["topomoe"]["alpha"],
+        beta=ds_config["topomoe"]["beta"],
+        gamma=ds_config["topomoe"]["gamma"],
         vocab_size=args.vocab_size,
         seq_len=args.seq_len,
         hidden=args.hidden,
@@ -174,6 +174,7 @@ def main():
         num_experts=ds_config["moe"]["num_experts"],
         ep_size=ds_config["moe"]["ep_size"],
         k=ds_config["moe"]["k"],
+        rank=local_rank,
         aux_weight=args.aux_weight,
     )   
 
@@ -263,9 +264,11 @@ def main():
             step_times.append(step_ms)
         
         # Trigger rebalance at specified step (TopoMoE only)
-        if args.use_topomoe and args.rebalance_step is not None and step == args.rebalance_step:
+        if args.use_topomoe and args.rebalance_step is not None and step % args.rebalance_step == 0:
             if engine.global_rank == 0:
                 print(f"\n==== Triggering expert placement rebalance at step {step} ====\n")
+
+            model.rebalance_experts()
             
 
         # ── Logging ──────────────────────────────────────

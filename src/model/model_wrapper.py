@@ -151,12 +151,17 @@ class MoEGPT(nn.Module):
         num_experts: int,
         ep_size:     int,
         k:           int,
+        rank:        int,
         aux_weight:  float = 0.01,
     ):
         super().__init__()
         self.seq_len    = seq_len
         self.aux_weight = aux_weight
         self.hidden = hidden
+
+        self.rank = rank
+        self.num_layers = num_layers
+        self.num_experts = num_experts
 
         # Embeddings
         self.token_emb = nn.Embedding(vocab_size, hidden)
@@ -194,10 +199,16 @@ class MoEGPT(nn.Module):
         self.beta = beta
         self.gamma = gamma
 
-        self.coaccess = [torch.zeros((num_experts, num_experts), device=self.token_emb.weight.device) for _ in range(num_layers-1)]
+        self.register_buffer(
+            "_causal_mask",
+            torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool(),
+            persistent=False,
+        )
+
+        self.coaccess = None  # Will initialize in forward pass
+
 
     # ── Weight initialisation ────────────────────────────
-
     def _init_weights(self):
         for module in self.modules():
             if isinstance(module, nn.Linear):
@@ -219,6 +230,13 @@ class MoEGPT(nn.Module):
         B, T = input_ids.shape
         device = input_ids.device
 
+        # Initialize coaccess matrices on first forward pass
+        if self.coaccess is None:
+            self.coaccess = [
+                torch.zeros((self.num_experts, self.num_experts), device=device)
+                for _ in range(self.num_layers - 1)
+            ]
+
         # ── Embeddings ──────────────────────────────────
         positions = torch.arange(T, device=device).unsqueeze(0)
         x = self.token_emb(input_ids) + self.pos_emb(positions)
@@ -235,17 +253,27 @@ class MoEGPT(nn.Module):
             x, l_aux  = layer(x, attn_mask)
             total_aux += l_aux
         
-        for l, layer in enumerate(self.layers[:-1]):
-            mask_l  = torch.tensor(self.layers[l].moe.deepspeed_moe.last_dispatch_mask)
-            mask_l1 = torch.tensor(self.layers[l+1].moe.deepspeed_moe.last_dispatch_mask)
+        # Compute co-access matrices (separate loop)
+        for l in range(len(self.layers) - 1):
+            mask_l  = self.layers[l].moe.deepspeed_moe.last_dispatch_mask.detach().clone()
+            mask_l1 = self.layers[l+1].moe.deepspeed_moe.last_dispatch_mask.detach().clone()
 
-            momentum = 0.99
-            self.coaccess[l] = (
-                momentum * self.coaccess[l]
-                + (1 - momentum) * (mask_l.T @ mask_l1)
-            )
-        
-        dist.all_reduce(self.coaccess[l], group=self.ep_group)
+
+            # mask_l shape: [S, E, C] - S tokens, E experts, C capacity
+            # Sum over capacity dimension to get [S, E] - which expert each token uses
+            expert_assignments_l = mask_l.sum(dim=-1).float()   # [S, E]
+            expert_assignments_l1 = mask_l1.sum(dim=-1).float() # [S, E]
+            
+            # Compute co-access matrix: [E, E] 
+            coaccess_update = expert_assignments_l.T @ expert_assignments_l1  # [E, E]
+            self.coaccess[l] = self.coaccess[l] + coaccess_update
+            self.coaccess[l] = self.coaccess[l] / (np.max(self.coaccess[l]) if self.coaccess[l] is None else 1.0)
+            
+            # Update coaccess with momentum
+            # self.coaccess[l] = self.coaccess[l] + coaccess_update
+            
+            # All-reduce across expert parallel group
+            dist.all_reduce(self.coaccess[l], group=self.layers[l].moe.deepspeed_moe.ep_group)
 
         # ── Head ────────────────────────────────────────
         x      = self.ln_f(x)
@@ -278,9 +306,7 @@ class MoEGPT(nn.Module):
         Rebalance experts across all MoE layers using coaccess matrices.
         """
 
-        num_layers = len(self.layers)
-
-        for l in range(num_layers - 1):
+        for l in range(self.num_layers - 1):
             perm_old = self.layers[l + 1].moe.deepspeed_moe.expert_permutation
 
             perm_new = get_expert_permutation_single_layer(
@@ -295,10 +321,13 @@ class MoEGPT(nn.Module):
                 max_iters=100,
             )
 
-            if (True):
-                migration_plan = build_migration_plan(perm_old, perm_new)
+            if self.rank == 0:
+                print("Layer l: ", l, ", new perm: ", perm_new, "with coaccess: ", self.coaccess[l])
+
+            if (False):
+                migration_plan = build_migration_plan(perm_old, perm_new, self.num_experts // self.num_layers)
                 self.execute_migration_p2p(l + 1, migration_plan)
             else:
-                self.execute_migration_alltoallv(l + 1, perm_old, perm_new, self.num_local_experts)
+                self.execute_migration_alltoallv(l + 1, perm_old, perm_new, self.num_experts // self.num_layers)
 
             self.layers[l + 1].moe.deepspeed_moe.expert_permutation = perm_new
