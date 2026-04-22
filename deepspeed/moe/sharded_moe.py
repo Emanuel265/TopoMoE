@@ -701,15 +701,14 @@ class MOELayer(Base):
 
     def migrate_experts_alltoallv(
         self,
-        perm_old,
-        perm_new,
-        num_local_experts
+        old_placement,
+        new_placement
     ):
         """
         Perform expert migration using a single AllToAllV.
-
-        perm_old / perm_new:
-            perm.find() = global position of expert e
+        
+        old_placement[expert_id] = rank where expert currently lives
+        new_placement[expert_id] = rank where expert should go
         """
         start_time = time.time()
 
@@ -717,50 +716,44 @@ class MOELayer(Base):
         world_size = self.ep_size
         device = next(self.parameters()).device
 
-        expert_source_rank_and_local_idx = dict()
-        for pos, e in enumerate(perm_old):
-            expert_source_rank_and_local_idx[e] = (pos // num_local_experts, pos % num_local_experts)
-
-        expert_dest_rank_and_local_idx = dict()
-        for pos, e in enumerate(perm_new):
-            expert_dest_rank_and_local_idx[e] = (pos // num_local_experts, pos % num_local_experts)
-
         # Helpers
-        def flatten_expert(expert : Module):
+        def flatten_expert(expert: Module):
             return torch.cat([p.data.view(-1) for p in expert.parameters()])
-        def unflatten_into_expert(flat, expert : Module):
+        
+        def unflatten_into_expert(flat, expert: Module):
             offset = 0
             for p in expert.parameters():
                 numel = p.numel()
                 p.data.copy_(flat[offset:offset+numel].view_as(p))
                 offset += numel
 
-        # Build send buckets
-                # Build receive plan
-        recv_plan = [[] for _ in range(world_size)]
+        # Build send and receive plans
         send_buckets = [[] for _ in range(world_size)]
+        recv_plan = [[] for _ in range(world_size)]
 
-        for e in range(len(perm_old)):
-            src_rank, src_idx = expert_source_rank_and_local_idx[e]
-            dst_rank, dst_idx = expert_dest_rank_and_local_idx[e]
+        for expert_id in range(len(old_placement)):
+            src_rank = old_placement[expert_id]
+            dst_rank = new_placement[expert_id]
 
             if src_rank == rank:
-                send_buckets[dst_rank].append((src_idx, dst_idx))
+                send_buckets[dst_rank].append(expert_id)
             if dst_rank == rank:
-                recv_plan[src_rank].append(dst_idx)
+                recv_plan[src_rank].append(expert_id)
 
+        # Build send buffer
         send_chunks = []
         input_split_sizes = []
 
-        for r in range(world_size):
-            bucket = send_buckets[r]
+        for dst_rank in range(world_size):
+            bucket = send_buckets[dst_rank]
             if len(bucket) == 0:
                 input_split_sizes.append(0)
                 continue
 
             flats = []
-            for (src_idx, _) in bucket:
-                flats.append(flatten_expert(self._get_expert(src_idx)))
+            for expert_id in bucket:
+                expert = self._get_expert(expert_idx=expert_id)
+                flats.append(flatten_expert(expert))
 
             chunk = torch.cat(flats)
             send_chunks.append(chunk)
@@ -768,25 +761,24 @@ class MOELayer(Base):
 
         send_buffer = (
             torch.cat(send_chunks) if len(send_chunks) > 0
-            else torch.empty(0, device=device)
+            else torch.empty(0, device=device, dtype=send_buffer.dtype if send_chunks else torch.float32)
         )
 
-        # Exchange split sizes and AllToAllV
+        # Exchange split sizes
         local_splits = torch.tensor(input_split_sizes, device=device, dtype=torch.long)
-        all_splits = torch.zeros(world_size, world_size, device=device, dtype=torch.long)
-
-        dist.all_gather_into_tensor(all_splits, local_splits, group=self.ep_group)
-
-        output_split_sizes = all_splits[:, rank].tolist()
-
+        all_splits = [torch.zeros(world_size, device=device, dtype=torch.long) 
+                    for _ in range(world_size)]
+        
+        dist.all_gather(all_splits, local_splits, group=self.ep_group)
+        
+        # Extract what this rank will receive from each rank
+        output_split_sizes = [all_splits[r][rank].item() for r in range(world_size)]
         total_recv = sum(output_split_sizes)
 
-        recv_buffer = torch.empty(
-            total_recv,
-            device=device,
-            dtype=send_buffer.dtype
-        )
+        # Allocate receive buffer
+        recv_buffer = torch.empty(total_recv, device=device, dtype=send_buffer.dtype)
 
+        # Perform AllToAllV
         dist.all_to_all_single(
             recv_buffer,
             send_buffer,
@@ -795,7 +787,7 @@ class MOELayer(Base):
             group=self.ep_group
         )
 
-        # Unflatten into experts
+        # Unflatten received data into experts
         offset = 0
         for src_rank in range(world_size):
             numel = output_split_sizes[src_rank]
@@ -806,16 +798,15 @@ class MOELayer(Base):
             offset += numel
 
             idx = 0
-            for dst_idx in recv_plan[src_rank]:
-                expert = self._get_expert(dst_idx)
-
+            for expert_id in recv_plan[src_rank]:
+                expert = self._get_expert(expert_id)
                 size = sum(p.numel() for p in expert.parameters())
-                flat = chunk[idx:idx+size]
-
+                flat = chunk[idx:idx + size]
                 unflatten_into_expert(flat, expert)
                 idx += size
+
         if rank == 0:
-            print("[MoELayer] AllToAllV migration completed in {:.4f} seconds".format(time.time() - start_time))
+            print(f"[MoELayer] AllToAllV migration completed in {time.time() - start_time:.4f}s")
 
 
     def _set_ep_group(self, ep_group):
@@ -975,3 +966,89 @@ class MOELayer(Base):
             self.time_moe = self.timers(MOE_TIMER).elapsed(reset=False)
 
         return a
+
+
+# Sanity checks
+
+    def test_migration_correctness(self):
+        """Test that experts end up on correct ranks with correct values. Modifies expert parameters"""
+        
+        # Initialize: each expert gets a unique constant value
+        num_experts = 8
+        world_size = 4
+        rank = dist.get_rank(self.ep_group)
+        
+        # Initial placement: experts distributed round-robin
+        old_placement = [i % world_size for i in range(num_experts)]
+        
+        # Set each expert to its ID * 1000 (e.g., expert 5 = all 5000s)
+        for expert_id in range(num_experts):
+            if old_placement[expert_id] == rank:
+                expert = self._get_expert(expert_id)
+                for p in expert.parameters():
+                    p.data.fill_(expert_id * 1000.0)
+        
+        # New placement: reverse distribution
+        new_placement = [(i + 2) % world_size for i in range(num_experts)]
+        
+        # Perform migration
+        self.migrate_experts_alltoallv(old_placement, new_placement)
+        
+        # Verify: each expert on this rank should have correct value
+        for expert_id in range(num_experts):
+            if new_placement[expert_id] == rank:
+                expert = self._get_expert(expert_id)
+                expected_value = expert_id * 1000.0
+                
+                for p in expert.parameters():
+                    actual = p.data.mean().item()
+                    assert abs(actual - expected_value) < 1e-3, \
+                        f"Rank {rank}: Expert {expert_id} has {actual}, expected {expected_value}"
+        
+        if rank == 0:
+            print("Migration correctness test passed!")
+
+    def compute_expert_checksum(expert):
+        """Compute a checksum for an expert's parameters."""
+        flat = torch.cat([p.data.view(-1) for p in expert.parameters()])
+        return flat.sum().item(), flat.norm().item()
+
+    def test_migration_preservation(self, old_placement, new_placement):
+        """Verify that expert data is preserved during migration."""
+        
+        rank = dist.get_rank(self.ep_group)
+        num_experts = len(old_placement)
+        
+        # Compute checksums before migration
+        checksums_before = {}
+        for expert_id in range(num_experts):
+            if old_placement[expert_id] == rank:
+                expert = self._get_expert(expert_id)
+                checksums_before[expert_id] = self.compute_expert_checksum(expert)
+        
+        # Share checksums with all ranks
+        all_checksums = [None] * dist.get_world_size(self.ep_group)
+        dist.all_gather_object(all_checksums, checksums_before, group=self.ep_group)
+        
+        # Merge into global checksum dict
+        global_checksums = {}
+        for rank_checksums in all_checksums:
+            global_checksums.update(rank_checksums)
+        
+        # Perform migration
+        self.migrate_experts_alltoallv(old_placement, new_placement)
+        
+        # Verify checksums after migration
+        for expert_id in range(num_experts):
+            if new_placement[expert_id] == rank:
+                expert = self._get_expert(expert_id)
+                checksum_after = self.compute_expert_checksum(expert)
+                checksum_before = global_checksums[expert_id]
+                
+                assert abs(checksum_after[0] - checksum_before[0]) < 1e-3, \
+                    f"Sum mismatch for expert {expert_id}"
+                assert abs(checksum_after[1] - checksum_before[1]) < 1e-3, \
+                    f"Norm mismatch for expert {expert_id}"
+        
+        if rank == 0:
+            print("Migration preservation test passed!")

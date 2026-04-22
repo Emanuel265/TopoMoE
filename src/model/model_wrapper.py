@@ -236,6 +236,8 @@ class MoEGPT(nn.Module):
                 torch.zeros((self.num_experts, self.num_experts), device=device)
                 for _ in range(self.num_layers - 1)
             ]
+            # Track number of batches for proper averaging
+            self.coaccess_batch_count = 0
 
         # ── Embeddings ──────────────────────────────────
         positions = torch.arange(T, device=device).unsqueeze(0)
@@ -255,9 +257,8 @@ class MoEGPT(nn.Module):
         
         # Compute co-access matrices (separate loop)
         for l in range(len(self.layers) - 1):
-            mask_l  = self.layers[l].moe.deepspeed_moe.last_dispatch_mask.detach().clone()
-            mask_l1 = self.layers[l+1].moe.deepspeed_moe.last_dispatch_mask.detach().clone()
-
+            mask_l  = self.layers[l].moe.deepspeed_moe.last_dispatch_mask
+            mask_l1 = self.layers[l+1].moe.deepspeed_moe.last_dispatch_mask
 
             # mask_l shape: [S, E, C] - S tokens, E experts, C capacity
             # Sum over capacity dimension to get [S, E] - which expert each token uses
@@ -265,15 +266,15 @@ class MoEGPT(nn.Module):
             expert_assignments_l1 = mask_l1.sum(dim=-1).float() # [S, E]
             
             # Compute co-access matrix: [E, E] 
-            coaccess_update = expert_assignments_l.T @ expert_assignments_l1  # [E, E]
-            self.coaccess[l] = self.coaccess[l] + coaccess_update
-            self.coaccess[l] = self.coaccess[l] / (np.max(self.coaccess[l]) if self.coaccess[l] is None else 1.0)
+            # Entry (i,j) = number of tokens that used expert i in layer l AND expert j in layer l+1
+            coaccess_update = expert_assignments_l.T @ expert_assignments_l1
             
-            # Update coaccess with momentum
-            # self.coaccess[l] = self.coaccess[l] + coaccess_update
+            dist.all_reduce(coaccess_update, group=self.layers[l].moe.deepspeed_moe.ep_group)
             
-            # All-reduce across expert parallel group
-            dist.all_reduce(self.coaccess[l], group=self.layers[l].moe.deepspeed_moe.ep_group)
+            self.coaccess[l] = 0.5 * self.coaccess[l] + coaccess_update
+        
+        # Increment batch counter
+        self.coaccess_batch_count += 1
 
         # ── Head ────────────────────────────────────────
         x      = self.ln_f(x)

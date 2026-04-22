@@ -67,22 +67,20 @@ class Link:
 
 class Topology:
     def __init__(self):
-        self.devices: dict[int, Device] = defaultdict(None)
+        self.devices: dict[int, Device] = {}
         self.links_by_bw: dict[int, list[Link]] = SortedDict()
-        self.link_map: dict[(int, int), Link] = defaultdict(None)
-        self.bw_matrix: np.matrix = None
-        self.lat_matrix: np.matrix = None
+        self.link_map: dict[tuple[int, int], Link] = {}
+        self.bw_matrix: np.ndarray = None
+        self.lat_matrix: np.ndarray = None
 
     def add_device(self, name, id=None):
         if id is None:
             devices_len = len(self.devices)
-            self.devices.append(Device(devices_len, name))
-            
+            self.devices[devices_len] = Device(devices_len, name)
             return self.devices[devices_len]
         else:
             if id not in self.devices:
                 self.devices[id] = Device(id, name)
-            
             return self.devices[id]
     
     def add_link(self, device_a, device_b, link_type, bandwidth, latency):
@@ -105,6 +103,48 @@ class Topology:
             self.links_by_bw[bw].append(link)
 
         return link
+    
+    def build_matrices(self):
+        """
+        Build bandwidth and latency matrices for fast lookup.
+        Call this after all devices and links are added.
+        """
+        n_devices = len(self.devices)
+        
+        # Initialize matrices with worst-case values
+        self.bw_matrix = np.zeros((n_devices, n_devices), dtype=float)
+        self.lat_matrix = np.full((n_devices, n_devices), float('inf'), dtype=float)
+        
+        # Diagonal entries (same device = infinite bandwidth, zero latency)
+        for i in range(n_devices):
+            self.bw_matrix[i, i] = float('inf')
+            self.lat_matrix[i, i] = 0.0
+        
+        # Fill from link_map
+        for (dev_a, dev_b), link in self.link_map.items():
+            bw = float(link.bandwidth) if link.bandwidth > 0 else 1e-9
+            lat = float(link.latency) if link.latency > 0 else float('inf')
+            
+            # Symmetric matrix
+            self.bw_matrix[dev_a, dev_b] = bw
+            self.bw_matrix[dev_b, dev_a] = bw
+            self.lat_matrix[dev_a, dev_b] = lat
+            self.lat_matrix[dev_b, dev_a] = lat
+        
+        print(f"Built {n_devices}x{n_devices} bandwidth and latency matrices")
+        return self.bw_matrix, self.lat_matrix
+    
+    def get_bandwidth(self, dev_a: int, dev_b: int) -> float:
+        """Get bandwidth between two devices."""
+        if self.bw_matrix is None:
+            self.build_matrices()
+        return self.bw_matrix[dev_a, dev_b]
+    
+    def get_latency(self, dev_a: int, dev_b: int) -> float:
+        """Get latency between two devices."""
+        if self.lat_matrix is None:
+            self.build_matrices()
+        return self.lat_matrix[dev_a, dev_b]
     
     def getHierarchyLevels(self):
         return list(self.links_by_bw.keys()) 
@@ -187,19 +227,15 @@ def load_topology_from_csv(csv_file):
         
         link_count = 0
         for row in reader:
-            # print(f"Row: {row} (len={len(row)})")
             if not row:
                 continue
             dev_a_str, dev_b_str, link_type, bandwidth, latency = row
-            # print(f"\nProcessing link: {dev_a_str} <-> {dev_b_str}")
-            # print(f"  Type: {link_type}, BW: {bandwidth}, Latency: {latency}")
             
             id_a, name_a = dev_a_str.split("_", 1)
             id_b, name_b = dev_b_str.split("_", 1)
             
             device_a = topology.add_device(name_a, int(id_a))
             device_b = topology.add_device(name_b, int(id_b))
-            # print(f"  Devices: {device_a} <-> {device_b}")
             
             try:
                 bandwidth = int(bandwidth) if bandwidth.strip() != "N/A" else 0
@@ -213,6 +249,10 @@ def load_topology_from_csv(csv_file):
                 link_count += 1
             
         print(f"\nLoaded {len(topology.devices)} devices and {link_count} links")
+    
+    # Build matrices immediately after loading
+    topology.build_matrices()
+    
     return topology
 
 def get_topology(file = "src/topology.csv"):
